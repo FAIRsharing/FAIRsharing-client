@@ -1,0 +1,14 @@
+import store from '../store';
+import { getGraphSuccess } from '../actions/graph-actions';
+import { API_URL_ROOT, GRAPH_ENDPOINT } from '../utils/api-contants';
+
+/**
+ * Get the given graph
+ */
+export function getGraph(graphId) {
+    const graphUrl = `${API_URL_ROOT}/${GRAPH_ENDPOINT}/${graphId}`;
+    return fetch(graphUrl).then(response => {
+        store.dispatch(getGraphSuccess(response.json()));
+        return response;
+    });
+}
