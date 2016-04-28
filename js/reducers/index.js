@@ -4,7 +4,7 @@ import { combineReducers } from 'redux';
 import graphReducer from './graph-reducer';
 
 const reducers = combineReducers({
-    graph: graphReducer
+    graphState: graphReducer
 });
 
 export default reducers;
