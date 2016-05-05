@@ -2,7 +2,7 @@ import store from '../store';
 import { getGraphSuccess } from '../actions/graph-actions';
 import { API_URL_ROOT, GRAPH_ENDPOINT } from '../utils/api-constants';
 
-const MAX_PATH_LENGTH = 2
+const MAX_PATH_LENGTH = 1;
 /**
  * Get the given graph
  */
