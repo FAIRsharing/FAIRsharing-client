@@ -6,3 +6,10 @@ export function  getGraphSuccess(graph) {
         graph
     };
 }
+
+export function  layoutSelectChange(layout) {
+    return {
+        type: types.LAYOUT_SELECT_CHANGE,
+        layout
+    };
+}

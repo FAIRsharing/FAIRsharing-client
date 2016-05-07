@@ -10,6 +10,7 @@ import cyCola from 'cytoscape-cola';
 import cola from 'cola';
 import sigma from 'sigma';
 import _ from 'lodash';
+import { GRAPH_LAYOUTS } from '../../utils/api-constants';
 import store from '../../store';
 
 cyCola(cytoscape, cola);
@@ -152,7 +153,7 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
      * @constructor
      * @param layoutName
      */
-    constructor(layoutName = 'cola') {
+    constructor(layoutName = GRAPH_LAYOUTS.COLA) {
         super();
         this.layout = layoutName;
     }
@@ -204,7 +205,9 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
 
     }
 
-    render(rootEl, nodes, edges) {
+    render(rootEl, layout, nodes, edges) {
+
+        this.layout = layout;
 
         const elements = this._prepareElements(nodes, edges);
 
@@ -301,7 +304,7 @@ class SigmaStrategy extends AbstractGraphStrategy {
 
     }
 
-    render(rootEl, nodes = [], edges = []) {
+    render(rootEl, layout, nodes = [], edges = []) {
         const graph = this._prepareElements(nodes, edges);
         const s = new sigma({
             container: rootEl.id,
@@ -343,8 +346,8 @@ class GraphHandler {
         return this._edges && this._edges.length;
     }
 
-    render(rootEl) {
-        this._strategy.render(rootEl, this._nodes, this._edges);
+    render(rootEl, layout) {
+        this._strategy.render(rootEl, layout, this._nodes, this._edges);
     }
 
 }
@@ -359,7 +362,7 @@ const GraphContainer = React.createClass({
     render: function () {
         const handler = new GraphHandler(this.props.graph);
         return (
-            <Graph handler={handler} />
+            <Graph handler={handler} layout={this.props.layout} />
         );
     }
 
@@ -367,7 +370,8 @@ const GraphContainer = React.createClass({
 
 const mapStateToProps = function (store) {
     return {
-        graph: store.graphState.graph
+        graph: store.graphState.graph,
+        layout: store.graphState.layout
     };
 };
 

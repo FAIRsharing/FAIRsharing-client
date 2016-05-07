@@ -1,10 +1,16 @@
 import * as types from '../actions/action-types';
+import { GRAPH_LAYOUTS } from '../utils/api-constants';
+
 
 const initialState = {
     graph: {
         nodes: [],
         edges: []
+    },
+    layout: {
+        name: GRAPH_LAYOUTS.COLA
     }
+    
 };
 
 const graphReducer = function (state = initialState, action) {
@@ -13,6 +19,9 @@ const graphReducer = function (state = initialState, action) {
 
         case types.GET_GRAPH_SUCCESS:
             return { ...state, graph: action.graph };
+        
+        case types.LAYOUT_SELECT_CHANGE:
+            return { ...state, layout: action.layout };
 
     }
 

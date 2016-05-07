@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-
+import LayoutForm from './layout-form';
 
 // import spread from 'cytoscape-spread';
 
@@ -11,16 +11,17 @@ import ReactDOM from 'react-dom';
 const Graph = React.createClass({
 
     componentDidUpdate: function () {
-
-        let graphCnt = ReactDOM.findDOMNode(this);
-        this.props.handler.render(graphCnt);
-
+        let graphDOMNode = this.refs.graph;
+        this.props.handler.render(graphDOMNode, this.props.layout.name);
     },
 
     render: function() {
-        return <div id="graphDiv" className="graph-cnt"
-                    style={{"height": "100%", "width": "100%"}}>
-                </div>;
+        return (
+            <div id="graphCnt">
+                <LayoutForm layoutName={this.props.layout.name} />
+                <div id="graph" ref="graph" className="graph" style={{"height": "100%", "width": "100%"}}></div>
+            </div>
+        );
     }
 
 });
