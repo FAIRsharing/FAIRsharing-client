@@ -18,7 +18,7 @@ cyCola(cytoscape, cola);
 const TAG_NODES = ['Taxonomy', 'Domain'];
 
 const NODES_COLOR_MAP = new Map([
-    [undefined, 'grey'],
+    [undefined, 'DarkGrey'],
     ['BiosharingCollection', 'red'],
     ['Policy', 'green'],
     ['BioDBCore', 'SteelBlue'],
@@ -28,7 +28,7 @@ const NODES_COLOR_MAP = new Map([
 ]);
 
 const EDGES_COLOR_MAP = new Map([
-    [undefined, ''],
+    [undefined, 'DarkGrey'],
     ['RECOMMENDS', 'Teal'],
     ['IMPLEMENTS', 'Coral'],
     ['TAGGED WITH', 'Chartreuse']
@@ -134,7 +134,7 @@ layoutMap.set('cose', {
 layoutMap.set('cola', {
     name: 'cola',
     nodeSpacing: 50,
-    edgeLengthVal: 250,
+    edgeLengthVal: 10,
     padding:10,
     animate: true,
     randomize: false,
@@ -175,7 +175,9 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
      * @returns {Array} - the array of annotated elements ready to be displayed on cytoscape
      */
     _prepareElements(nodes, edges) {
-        let elements = [];
+        const elements = [];
+
+        const rootNode = _.find(nodes, {'path_length': 0});
 
         const filtered_nodes = nodes.filter(el => TAG_NODES.indexOf(el.labels && el.labels[0]) < 0);
         for (const node of filtered_nodes) {
@@ -185,18 +187,30 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
                     ...node.properties,
                     id: node.properties && node.properties.application_id,
                     label: node.labels && node.labels[0],
-                    _color: NODES_COLOR_MAP.get(node.labels && node.labels[0])
+                    _color: node.path_length < 2 ? NODES_COLOR_MAP.get(node.labels && node.labels[0]) : NODES_COLOR_MAP.get(undefined),
+                    parent: node.path_length < 2 ? rootNode.properties.id : null,
+                    path_length: node.path_length
                 }
             });
         }
         const filtered_node_ids = filtered_nodes.map(el => el.properties && el.properties.application_id);
         const filtered_edges = edges.filter(el => filtered_node_ids.indexOf(el.source) > -1 && filtered_node_ids.indexOf(el.target) > -1);
+
+        let source, target, edge_color;
         for (const edge of filtered_edges) {
+
+            source = _.find(filtered_nodes, {properties: {application_id: edge.source}});
+            target = _.find(filtered_nodes, {properties: {application_id: edge.target}});
+            console.log(target);
+            edge_color = (target.path_length < 2 && source.path_length < 2) ?
+                EDGES_COLOR_MAP.get(edge.relationship) : EDGES_COLOR_MAP.get(undefined);
+
             elements.push({
                 group: 'edges',
                 data: {
                     ...edge,
-                    _color: EDGES_COLOR_MAP.get(edge.relationship)
+                    _color: edge_color,
+                    in_collection: target.path_length < 2
                 }
             })
         }
@@ -206,6 +220,14 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
     }
 
     render(rootEl, layout, nodes, edges) {
+
+        function scaleNodes(ele) {
+            return 32/Math.pow(ele.data('path_length')+1, 1);
+        }
+
+        function scaleText(ele) {
+            return 12/Math.pow(ele.data('path_length')+1, 1);
+        }
 
         this.layout = layout;
 
@@ -219,8 +241,8 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
             style: cytoscape.stylesheet()
                 .selector('node')
                 .style({
-                    'height': 20,
-                    'width': 20,
+                    'height': scaleNodes,
+                    'width': scaleNodes,
                     'background-color': function (ele) {
                         return ele.data('_color') || 'grey';
                     },
@@ -233,7 +255,7 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
                     'color': function (ele) {
                         return ele.data('_color') || 'grey';
                     },
-                    'font-size': 8,
+                    'font-size': scaleText,
                     'text-valign': 'center',
                     'text-outline-width': 2,
                     'text-outline-color': 'Black',
@@ -245,7 +267,9 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
                 .style({
                     'curve-style': 'haystack',
                     'haystack-radius': 0,
-                    'width': 2,
+                    'width': function(ele) {
+                        return ele.data('in_collection') ? 2 : 1
+                    },
                     'line-color': function (ele) {
                         return ele.data('_color') || 'grey';
                     },

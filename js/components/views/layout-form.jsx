@@ -23,12 +23,20 @@ const LayoutForm = React.createClass({
             optList.push(<option key={option} value={option} >{option}</option>);
         }
 
-        return <form class="form-inline">
-            <div class="form-group">
-                <label for="layoutSelector">Layout</label>
-                <select id="layoutSelector" class="form-control" onChange={this.handleLayoutChange} value={this.props.layoutName}>
-                    {optList}
-                </select>
+        const formStyle = {
+            margin: '2px'
+        };
+
+        return <form className="form-horizontal">
+            <div class="row">
+            <div className="form-group"  style={formStyle}>
+                <label htmlFor="layoutSelector" class="control- col-sm-2">Layout </label>
+                <div class="control-col-sm-2">
+                    <select id="layoutSelector" className="form-control" onChange={this.handleLayoutChange} value={this.props.layoutName}>
+                        {optList}
+                    </select>
+                </div>
+            </div>
             </div>
         </form>;
 
