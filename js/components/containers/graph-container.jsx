@@ -18,19 +18,20 @@ cyCola(cytoscape, cola);
 const TAG_NODES = ['Taxonomy', 'Domain'];
 
 const NODES_COLOR_MAP = new Map([
-    [undefined, 'DarkGrey'],
-    ['BiosharingCollection', 'red'],
-    ['Policy', 'green'],
-    ['BioDBCore', 'SteelBlue'],
-    ['Standard', 'brown'],
+    [undefined, '#d9d9d9'],
+    ['BiosharingCollection', '#ff4000'], //red
+    ['Policy', '#9cf76e'],    //green
+    ['BioDBCore', '#e67300'], //orange/ocre
+    ['Standard', '#d4d413'],  // azure
     ['Taxonomy', 'YellowGreen'],
     ['Domain', 'DarkOrange']
 ]);
 
 const EDGES_COLOR_MAP = new Map([
-    [undefined, 'DarkGrey'],
+    [undefined, '#d9d9d9'],
     ['RECOMMENDS', 'Teal'],
-    ['IMPLEMENTS', 'Coral'],
+    ['COLLECTS', '#0099cc'], //blue
+    ['IMPLEMENTS', '#99CCFF'],
     ['TAGGED WITH', 'Chartreuse']
 ]);
 
@@ -99,7 +100,7 @@ layoutMap.set('cose', {
      nodeRepulsion       : function( node ){ return 400000; },
 
      // Node repulsion (overlapping) multiplier
-     nodeOverlap         : 10,
+     nodeOverlap         : 100,
 
      // Ideal edge (non nested) length
      idealEdgeLength     : function( edge ){ return 10; },
@@ -175,12 +176,20 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
      * @returns {Array} - the array of annotated elements ready to be displayed on cytoscape
      */
     _prepareElements(nodes, edges) {
-        const elements = [];
+        const elements = [], node_ids = [];
 
         const rootNode = _.find(nodes, {'path_length': 0});
 
-        const filtered_nodes = nodes.filter(el => TAG_NODES.indexOf(el.labels && el.labels[0]) < 0);
+        let filtered_nodes = nodes.filter(el => TAG_NODES.indexOf(el.labels && el.labels[0]) < 0);
+        filtered_nodes = filtered_nodes.sort((el1, el2) => el1.path_length - el2.path_length);
+
+
         for (const node of filtered_nodes) {
+
+            if (node_ids.indexOf(node.properties.application_id) > 0) {
+                continue;
+            }
+
             elements.push({
                 group: 'nodes',
                 data: {
@@ -192,6 +201,9 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
                     path_length: node.path_length
                 }
             });
+
+            node_ids.push(node.properties.application_id);
+
         }
         const filtered_node_ids = filtered_nodes.map(el => el.properties && el.properties.application_id);
         const filtered_edges = edges.filter(el => filtered_node_ids.indexOf(el.source) > -1 && filtered_node_ids.indexOf(el.target) > -1);
@@ -257,10 +269,22 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
                     },
                     'font-size': scaleText,
                     'text-valign': 'center',
-                    'text-outline-width': 2,
-                    'text-outline-color': 'Black',
-                    'border-width': 2,
-                    'border-color': 'DimGrey'
+                    'text-outline-width': function(ele) {
+                        return ele.data('path_length') < 2 ? 2 : 1;
+                        // return 2
+                    },
+                    'text-outline-color': function (ele) {
+                        return ele.data('path_length') < 2 ? 'DimGrey' : 'DarkGrey';
+                        // return 'Grey';
+                    },
+                    'border-width': function(ele) {
+                        return ele.data('path_length') < 2 ? 2 : 1;
+                        // return 2;
+                    },
+                    'border-color': function (ele) {
+                        return ele.data('path_length') < 2 ? 'DimGrey' : 'LightGrey';
+                        // return 'Grey';
+                    }
                 })
 
                 .selector('edge')
