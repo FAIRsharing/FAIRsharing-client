@@ -38,9 +38,10 @@ const EDGES_COLOR_MAP = new Map([
 class AbstractGraphStrategy {
 
     constructor() {
+        /* Removed because it threw an error when minifying
         if (new.target === AbstractGraphStrategy) {
             throw new Error("Cannot construct AbstractGraphStrategy instances directly");
-        }
+        } */
     }
 
     render(rootEl, nodes, edges) {
