@@ -11,7 +11,8 @@ import cola from 'cola';
 import sigma from 'sigma';
 import _ from 'lodash';
 import { GRAPH_LAYOUTS } from '../../utils/api-constants';
-import store from '../../store';
+import { layoutSelectChange } from '../../actions/graph-actions';
+
 
 cyCola(cytoscape, cola);
 
@@ -187,7 +188,9 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
 
         for (const node of filtered_nodes) {
 
-            if (node_ids.indexOf(node.properties.application_id) > 0) {
+            if (node_ids.indexOf(node.properties.application_id) > 0 ||
+                node.properties.recommendation) // This was added to remove recommendation nodes
+            {
                 continue;
             }
 
@@ -239,7 +242,7 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
         }
 
         function scaleText(ele) {
-            return 12/Math.pow(ele.data('path_length')+1, 1);
+            return 20/Math.pow(ele.data('path_length')+1, 1);
         }
 
         this.layout = layout;
@@ -266,26 +269,28 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
                         return ele.data('shortname') || ele.data('name').substring(0, 20);
                     },
                     'color': function (ele) {
-                        return ele.data('_color') || 'grey';
+                        // return ele.data('_color') || 'grey';
+                        return ele.data('path_length') < 2 ? 'Black' : ele.data('_color');
                     },
                     'font-size': scaleText,
                     'text-valign': 'center',
                     'text-outline-width': function(ele) {
-                        return ele.data('path_length') < 2 ? 2 : 1;
-                        // return 2
+                        // return ele.data('path_length') < 2 ? 2 : 1;
+                        return 0;
                     },
                     'text-outline-color': function (ele) {
                         return ele.data('path_length') < 2 ? 'DimGrey' : 'DarkGrey';
-                        // return 'Grey';
+                        // return 'Black';
                     },
                     'border-width': function(ele) {
-                        return ele.data('path_length') < 2 ? 2 : 1;
-                        // return 2;
+                        // return ele.data('path_length') < 2 ? 2 : 1;
+                        return 0;
                     },
                     'border-color': function (ele) {
                         return ele.data('path_length') < 2 ? 'DimGrey' : 'LightGrey';
                         // return 'Grey';
-                    }
+                    },
+                    'text-halign': 'right'
                 })
 
                 .selector('edge')
@@ -411,7 +416,7 @@ const GraphContainer = React.createClass({
     render: function () {
         const handler = new GraphHandler(this.props.graph);
         return (
-            <Graph handler={handler} layout={this.props.layout} />
+            <Graph handler={handler} layout={this.props.layout} handleLayoutChange={this.props.handleLayoutChange} />
         );
     }
 
@@ -424,5 +429,13 @@ const mapStateToProps = function (store) {
     };
 };
 
-export default connect(mapStateToProps)(GraphContainer);
+const mapDispatchToProps = function(dispatch) {
+    return {
+        handleLayoutChange: (ev) => {
+            dispatch(layoutSelectChange({name: ev.target.value}));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(GraphContainer);
 

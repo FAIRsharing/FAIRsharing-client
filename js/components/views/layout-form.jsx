@@ -2,17 +2,29 @@
  * @author massi
  */
 import React from 'react';
-import ReactDOM from 'react-dom';
-import store from '../../store';
 import { GRAPH_LAYOUTS } from '../../utils/api-constants';
-import { layoutSelectChange } from '../../actions/graph-actions';
+
+const Checkbox = React.createClass({
+
+    render: function () {
+
+        return (
+            <label class="checkbox-inline">
+                <input type="checkbox" id="standardsCheckbox" value={this.props.value}
+                       onClick={this.props.onClick} /> {this.props.label}
+            </label>
+        );
+
+    }
+
+});
 
 const LayoutForm = React.createClass({
-
+    /*
     handleLayoutChange: function (ev) {
         console.log(ev.target.value);
         store.dispatch(layoutSelectChange({ name: ev.target.value }));
-    },
+    }, */
 
     render: function() {
 
@@ -27,16 +39,21 @@ const LayoutForm = React.createClass({
             margin: '2px'
         };
 
-        return <form className="form-horizontal">
+        return <form className="form">
             <div class="row">
-            <div className="form-group"  style={formStyle}>
-                <label htmlFor="layoutSelector" class="control- col-sm-2">Layout </label>
-                <div class="control-col-sm-2">
-                    <select id="layoutSelector" className="form-control" onChange={this.handleLayoutChange} value={this.props.layoutName}>
-                        {optList}
-                    </select>
+                <div className="form-group"  style={formStyle}>
+                    <label htmlFor="layoutSelector" class="col-sm-2 col-xs-4">Layout </label>
+                    <div class="col-sm-4 col-xs-8">
+                        <select id="layoutSelector" className="form-control" onChange={this.props.handleLayoutChange} value={this.props.layoutName}>
+                            {optList}
+                        </select>
+                    </div>
                 </div>
             </div>
+            <div class="row">
+                <Checkbox value="databases" label="Databases" onClick="" />
+                <Checkbox value="standards" label="Standards" onClick="" />
+                <Checkbox value="policies" label="Policies" onClick="" />
             </div>
         </form>;
 

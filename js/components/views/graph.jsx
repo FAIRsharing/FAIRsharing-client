@@ -18,8 +18,12 @@ const Graph = React.createClass({
     render: function() {
         return (
             <div id="graphCnt">
-                <LayoutForm layoutName={this.props.layout.name} />
-                <div id="graph" ref="graph" className="graph" style={{"height": "100%", "width": "100%"}}></div>
+                <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }/>
+                <div class="row">
+                    <div id="graph" ref="graph" className="graph col-md-10 col-xs-12"
+                         style={{"height": "100%", "width": "100%"}} >
+                    </div>
+                </div>
             </div>
         );
     }
