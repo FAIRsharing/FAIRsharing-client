@@ -30,6 +30,7 @@ const NODES_COLOR_MAP = new Map([
 
 const EDGES_COLOR_MAP = new Map([
     [undefined, '#d9d9d9'],
+    ['CONTAINS', '#00cc66'],
     ['RECOMMENDS', 'Teal'],
     ['COLLECTS', '#0099cc'], //blue
     ['IMPLEMENTS', '#99CCFF'],
@@ -188,8 +189,8 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
 
         for (const node of filtered_nodes) {
 
-            if (node_ids.indexOf(node.properties.application_id) > 0 ||
-                node.properties.recommendation) // This was added to remove recommendation nodes
+            if (node_ids.indexOf(node.properties.application_id) > 0)
+                // || node.properties.recommendation) // This was added to remove recommendation nodes
             {
                 continue;
             }
@@ -238,11 +239,13 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
     render(rootEl, layout, nodes, edges) {
 
         function scaleNodes(ele) {
-            return 32/Math.pow(ele.data('path_length')+1, 1);
+            const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
+            return 32/Math.pow(scaleFactor+1, 1);
         }
 
         function scaleText(ele) {
-            return 20/Math.pow(ele.data('path_length')+1, 1);
+            const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
+            return 20/Math.pow(scaleFactor+1, 1);
         }
 
         this.layout = layout;
@@ -322,7 +325,6 @@ class SigmaStrategy extends AbstractGraphStrategy {
         super();
     }
 
-
     _prepareElements(in_nodes, in_edges) {
 
         const filtered_nodes = in_nodes.filter(el => TAG_NODES.indexOf(el.labels && el.labels[0]) < 0);
@@ -353,8 +355,6 @@ class SigmaStrategy extends AbstractGraphStrategy {
             nodes: out_nodes,
             edges: out_edges
         };
-
-
 
     }
 

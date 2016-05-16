@@ -8,7 +8,12 @@ const initialState = {
         edges: []
     },
     layout: {
-        name: GRAPH_LAYOUTS.COLA
+        name: GRAPH_LAYOUTS.COLA,
+        visibility: {
+            databases: true,
+            standards: true,
+            policies: true
+        }
     }
     
 };
@@ -21,7 +26,7 @@ const graphReducer = function (state = initialState, action) {
             return { ...state, graph: action.graph };
         
         case types.LAYOUT_SELECT_CHANGE:
-            return { ...state, layout: action.layout };
+            return { ...state, layout: { ...state.layout, ...action.layout } };
 
     }
 
