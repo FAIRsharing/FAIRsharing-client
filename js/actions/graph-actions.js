@@ -13,3 +13,12 @@ export function  layoutSelectChange(layout) {
         layout
     };
 }
+
+export function visibilityCheckboxChange(checkboxState) {
+    const visibility = {};
+    visibility[checkboxState.value] = checkboxState.checked;
+    return {
+        type: types.VISIBILITY_CHECKBOX_CHANGE,
+        visibility
+    }
+}

@@ -11,7 +11,7 @@ import cola from 'cola';
 import sigma from 'sigma';
 import _ from 'lodash';
 import { GRAPH_LAYOUTS } from '../../utils/api-constants';
-import { layoutSelectChange } from '../../actions/graph-actions';
+import { layoutSelectChange, visibilityCheckboxChange } from '../../actions/graph-actions';
 
 
 cyCola(cytoscape, cola);
@@ -160,6 +160,8 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
     constructor(layoutName = GRAPH_LAYOUTS.COLA) {
         super();
         this.layout = layoutName;
+        this._cy = null;
+        this._removed = new Map();
     }
 
     get layout() {
@@ -178,12 +180,20 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
      * @name prepareElementsToRender
      * @returns {Array} - the array of annotated elements ready to be displayed on cytoscape
      */
-    _prepareElements(nodes, edges) {
+    _prepareElements(nodes, edges, visibilityMap) {
         const elements = [], node_ids = [];
 
         const rootNode = _.find(nodes, {'path_length': 0});
+        const forbiddenNodes = [];
+        Object.keys(visibilityMap).forEach(key => {
+            if (!visibilityMap[key]) {
+                forbiddenNodes.push(key);
+            }
+        });
+        forbiddenNodes.push(...TAG_NODES);
 
-        let filtered_nodes = nodes.filter(el => TAG_NODES.indexOf(el.labels && el.labels[0]) < 0);
+
+        let filtered_nodes = nodes.filter(el => forbiddenNodes.indexOf(el.labels && el.labels[0]) < 0);
         filtered_nodes = filtered_nodes.sort((el1, el2) => el1.path_length - el2.path_length);
 
 
@@ -236,7 +246,27 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
 
     }
 
-    render(rootEl, layout, nodes, edges) {
+    /**
+     * @method
+     * @name toggleElementsByLabel
+     * @param label - string
+     * @param remove - boolean: states whether the subgraph elements should be added or removed
+     */
+    toggleElementsByLabel(label, remove = true) {
+
+        if (remove) {
+            let removed = this._cy.nodes().filter((i, ele) => ele.data('label') === label).remove();
+            removed = removed.union(removed.connectedEdges());
+            this._removed.set(label, removed);
+        }
+        // restore previously removed elements, if any
+        else if (this._removed.has(label)) {
+            this._removed.get(label).restore();
+            this._removed.delete(label);
+        }
+    }
+
+    render(rootEl, layout = {}, nodes, edges) {
 
         function scaleNodes(ele) {
             const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
@@ -248,9 +278,9 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
             return 20/Math.pow(scaleFactor+1, 1);
         }
 
-        this.layout = layout;
+        this.layout = layout.name;
 
-        const elements = this._prepareElements(nodes, edges);
+        const elements = this._prepareElements(nodes, edges, layout.visibility);
 
         this._cy = cytoscape({
             container: rootEl,
@@ -404,6 +434,10 @@ class GraphHandler {
         this._strategy.render(rootEl, layout, this._nodes, this._edges);
     }
 
+    toggleElementsByLabel(label, remove) {
+        this._strategy.toggleElementsByLabel(label, remove);
+    }
+
 }
 
 const GraphContainer = React.createClass({
@@ -412,11 +446,22 @@ const GraphContainer = React.createClass({
         const graphId = this.props.params.graphId;
         graphApi.getGraph(graphId);
     },
-
+    /*
+    shouldComponentUpdate(nextProps, nextState) {
+        for (const key in nextProps.layout.visibility) {
+            const nextValue = nextProps.layout.visibility[key];
+            if (nextValue !== this.props.layout.visibility[key]) {
+                this.handler.toggleElementsByLabel(key, nextValue);
+            }
+        }
+        return nextProps.reload;
+    },
+    */
     render: function () {
-        const handler = new GraphHandler(this.props.graph);
+        this.handler = new GraphHandler(this.props.graph);
         return (
-            <Graph handler={handler} layout={this.props.layout} handleLayoutChange={this.props.handleLayoutChange} />
+            <Graph handler={this.handler} layout={this.props.layout} handleLayoutChange={this.props.handleLayoutChange}
+                    visibilityCheckboxChange={this.props.visibilityCheckboxChange} />
         );
     }
 
@@ -425,16 +470,34 @@ const GraphContainer = React.createClass({
 const mapStateToProps = function (store) {
     return {
         graph: store.graphState.graph,
-        layout: store.graphState.layout
+        layout: store.graphState.layout,
+        reload: store.graphState.reload
     };
 };
 
+/**
+ * @method
+ * @name mapDispatchToProps
+ * @param dispatch
+ * @returns {{handleLayoutChange: (function()), visibilityCheckboxChange: (function())}}
+ */
 const mapDispatchToProps = function(dispatch) {
+
     return {
+
         handleLayoutChange: (ev) => {
             dispatch(layoutSelectChange({name: ev.target.value}));
+        },
+
+        visibilityCheckboxChange: (ev) => {
+            dispatch(visibilityCheckboxChange({
+                value: ev.target.value,
+                checked: ev.target.checked
+            }));
         }
+
     };
+
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(GraphContainer);

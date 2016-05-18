@@ -2,15 +2,15 @@
  * @author massi
  */
 import React from 'react';
-import { GRAPH_LAYOUTS } from '../../utils/api-constants';
+import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES } from '../../utils/api-constants';
+import _ from 'lodash';
 
-const CHECKBOXES = ['databases', 'standards', 'policies'];
+const CHECKBOXES = _.values(BIOSHARING_ENTITIES);
 
-const Checkbox = React.createClass({
+const VisibilityCheckbox = React.createClass({
 
     render: function () {
-
-
+        
         return (
             <label className="checkbox-inline">
                 <input type="checkbox" id="standardsCheckbox" value={this.props.value}
@@ -41,7 +41,8 @@ const LayoutForm = React.createClass({
 
         for (let checkbox of CHECKBOXES) {
             const visibility = this.props.visibility && this.props.visibility[checkbox];
-            checkboxesList.push(<Checkbox key={checkbox} value={checkbox} label={checkbox} visibility={visibility} onClick="" />);
+            checkboxesList.push(<VisibilityCheckbox key={checkbox} value={checkbox} label={checkbox} visibility={visibility}
+                                          onChange={this.props.visibilityCheckboxChange} />);
         }
 
         const formStyle = {

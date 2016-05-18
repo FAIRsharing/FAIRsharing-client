@@ -12,14 +12,15 @@ const Graph = React.createClass({
 
     componentDidUpdate: function () {
         let graphDOMNode = this.refs.graph;
-        this.props.handler.render(graphDOMNode, this.props.layout.name);
+        this.props.handler.render(graphDOMNode, this.props.layout);
     },
 
     render: function() {
         return (
             <div id="graphCnt">
                 <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }
-                    visibility={this.props.layout.visibility} />
+                    visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange} />
+
                 <div class="row">
                     <div id="graph" ref="graph" className="graph col-md-10 col-xs-12"
                          style={{"height": "100%", "width": "100%"}} >

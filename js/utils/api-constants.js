@@ -11,3 +11,8 @@ export const GRAPH_LAYOUTS = {
     COSE: 'cose',
     CONCENTRIC: 'concentric'
 };
+export const BIOSHARING_ENTITIES = {
+    DATABASE: 'Database',
+    POLICY: 'Policy',
+    STANDARD: 'Standard'
+}
