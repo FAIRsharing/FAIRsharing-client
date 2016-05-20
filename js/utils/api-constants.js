@@ -12,7 +12,34 @@ export const GRAPH_LAYOUTS = {
     CONCENTRIC: 'concentric'
 };
 export const BIOSHARING_ENTITIES = {
-    DATABASE: 'Database',
-    POLICY: 'Policy',
-    STANDARD: 'Standard'
-}
+    DATABASE: {
+        value: 'BioDBCore',
+        label: 'Database'
+    },
+    POLICY: {
+        value: 'Policy',
+        label: 'Policy'
+    },
+    STANDARD: {
+        value: 'Standard',
+        label: 'Standard'
+    }
+};
+export const TAG_TYPES = {
+    DOMAINS: {
+        value: 'domains',
+        label: 'Domains',
+        initialState: {
+            selected: [],
+            unselected: []
+        }
+    },
+    TAXONOMIES: {
+        value: 'taxonomies',
+        label: 'Species',
+        initialState: {
+            selected: [],
+            unselected: []
+        }
+    }
+};

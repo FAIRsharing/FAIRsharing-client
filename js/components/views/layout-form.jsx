@@ -2,6 +2,7 @@
  * @author massi
  */
 import React from 'react';
+import Select from 'react-select';
 import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES } from '../../utils/api-constants';
 import _ from 'lodash';
 
@@ -17,6 +18,20 @@ const VisibilityCheckbox = React.createClass({
                        checked={this.props.visibility} onChange={this.props.onChange} />
                 {this.props.label}
             </label>
+        );
+
+    }
+
+});
+
+const VisibilitySelect = React.createClass({
+
+    render: function () {
+
+        const options = this.props.options.map(opt => { return {value: opt, label: opt}; });
+
+        return (
+            <Select multi={true} options={options} value={this.props.selected} onChange={this.props.onChange}  />
         );
 
     }
@@ -39,10 +54,11 @@ const LayoutForm = React.createClass({
             optList.push(<option key={option} value={option} >{option}</option>);
         }
 
-        for (let checkbox of CHECKBOXES) {
-            const visibility = this.props.visibility && this.props.visibility[checkbox];
-            checkboxesList.push(<VisibilityCheckbox key={checkbox} value={checkbox} label={checkbox} visibility={visibility}
-                                          onChange={this.props.visibilityCheckboxChange} />);
+        for (let elem of CHECKBOXES) {
+            const visibility = this.props.visibility && this.props.visibility[elem.value];
+            checkboxesList.push(<VisibilityCheckbox key={elem.value} value={elem.value} 
+                                                    label={elem.label} visibility={visibility}
+                                                    onChange={this.props.visibilityCheckboxChange} />);
         }
 
         const formStyle = {
@@ -53,7 +69,7 @@ const LayoutForm = React.createClass({
             <div className="row">
                 <div className="form-group"  style={formStyle}>
                     <label htmlFor="layoutSelector" class="col-sm-2 col-xs-4">Layout </label>
-                    <div class="col-sm-4 col-xs-8">
+                    <div className="col-sm-4 col-xs-8">
                         <select id="layoutSelector" className="form-control" onChange={this.props.handleLayoutChange} value={this.props.layoutName}>
                             {optList}
                         </select>
@@ -61,6 +77,10 @@ const LayoutForm = React.createClass({
                 </div>
             </div>
             <div className="row">{checkboxesList}</div>
+            <div className="row">
+                
+            </div>
+
         </form>;
 
     }

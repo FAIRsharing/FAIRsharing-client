@@ -10,13 +10,13 @@ import cyCola from 'cytoscape-cola';
 import cola from 'cola';
 import sigma from 'sigma';
 import _ from 'lodash';
-import { GRAPH_LAYOUTS } from '../../utils/api-constants';
+import { GRAPH_LAYOUTS, TAG_TYPES } from '../../utils/api-constants';
 import { layoutSelectChange, visibilityCheckboxChange } from '../../actions/graph-actions';
 
 
 cyCola(cytoscape, cola);
 
-const TAG_NODES = ['Taxonomy', 'Domain'];
+// const TAG_NODES = ['Taxonomy', 'Domain'];
 
 const NODES_COLOR_MAP = new Map([
     [undefined, '#d9d9d9'],
@@ -177,6 +177,26 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
 
     /**
      * @method
+     * @name _get_unique_tags
+     * @param nodes
+     * @private
+     */
+    _get_unique_tags(nodes) {
+
+        const tagMap = new Map();
+
+        for (const tagType of _.map(_.values(TAG_TYPES), 'value')) {
+
+            const tags = nodes.map(node => node.property[tagType]);
+            tagMap.set(tagType, _.union(tags));
+
+        }
+
+        return tagMap;
+    }
+
+    /**
+     * @method
      * @name prepareElementsToRender
      * @returns {Array} - the array of annotated elements ready to be displayed on cytoscape
      */
@@ -190,7 +210,7 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
                 forbiddenNodes.push(key);
             }
         });
-        forbiddenNodes.push(...TAG_NODES);
+        // forbiddenNodes.push(...TAG_NODES);
 
 
         let filtered_nodes = nodes.filter(el => forbiddenNodes.indexOf(el.labels && el.labels[0]) < 0);
@@ -446,6 +466,7 @@ const GraphContainer = React.createClass({
         const graphId = this.props.params.graphId;
         graphApi.getGraph(graphId);
     },
+    
     /*
     shouldComponentUpdate(nextProps, nextState) {
         for (const key in nextProps.layout.visibility) {
@@ -457,8 +478,10 @@ const GraphContainer = React.createClass({
         return nextProps.reload;
     },
     */
+    
     render: function () {
         this.handler = new GraphHandler(this.props.graph);
+        
         return (
             <Graph handler={this.handler} layout={this.props.layout} handleLayoutChange={this.props.handleLayoutChange}
                     visibilityCheckboxChange={this.props.visibilityCheckboxChange} />

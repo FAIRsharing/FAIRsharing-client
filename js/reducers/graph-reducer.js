@@ -1,9 +1,12 @@
 import * as types from '../actions/action-types';
-import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES } from '../utils/api-constants';
+import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES, TAG_TYPES } from '../utils/api-constants';
 import _ from 'lodash';
 
 const visibilityObj = {};
-_.values(BIOSHARING_ENTITIES).forEach(value => visibilityObj[value] = true);
+_.values(BIOSHARING_ENTITIES).forEach(entity => visibilityObj[entity.value] = true);
+
+const tagSelectorObj = {};
+_.values(TAG_TYPES).forEach(tagType => tagSelectorObj[tagType.value] = tagType.initialState);
 
 const initialState = {
     graph: {
@@ -12,7 +15,8 @@ const initialState = {
     },
     layout: {
         name: GRAPH_LAYOUTS.COLA,
-        visibility: visibilityObj
+        visibility: visibilityObj,
+        tags: tagSelectorObj
     },
     reload: true
 };
