@@ -19,11 +19,12 @@ const Graph = React.createClass({
         return (
             <div id="graphCnt">
                 <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }
-                    visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange} />
+                    visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
+                    tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}/>
 
                 <div class="row">
                     <div id="graph" ref="graph" className="graph col-md-10 col-xs-12"
-                         style={{"height": "100%", "width": "100%"}} >
+                         style={{'height': '100%', 'width': '100%'}} >
                     </div>
                 </div>
             </div>

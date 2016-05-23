@@ -20,5 +20,14 @@ export function visibilityCheckboxChange(checkboxState) {
     return {
         type: types.VISIBILITY_CHECKBOX_CHANGE,
         visibility
-    }
+    };
+}
+
+export function tagsSelectChange(selectState) {
+    const tags = {};
+    tags[selectState.name] = selectState.value;
+    return {
+        type: types.TAGS_SELECTS_CHANGE,
+        tags
+    };
 }

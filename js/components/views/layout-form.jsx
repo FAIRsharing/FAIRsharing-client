@@ -1,17 +1,20 @@
 /**
  * @author massi
  */
+import 'react-select/scss/default.scss';
+
 import React from 'react';
 import Select from 'react-select';
-import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES } from '../../utils/api-constants';
+import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES, TAG_TYPES } from '../../utils/api-constants';
 import _ from 'lodash';
 
 const CHECKBOXES = _.values(BIOSHARING_ENTITIES);
+const TAGS_SELECTS = _.values(TAG_TYPES);
 
 const VisibilityCheckbox = React.createClass({
 
     render: function () {
-        
+
         return (
             <label className="checkbox-inline">
                 <input type="checkbox" id="standardsCheckbox" value={this.props.value}
@@ -24,14 +27,22 @@ const VisibilityCheckbox = React.createClass({
 
 });
 
-const VisibilitySelect = React.createClass({
+const TagsSelect = React.createClass({
+
+    onValueClick: function(value) {
+        this.refs.select.props.onChange(value);
+    },
 
     render: function () {
 
-        const options = this.props.options.map(opt => { return {value: opt, label: opt}; });
+        const tags = this.props.tags;
+        const options = _.union(tags.selected, tags.unselected).map(opt => {
+            return {value: opt, label: opt};
+        });
 
         return (
-            <Select multi={true} options={options} value={this.props.selected} onChange={this.props.onChange}  />
+            <Select ref="select" multi={true} options={options} value={tags.selected}
+                    onChange={this.props.onChange(this.props.tagType)} onValueClick={this.onValueClick}  />
         );
 
     }
@@ -47,7 +58,7 @@ const LayoutForm = React.createClass({
 
     render: function() {
 
-        const optList = [], checkboxesList = [];
+        const optList = [], checkboxesList = [], tagSelectsList = [];
         const options = Object.keys(GRAPH_LAYOUTS).map(key => GRAPH_LAYOUTS[key]);
 
         for (let option of options) {
@@ -56,9 +67,14 @@ const LayoutForm = React.createClass({
 
         for (let elem of CHECKBOXES) {
             const visibility = this.props.visibility && this.props.visibility[elem.value];
-            checkboxesList.push(<VisibilityCheckbox key={elem.value} value={elem.value} 
+            checkboxesList.push(<VisibilityCheckbox key={elem.value} value={elem.value}
                                                     label={elem.label} visibility={visibility}
                                                     onChange={this.props.visibilityCheckboxChange} />);
+        }
+
+        for (let elem of TAGS_SELECTS) {
+            let val = elem.value, tags = this.props.tags[elem.value];
+            tagSelectsList.push(<TagsSelect key={val} tagType={val} tags={tags} onChange={this.props.tagsSelectChange} />);
         }
 
         const formStyle = {
@@ -77,9 +93,7 @@ const LayoutForm = React.createClass({
                 </div>
             </div>
             <div className="row">{checkboxesList}</div>
-            <div className="row">
-                
-            </div>
+            <div className="row">{tagSelectsList}</div>
 
         </form>;
 
