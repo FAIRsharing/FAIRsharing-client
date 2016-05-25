@@ -11,14 +11,13 @@ import _ from 'lodash';
 const CHECKBOXES = _.values(BIOSHARING_ENTITIES);
 const TAGS_SELECTS = _.values(TAG_TYPES);
 
-const VisibilityCheckbox = React.createClass({
+const Checkbox = React.createClass({
 
     render: function () {
 
         return (
             <label className="checkbox-inline">
-                <input type="checkbox" id="standardsCheckbox" value={this.props.value}
-                       checked={this.props.visibility} onChange={this.props.onChange} />
+                <input type="checkbox" value={this.props.value} checked={this.props.isChecked} onChange={this.props.onChange} />
                 {this.props.label}
             </label>
         );
@@ -67,10 +66,10 @@ const LayoutForm = React.createClass({
 
         for (let elem of CHECKBOXES) {
             const visibility = this.props.visibility && this.props.visibility[elem.value];
-            checkboxesList.push(<VisibilityCheckbox key={elem.value} value={elem.value}
-                                                    label={elem.label} visibility={visibility}
-                                                    onChange={this.props.visibilityCheckboxChange} />);
+            checkboxesList.push(<Checkbox key={elem.value} value={elem.value} label={elem.label}
+                                          isChecked={visibility} onChange={this.props.visibilityCheckboxChange} />);
         }
+        checkboxesList.push(<Checkbox key='depth' value='depth' label='Depth' isChecked={this.props.depth > 1} onChange={this.props.depthCheckboxChange} />);
 
         for (let elem of TAGS_SELECTS) {
             let val = elem.value, tags = this.props.tags[elem.value];
@@ -94,6 +93,7 @@ const LayoutForm = React.createClass({
             </div>
             <div className="row">{checkboxesList}</div>
             <div className="row">{tagSelectsList}</div>
+
 
         </form>;
 

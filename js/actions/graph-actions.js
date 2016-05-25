@@ -23,6 +23,14 @@ export function visibilityCheckboxChange(checkboxState) {
     };
 }
 
+export function depthCheckboxChange(checkboxState) {
+    const depth = checkboxState ? 2 : 1;
+    return {
+        type: types.DEPTH_CHECKBOX_CHANGE,
+        depth
+    };
+}
+
 export function tagsSelectChange(selectState) {
     const tags = {};
     tags[selectState.name] = selectState.value;

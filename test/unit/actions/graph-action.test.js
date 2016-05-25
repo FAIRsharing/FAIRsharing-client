@@ -47,6 +47,28 @@ describe('graph-actions', () => {
         });
     });
 
+    describe('depthCheckboxChange', () => {
+        it('should create an action to change the depth of the graph to 2', () => {
+            const checkboxState = true;
+            const depth = 2;
+            const expectedAction = {
+                type: types.DEPTH_CHECKBOX_CHANGE,
+                depth
+            };
+            expect(actions.depthCheckboxChange(checkboxState)).to.eql(expectedAction);
+        });
+
+        it('should create an action to change the depth of the graph to 2', () => {
+            const checkboxState = false;
+            const depth = 1;
+            const expectedAction = {
+                type: types.DEPTH_CHECKBOX_CHANGE,
+                depth
+            };
+            expect(actions.depthCheckboxChange(checkboxState)).to.eql(expectedAction);
+        });
+    });
+
     describe('tagSelectChange', () => {
         it('it should create an action to add/remove one or more tag of a given type', () => {
             const selectState = {

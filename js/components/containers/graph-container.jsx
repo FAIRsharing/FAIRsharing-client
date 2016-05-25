@@ -37,6 +37,8 @@ const EDGES_COLOR_MAP = new Map([
     ['TAGGED WITH', 'Chartreuse']
 ]);
 
+const SHADOW_DEPTH = Number.POSITIVE_INFINITY;
+
 class AbstractGraphStrategy {
 
     constructor() {
@@ -188,11 +190,18 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
     }
 
     /**
+     * @name _filter_nodes_by_depth
+     */
+    _filter_nodes_by_depth(nodes, depth = 2) {
+        return nodes.filter(node => node.path_length <= depth);
+    }
+
+    /**
     * @method
     * @name _prepareElementsToRender
     * @returns {Array} - the array of annotated elements ready to be displayed on cytoscape
     */
-    _prepareElements(nodes, edges, visibilityMap, tags) {
+    _prepareElements(nodes, edges, visibilityMap, tags, depth) {
         const elements = [], node_ids = [];
 
         const rootNode = _.find(nodes, {'path_length': 0});
@@ -210,8 +219,9 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
         // filter the nodes by the allowed tags;
         filtered_nodes = this._filter_nodes_by_tags(filtered_nodes, tags);
 
-        filtered_nodes = filtered_nodes.sort((el1, el2) => el1.path_length - el2.path_length);
+        filtered_nodes = this._filter_nodes_by_depth(filtered_nodes, depth);
 
+        filtered_nodes = filtered_nodes.sort((el1, el2) => el1.path_length - el2.path_length);
 
         for (const node of filtered_nodes) {
 
@@ -230,8 +240,8 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
                     ...node.properties,
                     id: node.properties && node.properties.application_id,
                     label: node.labels && node.labels[0],
-                    _color: node.path_length < 2 ? NODES_COLOR_MAP.get(node.labels && node.labels[0]) : NODES_COLOR_MAP.get(undefined),
-                    parent: node.path_length < 2 ? rootNode.properties.id : null,
+                    _color: node.path_length < SHADOW_DEPTH ? NODES_COLOR_MAP.get(node.labels && node.labels[0]) : NODES_COLOR_MAP.get(undefined),
+                    parent: node.path_length < SHADOW_DEPTH ? rootNode.properties.id : null,
                     path_length: node.path_length
                 }
             });
@@ -250,7 +260,7 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
 
             source = _.find(filtered_nodes, {properties: {application_id: edge.source}});
             target = _.find(filtered_nodes, {properties: {application_id: edge.target}});
-            edge_color = (target.path_length < 2 && source.path_length < 2) ?
+            edge_color = (target.path_length < SHADOW_DEPTH && source.path_length < 2) ?
             EDGES_COLOR_MAP.get(edge.relationship) : EDGES_COLOR_MAP.get(undefined);
 
             elements.push({
@@ -287,7 +297,7 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
         }
     }
 
-    render(rootEl, layout = {}, nodes, edges, tags) {
+    render(rootEl, layout = {}, nodes, edges, tags, depth) {
 
         function scaleNodes(ele) {
             const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
@@ -301,7 +311,7 @@ class CytoscapeStrategy extends AbstractGraphStrategy {
 
         this.layout = layout.name;
 
-        const elements = this._prepareElements(nodes, edges, layout.visibility, tags);
+        const elements = this._prepareElements(nodes, edges, layout.visibility, tags, depth);
 
         this._cy = cytoscape({
             container: rootEl,
@@ -427,10 +437,11 @@ class SigmaStrategy extends AbstractGraphStrategy {
 */
 class GraphHandler {
 
-    constructor({nodes = [], edges = []}, tags = {})  {
+    constructor({nodes = [], edges = []}, {tags = {}, depth = 2})  {
         this._nodes = nodes;
         this._edges = edges;
         this._tags = tags;
+        this._depth = depth;
         this._strategy = new CytoscapeStrategy();
     }
 
@@ -457,7 +468,7 @@ class GraphHandler {
     }
 
     render(rootEl, layout) {
-        this._strategy.render(rootEl, layout, this._nodes, this._edges, this._tags);
+        this._strategy.render(rootEl, layout, this._nodes, this._edges, this._tags, this._depth);
     }
 
     toggleElementsByLabel(label, remove) {
@@ -468,7 +479,7 @@ class GraphHandler {
 
 const GraphContainer = React.createClass({
 
-    componentDidMount: function () {
+    componentDidMount: function() {
         const graphId = this.props.params.graphId;
         graphApi.getGraph(graphId);
     },
@@ -485,20 +496,21 @@ const GraphContainer = React.createClass({
     },
     */
 
-    render: function () {
-        this.handler = new GraphHandler(this.props.graph, this.props.layout.tags);
+    render: function() {
+        this.handler = new GraphHandler(this.props.graph, this.props.layout);
 
         return (
             <Graph handler={this.handler} layout={this.props.layout}
                 handleLayoutChange={this.props.handleLayoutChange}
                 visibilityCheckboxChange={this.props.visibilityCheckboxChange}
-                tagsSelectChange={this.props.tagsSelectChange} />
+                tagsSelectChange={this.props.tagsSelectChange}
+                depthCheckboxChange={this.props.depthCheckboxChange} />
         );
     }
 
 });
 
-const mapStateToProps = function (store) {
+const mapStateToProps = function(store) {
     return {
         graph: store.graphState.graph,
         layout: store.graphState.layout,
@@ -528,6 +540,10 @@ const mapDispatchToProps = function(dispatch) {
                 value: ev.target.value,
                 checked: ev.target.checked
             }));
+        },
+
+        depthCheckboxChange: (ev) => {
+            dispatch(actions.depthCheckboxChange(ev.target.checked));
         },
 
         tagsSelectChange: (name) => {

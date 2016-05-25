@@ -23,7 +23,8 @@ describe('graphReducer', () => {
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
-                tags: tagSelectorObj
+                tags: tagSelectorObj,
+                depth: 2
             },
             reload: true
         });
@@ -39,6 +40,7 @@ describe('graphReducer', () => {
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
+                depth: 2,
                 tags: {
                     domains: {
                         selected: _.union(..._.map(_.map(testGraph.nodes, 'properties'), 'domains')),
@@ -49,6 +51,34 @@ describe('graphReducer', () => {
                         unselected: []
                     }
                 }
+            },
+            reload: true
+        };
+        expect(nextState).to.eql(expectedState);
+    });
+
+    it('should handle the DEPTH_CHECKBOX_CHANGE event', () => {
+        const previousState = {
+            graph: testGraph,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: visibilityObj,
+                tags: tagSelectorObj,
+                depth: 2
+            },
+            reload: true
+        };
+        const nextState = graphReducer(previousState, {
+            type: types.DEPTH_CHECKBOX_CHANGE,
+            depth: 1
+        });
+        const expectedState = {
+            graph: testGraph,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: visibilityObj,
+                tags: tagSelectorObj,
+                depth: 1
             },
             reload: true
         };

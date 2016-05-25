@@ -16,9 +16,10 @@ const initialState = {
     layout: {
         name: GRAPH_LAYOUTS.COSE,
         visibility: visibilityObj,
-        tags: tagSelectorObj
+        tags: tagSelectorObj,
+        depth: 2    // depth of the graph (path length from central node)
     },
-    reload: true
+    reload: true //TODO remove this
 };
 
 /**
@@ -69,7 +70,7 @@ const graphReducer = function (state = initialState, action) {
             },
             reload: true
         };
-    }
+    } // end CASE
 
     case types.LAYOUT_SELECT_CHANGE:
         return { ...state, layout: { ...state.layout, ...action.layout }, reload: true };
@@ -87,6 +88,15 @@ const graphReducer = function (state = initialState, action) {
             reload: false
         };
 
+    case types.DEPTH_CHECKBOX_CHANGE:
+        return {
+            ...state,
+            layout: {
+                ...state.layout,
+                depth: action.depth
+            }
+        };
+
     case types.TAGS_SELECT_CHANGE: {
         // const nextTags = updateTags(action.tags);
         return {
@@ -100,8 +110,8 @@ const graphReducer = function (state = initialState, action) {
             },
             reload: true
         };
+    } // end CASE
 
-    }
     }
 
     return state;
