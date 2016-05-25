@@ -27,7 +27,7 @@ export function tagsSelectChange(selectState) {
     const tags = {};
     tags[selectState.name] = selectState.value;
     return {
-        type: types.TAGS_SELECTS_CHANGE,
+        type: types.TAGS_SELECT_CHANGE,
         tags
     };
 }

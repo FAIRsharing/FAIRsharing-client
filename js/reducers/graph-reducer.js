@@ -14,7 +14,7 @@ const initialState = {
         edges: []
     },
     layout: {
-        name: GRAPH_LAYOUTS.COLA,
+        name: GRAPH_LAYOUTS.COSE,
         visibility: visibilityObj,
         tags: tagSelectorObj
     },
@@ -87,7 +87,7 @@ const graphReducer = function (state = initialState, action) {
             reload: false
         };
 
-    case types.TAGS_SELECTS_CHANGE: {
+    case types.TAGS_SELECT_CHANGE: {
         // const nextTags = updateTags(action.tags);
         return {
             ...state,
