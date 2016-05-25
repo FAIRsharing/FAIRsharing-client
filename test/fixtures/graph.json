@@ -1,0 +1,257 @@
+{
+    "nodes": [
+        {
+            "labels": ["BiosharingCollection"],
+            "properties": {
+                "properties": {
+                    "admin_updated": "2016-05-05T16:08:27.639000",
+                    "updated": "2016-05-06T10:39:02.397000",
+                    "taxonomies": [],
+                    "application_id": "biosharingcollection-000000",
+                    "description": "A description",
+                    "relational_db_pk": 1,
+                    "editsApproved": true,
+                    "reference_url": "http://www.someurl.com",
+                    "subtype": "Journal",
+                    "link_name": "MainCollection",
+                    "image_url": "",
+                    "recommendation": true,
+                    "domains": [
+                        "Biological databases",
+                        "Data sharing",
+                        "Metadata standards",
+                        "Life Science",
+                        "Biomedical Science"
+                    ],
+                    "hidden": false,
+                    "home_url": "http://www.homeurl.com",
+                    "admin_notes": "",
+                    "approved": true,
+                    "name": "MainCollection"
+                },
+                "path_length": 0
+            }
+        },
+        {
+            "labels": [
+                "BioDBCore"
+            ],
+            "properties": {
+                "application_id": "biodbcore-000000",
+                "updated": "2016-04-28T14:47:02.515000",
+                "contactEmail": "somecontact@email.com",
+                "biodbcore_id": "biodbcore-00000X",
+                "rooturl": "http://url.edu",
+                "admin_updated": "2016-04-28T14:46:58.425000",
+                "xref": "MIR:00000000",
+                "drupalnodeId": "",
+                "yearOfCreation": 1999,
+                "namespace": "???",
+                "current": true,
+                "contact": "",
+                "hidden": false,
+                "taxonomies": [
+                    "All",
+                    "Homo sapiens"
+                ],
+                "homepage": "http://url.edu",
+                "status": "RDY",
+                "idpattern": "^DB[\\:\\-]\\d{3}[EN]$",
+                "description": "Some description for the Database",
+                "twitterHandle": "",
+                "accessConditions": "",
+                "approved": true,
+                "contactORCID": "",
+                "name": "Database of Something",
+                "relational_db_pk": 1603,
+                "general_data_license": "restricted",
+                "editsApproved": true,
+                "domains": [
+                    "Protein",
+                    "Interactions",
+                    "Protein-protein Interaction",
+                    "Life Science"
+                ],
+                "shortname": "DB",
+                "miriam_url": "http://identifiers.org/db"
+            },
+            "path_length": 1
+        },
+        {
+            "labels": [
+                "BioDBCore"
+            ],
+            "properties": {
+                "application_id": "biodbcore-000001",
+                "updated": "2016-04-28T14:47:02.515000",
+                "contactEmail": "somecontact@email.com",
+                "biodbcore_id": "biodbcore-00000X",
+                "rooturl": "http://url.edu",
+                "admin_updated": "2016-04-28T14:46:58.425000",
+                "xref": "MIR:00000000",
+                "drupalnodeId": "",
+                "yearOfCreation": 1999,
+                "namespace": "???",
+                "current": true,
+                "contact": "",
+                "hidden": false,
+                "taxonomies": [
+                    "All",
+                    "Eukaryota",
+                    "Mammalia"
+                ],
+                "homepage": "http://url.edu",
+                "status": "RDY",
+                "idpattern": "^DB[\\:\\-]\\d{3}[EN]$",
+                "description": "Some description for the Database",
+                "twitterHandle": "",
+                "accessConditions": "",
+                "approved": true,
+                "contactORCID": "",
+                "name": "Database of Something else",
+                "relational_db_pk": 16,
+                "general_data_license": "restricted",
+                "editsApproved": true,
+                "domains": [
+                    "Genome",
+                    "Microarray data",
+                    "DNA",
+                    "DNA microarray",
+                    "Transcriptome",
+                    "RNA",
+                    "Nucleic acid hybridization"
+                ],
+                "shortname": "DB",
+                "miriam_url": "http://identifiers.org/db"
+            },
+            "path_length": 1
+        },
+        {
+            "labels": [
+                "Policy"
+            ],
+            "properties": {
+                "application_id": "policy-000000",
+                "contactEmail": "varsha.khodiyar@nature.com",
+                "year": 2015,
+                "admin_notes": "",
+                "admin_updated": "2016-05-16T16:28:39.449000",
+                "policyName": "Policy Name",
+                "drupalnodeId": "",
+                "current": true,
+                "contact": "Some Guy",
+                "hidden": false,
+                "taxonomies": [
+                    "All"
+                ],
+                "homepage": "http://www.policy.com",
+                "deprecation_reason": "",
+                "status": "RDY",
+                "updated": "2016-05-17T19:59:54.391000",
+                "added": "2015-07-27T14:39:19.725000",
+                "description": "A list of the biological repositories and standards recommended by the International Council of the High Priests of Insanity",
+                "twitterHandle": "",
+                "approved": true,
+                "name": "Policy Name",
+                "deprecation_notes": "",
+                "contactORCID": "",
+                "url": "http://www.policy.com",
+                "relational_db_pk": 1843,
+                "subtype": "Journal",
+                "editsApproved": true,
+                "domains": [
+                    "Biological databases",
+                    "Data sharing",
+                    "Metadata standards",
+                    "Life Science",
+                    "Biomedical Science"
+                ]
+            },
+            "path_length": 1
+        },
+        {
+            "labels": [
+                "Standard"
+            ],
+            "properties": {
+                "application_id": "bsg-000000",
+                "approved": true,
+                "contactEmail": "webmaster@plastercaster.castrol",
+                "isOBO": false,
+                "drupalnodeId": "32",
+                "isMIBBI": true,
+                "yearOfCreation": 2007,
+                "biosharing_id": "bsg-000000",
+                "current": true,
+                "contact": "Elrohir son of Elrond",
+                "shortname": "BSG0",
+                "taxonomies": [
+                    "Bacteria",
+                    "Archaea",
+                    "Eukaryota"
+                ],
+                "homepage": "http://www.std.info",
+                "status": "RDY",
+                "updated": "2015-11-24T13:14:10.433000",
+                "description": "standard description",
+                "twitterHandle": "",
+                "hidden": false,
+                "name": "BSG00",
+                "contactORCID": "",
+                "relational_db_pk": 638,
+                "editsApproved": true,
+                "domains": [
+                    "Protein",
+                    "Assay",
+                    "Proteomics"
+                ]
+            },
+            "path_length": 1
+        },
+        {
+            "labels": [
+                "Standard"
+            ],
+            "properties": {
+                "application_id": "bsg-000001",
+                "approved": true,
+                "contactEmail": "webmaster@burzol.ei",
+                "isOBO": false,
+                "drupalnodeId": "32",
+                "isMIBBI": true,
+                "yearOfCreation": 2007,
+                "biosharing_id": "bsg-000001",
+                "current": true,
+                "contact": "Eldarion son of Elessar",
+                "shortname": "BSG0",
+                "taxonomies": [
+                    "Eukaryota",
+                    "Fungi"
+                ],
+                "homepage": "http://www.stdf.info",
+                "status": "RDY",
+                "updated": "2015-11-24T13:14:10.433000",
+                "description": "standard description??",
+                "twitterHandle": "",
+                "hidden": false,
+                "name": "BSG00",
+                "contactORCID": "",
+                "relational_db_pk": 638,
+                "editsApproved": true,
+                "domains": [
+                    "Gene",
+                    "Genome",
+                    "Disease Ontology",
+                    "Allele data",
+                    "Bibliography",
+                    "Phenotype",
+                    "Disease model",
+                    "Mutant",
+                    "Life Science"
+                ]
+            },
+            "path_length": 1
+        }
+    ],
+    "edges": []
+}
