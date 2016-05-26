@@ -39,7 +39,7 @@ const EDGES_COLOR_MAP = new Map([
 
 const SHADOW_DEPTH = Number.POSITIVE_INFINITY;
 
-class AbstractGraphStrategy {
+export class AbstractGraphStrategy {
 
     constructor() {
         /* Removed because it threw an error when minifying
@@ -68,6 +68,36 @@ layoutMap.set('concentric', {
     avoidOverlap: false,
     minNodeSpacing: 5
 });
+
+/**
+ * @description container for all the filter functions for the nodes
+ */
+export const nodeFilters = {
+
+    /**
+     * @description filter out all the nodes that contain at least a label in the blacklist
+     */
+    filterByLabel: function(node) {
+        return _.intersection(node.labels, this.blacklistedLabels).length === 0;
+    },
+
+    filterByTags: function(node) {
+        let flag = true;
+        for (const tagType of Object.keys(this.tags)) {
+            flag = flag && _.intersection(node.properties[tagType], this.tags[tagType].selected).length > 0;
+        }
+        return flag;
+    },
+
+    filterByDepth: function(node) {
+        return node.path_length <= this.depth;
+    },
+
+    filterOutRecommendations: function(node) {
+        return !(node.properties.recommendation === true);
+    }
+
+};
 
 // COSE layout
 layoutMap.set('cose', {
@@ -153,7 +183,7 @@ layoutMap.set('cola', {
 * @name CytoscapeStrategy
 * @description strategy class to format and render graphs with the cytoscape.js library
 */
-class CytoscapeStrategy extends AbstractGraphStrategy {
+export class CytoscapeStrategy extends AbstractGraphStrategy {
 
     /**
     * @constructor
@@ -435,14 +465,27 @@ class SigmaStrategy extends AbstractGraphStrategy {
 * @name GraphHandler
 * @description a utility to handle the layout of the graph
 */
-class GraphHandler {
+export class GraphHandler {
 
-    constructor({nodes = [], edges = []}, {tags = {}, depth = 2})  {
+    /**
+     * @constructor
+     */
+    constructor({nodes = [], edges = []}, {name, visibility, tags = {}, depth = 2})  {
         this._nodes = nodes;
         this._edges = edges;
+        this._layoutName = name;
+        this._visibilityMap = visibility;
         this._tags = tags;
         this._depth = depth;
         this._strategy = new CytoscapeStrategy();
+
+        this._blacklistedLabels = [];
+        Object.keys(this._visibilityMap).forEach(key => {
+            if (!this._visibilityMap[key]) {
+                this._blacklistedLabels.push(key);
+            }
+        });
+        this._blacklistedLabels.push(...TAG_NODES);
     }
 
     get strategy() {
@@ -463,11 +506,28 @@ class GraphHandler {
         return this._edges && this._edges.length;
     }
 
+    get layoutName() {
+        return this._layoutName;
+    }
+
+    get blacklistedLabels() {
+        return this._blacklistedLabels;
+    }
+
+    get nodes() {
+        return this._nodes;
+    }
+
     get tags() {
         return this._tags;
     }
 
+    get depth() {
+        return this._depth;
+    }
+
     render(rootEl, layout) {
+
         this._strategy.render(rootEl, layout, this._nodes, this._edges, this._tags, this._depth);
     }
 
