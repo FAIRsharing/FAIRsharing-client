@@ -117,6 +117,51 @@ describe('nodeFilters', () => {
 
     });
 
+    describe('filterOutRecommendations', () => {
+
+        it('should return false if the node has a "recommendation" boolean field set to true', () => {
+            const node = {
+                labels: ['LABEL', 'ANOTHER_LABEL'],
+                properties: {
+                    'application_id': 'biosharingcollection-000001',
+                    'domains': ['Genome', 'Gene Annotation', 'Bao'],
+                    'taxonomies': ['Rattus norvegicus', 'Mus musculus'],
+                    'recommendation': true
+                },
+                'path_length': 0
+            };
+            expect(nodeFilters.filterOutRecommendations.call(thisArg, node)).to.equal(false);
+        });
+
+        it('should return truee if the node has a "recommendation" boolean field set to false', () => {
+            const node = {
+                labels: ['LABEL', 'ANOTHER_LABEL'],
+                properties: {
+                    'application_id': 'biosharingcollection-000001',
+                    'domains': ['Genome', 'Gene Annotation', 'Bao'],
+                    'taxonomies': ['Rattus norvegicus', 'Mus musculus'],
+                    'recommendation': false
+                },
+                'path_length': 0
+            };
+            expect(nodeFilters.filterOutRecommendations.call(thisArg, node)).to.equal(true);
+        });
+
+        it('should return truee if the node has no "recommendation" field', () => {
+            const node = {
+                labels: ['LABEL', 'ANOTHER_LABEL'],
+                properties: {
+                    'application_id': 'biosharingcollection-000001',
+                    'domains': ['Genome', 'Gene Annotation', 'Bao'],
+                    'taxonomies': ['Rattus norvegicus', 'Mus musculus']
+                },
+                'path_length': 0
+            };
+            expect(nodeFilters.filterOutRecommendations.call(thisArg, node)).to.equal(true);
+        });
+
+    });
+
 });
 
 describe('GraphHandler', () => {});

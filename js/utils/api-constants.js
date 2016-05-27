@@ -11,6 +11,7 @@ export const GRAPH_LAYOUTS = {
     COSE: 'cose',
     CONCENTRIC: 'concentric'
 };
+export const BIOSHARING_COLLECTION = 'BiosharingCollection';
 export const BIOSHARING_ENTITIES = {
     DATABASE: {
         value: 'BioDBCore',

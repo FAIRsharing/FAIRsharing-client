@@ -10,7 +10,7 @@ import cyCola from 'cytoscape-cola';
 import cola from 'cola';
 import sigma from 'sigma';
 import _ from 'lodash';
-import { GRAPH_LAYOUTS } from '../../utils/api-constants';
+import { GRAPH_LAYOUTS, BIOSHARING_COLLECTION } from '../../utils/api-constants';
 import * as actions from '../../actions/graph-actions';
 
 
@@ -82,9 +82,14 @@ export const nodeFilters = {
     },
 
     filterByTags: function(node) {
+        // filtering by Tags is not applied to Collections
+        if (node.labels.indexOf(BIOSHARING_COLLECTION) >= 0) {
+            return true;
+        }
+
         let flag = true;
         for (const tagType of Object.keys(this.tags)) {
-            flag = flag && _.intersection(node.properties[tagType], this.tags[tagType].selected).length > 0;
+            flag = flag &&  _.intersection(node.properties[tagType], this.tags[tagType].selected).length > 0;
         }
         return flag;
     },
@@ -209,7 +214,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
     /**
      * @name _filter_nodes_by_tags
-     */
+     *
     _filter_nodes_by_tags(nodes, tags) {
         for (const tagType of Object.keys(tags) ) {
             nodes = nodes.filter(node => {
@@ -217,24 +222,25 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             });
         }
         return nodes;
-    }
+    } */
 
     /**
      * @name _filter_nodes_by_depth
-     */
+     *
     _filter_nodes_by_depth(nodes, depth = 2) {
         return nodes.filter(node => node.path_length <= depth);
-    }
+    } */
 
     /**
     * @method
     * @name _prepareElementsToRender
     * @returns {Array} - the array of annotated elements ready to be displayed on cytoscape
     */
-    _prepareElements(nodes, edges, visibilityMap, tags, depth) {
-        const elements = [], node_ids = [];
+    _prepareElements(nodes, edges) {
 
+        const elements = [], node_ids = [];
         const rootNode = _.find(nodes, {'path_length': 0});
+        /*
         const forbiddenNodes = [];
         Object.keys(visibilityMap).forEach(key => {
             if (!visibilityMap[key]) {
@@ -252,17 +258,18 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         filtered_nodes = this._filter_nodes_by_depth(filtered_nodes, depth);
 
         filtered_nodes = filtered_nodes.sort((el1, el2) => el1.path_length - el2.path_length);
-
-        for (const node of filtered_nodes) {
+        */
+        for (const node of nodes) {
 
             if (node_ids.indexOf(node.properties.application_id) > 0) { // remove duplicate nodes (should be already handled on the server)
                 continue;
             }
+            /*
             if (node.properties.recommendation) // This was added to remove recommendation nodes
             {
                 filtered_nodes.splice(filtered_nodes.indexOf(node), 1);
                 continue;
-            }
+            } */
 
             elements.push({
                 group: 'nodes',
@@ -271,7 +278,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                     id: node.properties && node.properties.application_id,
                     label: node.labels && node.labels[0],
                     _color: node.path_length < SHADOW_DEPTH ? NODES_COLOR_MAP.get(node.labels && node.labels[0]) : NODES_COLOR_MAP.get(undefined),
-                    parent: node.path_length < SHADOW_DEPTH ? rootNode.properties.id : null,
+                    parent: rootNode && node.path_length < SHADOW_DEPTH ? rootNode.properties.id : null,
                     path_length: node.path_length
                 }
             });
@@ -279,7 +286,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             node_ids.push(node.properties.application_id);
 
         }
-        const filtered_node_ids = filtered_nodes.map(el => el.properties && el.properties.application_id);
+        const filtered_node_ids = nodes.map(el => el.properties && el.properties.application_id);
 
         // this._tagsMap = this._get_unique_tags(filtered_nodes);
 
@@ -288,8 +295,8 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         let source, target, edge_color;
         for (const edge of filtered_edges) {
 
-            source = _.find(filtered_nodes, {properties: {application_id: edge.source}});
-            target = _.find(filtered_nodes, {properties: {application_id: edge.target}});
+            source = _.find(nodes, {properties: {application_id: edge.source}});
+            target = _.find(nodes, {properties: {application_id: edge.target}});
             edge_color = (target.path_length < SHADOW_DEPTH && source.path_length < 2) ?
             EDGES_COLOR_MAP.get(edge.relationship) : EDGES_COLOR_MAP.get(undefined);
 
@@ -327,7 +334,11 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         }
     }
 
-    render(rootEl, layout = {}, nodes, edges, tags, depth) {
+    /**
+     * @method
+     *
+     */
+    render(rootEl, layout = {}, nodes = [], edges = []) {
 
         function scaleNodes(ele) {
             const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
@@ -341,7 +352,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
         this.layout = layout.name;
 
-        const elements = this._prepareElements(nodes, edges, layout.visibility, tags, depth);
+        const elements = this._prepareElements(nodes, edges);
 
         this._cy = cytoscape({
             container: rootEl,
@@ -470,7 +481,7 @@ export class GraphHandler {
     /**
      * @constructor
      */
-    constructor({nodes = [], edges = []}, {name, visibility, tags = {}, depth = 2})  {
+    constructor({nodes = [], edges = []}, {name = GRAPH_LAYOUTS.COSE, visibility = {}, tags = {}, depth = 2})  {
         this._nodes = nodes;
         this._edges = edges;
         this._layoutName = name;
@@ -527,8 +538,11 @@ export class GraphHandler {
     }
 
     render(rootEl, layout) {
-
-        this._strategy.render(rootEl, layout, this._nodes, this._edges, this._tags, this._depth);
+        let filteredNodes = this._nodes;
+        for (const filterFnc of Object.keys(nodeFilters)) {
+            filteredNodes = filteredNodes.filter(nodeFilters[filterFnc], this);
+        }
+        this._strategy.render(rootEl, layout, filteredNodes, this._edges);
     }
 
     toggleElementsByLabel(label, remove) {
