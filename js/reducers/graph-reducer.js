@@ -19,7 +19,12 @@ const initialState = {
         tags: tagSelectorObj,
         depth: 2    // depth of the graph (path length from central node)
     },
-    reload: true //TODO remove this
+    reload: true,
+    // state about the modal dialog
+    modal: {
+        isOpen: false,
+        node: null
+    }
 };
 
 /**
@@ -85,7 +90,7 @@ const graphReducer = function (state = initialState, action) {
                     ...action.visibility
                 }
             },
-            reload: false
+            reload: true
         };
 
     case types.DEPTH_CHECKBOX_CHANGE:
@@ -94,7 +99,8 @@ const graphReducer = function (state = initialState, action) {
             layout: {
                 ...state.layout,
                 depth: action.depth
-            }
+            },
+            reload: true
         };
 
     case types.TAGS_SELECT_CHANGE: {
@@ -111,6 +117,12 @@ const graphReducer = function (state = initialState, action) {
             reload: true
         };
     } // end CASE
+
+    case types.OPEN_DETAILS_PANEL:
+        return { ...state, modal: { isOpen: true, node: action.nodeId }, reload: false };
+
+    case types.CLOSE_DETAILS_PANEL:
+        return { ...state, modal: { isOpen: false, node: null}, reload: false};
 
     }
 

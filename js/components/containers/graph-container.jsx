@@ -3,6 +3,7 @@
 */
 import React from 'react';
 import Graph from '../views/graph';
+import ModalDialog from '../views/modal-dialog';
 import { connect } from 'react-redux';
 import * as graphApi from '../../api/graph-api';
 import cytoscape from 'cytoscape';
@@ -194,11 +195,13 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     * @constructor
     * @param layoutName
     */
-    constructor(layoutName = GRAPH_LAYOUTS.COLA) {
+    constructor({openDetailsPanel = () => {}, closeDetailsPanel = () => {}}, layoutName = GRAPH_LAYOUTS.COSE) {
         super();
         this.layout = layoutName;
         this._cy = null;
-        // this._tagsMap = new Map();
+        // assing dispatcher methods to object
+        this.openDetailsPanel = openDetailsPanel;
+        this.closeDetailsPanel = closeDetailsPanel;
     }
 
     get layout() {
@@ -297,7 +300,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
             source = _.find(nodes, {properties: {application_id: edge.source}});
             target = _.find(nodes, {properties: {application_id: edge.target}});
-            edge_color = (target.path_length < SHADOW_DEPTH && source.path_length < 2) ?
+            edge_color = (target.path_length < SHADOW_DEPTH && source.path_length < SHADOW_DEPTH) ?
             EDGES_COLOR_MAP.get(edge.relationship) : EDGES_COLOR_MAP.get(undefined);
 
             elements.push({
@@ -336,6 +339,8 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
     /**
      * @method
+     * @name render
+     * @description renders the graph using cytoscape.js
      *
      */
     render(rootEl, layout = {}, nodes = [], edges = []) {
@@ -359,6 +364,8 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
             elements: elements,
 
+            selectionType: 'single',
+
             style: cytoscape.stylesheet()
             .selector('node')
             .style({
@@ -375,7 +382,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                 },
                 'color': function (ele) {
                     // return ele.data('_color') || 'grey';
-                    return ele.data('path_length') < 2 ? 'Black' : ele.data('_color');
+                    return ele.data('path_length') < SHADOW_DEPTH ? 'Black' : ele.data('_color');
                 },
                 'font-size': scaleText,
                 'text-valign': 'center',
@@ -416,6 +423,26 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
         });
 
+        this._registerNodeEvents();
+
+    }
+
+    _registerNodeEvents() {
+        this._cy.on('mouseover', 'node', (event) => {
+            const eles = event.cyTarget.closedNeighborhood();
+            eles.select();
+            this._removed = this._cy.$(':unselected').remove();
+            eles.unselect();
+        });
+
+        this._cy.on('mouseout', 'node', () => {
+            this._removed.restore();
+        });
+
+        this._cy.on('click', 'node', (event) => {
+            const node = event.cyTarget;
+            this.openDetailsPanel(node.data('application_id'));
+        });
     }
 
 }
@@ -480,15 +507,18 @@ export class GraphHandler {
 
     /**
      * @constructor
+     * @param{Obj} graph - properties: nodes{Array}, edges{Array}
+     * @param{Obj} layout - properties: name{string}, visibility{Object}, tags{Object}, depth{integer}
+     * @param{Obj} dispatchFnc - an object containg methods for dispatch calls to Redux
      */
-    constructor({nodes = [], edges = []}, {name = GRAPH_LAYOUTS.COSE, visibility = {}, tags = {}, depth = 2})  {
+    constructor({nodes = [], edges = []}, {name = GRAPH_LAYOUTS.COSE, visibility = {}, tags = {}, depth = 2}, dispatchFnc)  {
         this._nodes = nodes;
         this._edges = edges;
         this._layoutName = name;
         this._visibilityMap = visibility;
         this._tags = tags;
         this._depth = depth;
-        this._strategy = new CytoscapeStrategy();
+        this._strategy = new CytoscapeStrategy(dispatchFnc);
 
         this._blacklistedLabels = [];
         Object.keys(this._visibilityMap).forEach(key => {
@@ -571,24 +601,37 @@ const GraphContainer = React.createClass({
     */
 
     render: function() {
-        this.handler = new GraphHandler(this.props.graph, this.props.layout);
-
+        const dispatchMethods = {
+            openDetailsPanel: this.props.openDetailsPanel,
+            closeDetailsPanel: this.props.closeDetailsPanel
+        };
+        this.handler = new GraphHandler(this.props.graph, this.props.layout, dispatchMethods);
         return (
-            <Graph handler={this.handler} layout={this.props.layout}
-                handleLayoutChange={this.props.handleLayoutChange}
-                visibilityCheckboxChange={this.props.visibilityCheckboxChange}
-                tagsSelectChange={this.props.tagsSelectChange}
-                depthCheckboxChange={this.props.depthCheckboxChange} />
+            <div>
+                <ModalDialog isOpen={this.props.modal.isOpen} data={this.props.modal.node}
+                    closeDetailsPanel={this.props.closeDetailsPanel} />
+                <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload}
+                    handleLayoutChange={this.props.handleLayoutChange}
+                    visibilityCheckboxChange={this.props.visibilityCheckboxChange}
+                    tagsSelectChange={this.props.tagsSelectChange}
+                    depthCheckboxChange={this.props.depthCheckboxChange} />
+            </div>
         );
     }
 
 });
 
 const mapStateToProps = function(store) {
+    const modal = store.graphState.modal;
+    const modalNode = modal && modal.isOpen ? _.find(store.graphState.graph.nodes, node => node.properties.application_id === modal.node) : null;
     return {
         graph: store.graphState.graph,
         layout: store.graphState.layout,
-        reload: store.graphState.reload
+        reload: store.graphState.reload,
+        modal: {
+            isOpen: modal.isOpen,
+            node: modalNode
+        }
     };
 };
 
@@ -632,6 +675,14 @@ const mapDispatchToProps = function(dispatch) {
                     }
                 }));
             };
+        },
+
+        openDetailsPanel: (data) => {
+            dispatch(actions.openDetailsPanel(data));
+        },
+
+        closeDetailsPanel: () => {
+            dispatch(actions.closeDetailsPanel());
         }
 
     };

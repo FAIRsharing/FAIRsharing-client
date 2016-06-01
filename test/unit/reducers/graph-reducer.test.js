@@ -26,7 +26,11 @@ describe('graphReducer', () => {
                 tags: tagSelectorObj,
                 depth: 2
             },
-            reload: true
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            }
         });
     });
 
@@ -52,7 +56,11 @@ describe('graphReducer', () => {
                     }
                 }
             },
-            reload: true
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            }
         };
         expect(nextState).to.eql(expectedState);
     });
@@ -66,7 +74,11 @@ describe('graphReducer', () => {
                 tags: tagSelectorObj,
                 depth: 2
             },
-            reload: true
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            }
         };
         const nextState = graphReducer(previousState, {
             type: types.DEPTH_CHECKBOX_CHANGE,
@@ -80,7 +92,82 @@ describe('graphReducer', () => {
                 tags: tagSelectorObj,
                 depth: 1
             },
-            reload: true
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            }
+        };
+        expect(nextState).to.eql(expectedState);
+    });
+
+    it('should handle the OPEN_DETAILS_PANEL event', () => {
+        const previousState = {
+            graph: testGraph,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: visibilityObj,
+                tags: tagSelectorObj,
+                depth: 1
+            },
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            }
+        };
+        const nextState = graphReducer(previousState, {
+            type: types.OPEN_DETAILS_PANEL,
+            nodeId: 'biodbcore-000000'
+        });
+        const expectedState = {
+            graph: testGraph,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: visibilityObj,
+                tags: tagSelectorObj,
+                depth: 1
+            },
+            reload: false,
+            modal: {
+                isOpen: true,
+                node: 'biodbcore-000000'
+            }
+        };
+        expect(nextState).to.eql(expectedState);
+    });
+
+    it('should handle the CLOSE_DETAILS_PANEL event', () => {
+        const previousState = {
+            graph: testGraph,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: visibilityObj,
+                tags: tagSelectorObj,
+                depth: 1
+            },
+            reload: true,
+            modal: {
+                isOpen: true,
+                node: 'biodbcore-000000'
+            }
+        };
+        const nextState = graphReducer(previousState, {
+            type: types.CLOSE_DETAILS_PANEL
+        });
+        const expectedState = {
+            graph: testGraph,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: visibilityObj,
+                tags: tagSelectorObj,
+                depth: 1
+            },
+            reload: false,
+            modal: {
+                isOpen: false,
+                node: null
+            }
         };
         expect(nextState).to.eql(expectedState);
     });

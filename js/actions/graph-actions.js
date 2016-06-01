@@ -39,3 +39,16 @@ export function tagsSelectChange(selectState) {
         tags
     };
 }
+
+export function openDetailsPanel(nodeId) {
+    return {
+        type: types.OPEN_DETAILS_PANEL,
+        nodeId
+    };
+}
+
+export function closeDetailsPanel() {
+    return {
+        type: types.CLOSE_DETAILS_PANEL
+    };
+}

@@ -10,6 +10,10 @@ import LayoutForm from './layout-form';
 
 const Graph = React.createClass({
 
+    shouldComponentUpdate: function(nextProps) {
+        return nextProps.reload;
+    },
+
     componentDidUpdate: function () {
         let graphDOMNode = this.refs.graph;
         this.props.handler.render(graphDOMNode, this.props.layout);
