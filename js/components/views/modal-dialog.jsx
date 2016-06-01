@@ -2,6 +2,17 @@ import React from 'react';
 import Modal from 'react-modal';
 import _ from 'lodash';
 
+const customStyles = {
+    content : {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)'
+    }
+};
+
 const ModalDialog = React.createClass({
 
     shouldComponentUpdate: function(nextProps) {
@@ -21,12 +32,15 @@ const ModalDialog = React.createClass({
         const attrList = [], data = this.props.data, attrs = data ? data.properties : {},
             label = data ? data.labels && data.labels[0] : '';
         for (const key of Object.keys(attrs)) {
-            const value = _.isArray(attrs[key]) ? attrs[key].join(', ') : attrs[key];
-            attrList.push(<li key={key} className="list-group-item"><b>{key}:</b> {value}</li>);
+            // add field only if in whitelist
+            if (this.props.allowedFields.indexOf(key) > -1) {
+                const value = _.isArray(attrs[key]) ? attrs[key].join(', ') : attrs[key];
+                attrList.push(<li key={key} className="list-group-item"><b>{key}:</b> {value}</li>);
+            }
         }
 
         return (
-            <Modal isOpen={this.props.isOpen} onRequestClose={this.close} >
+            <Modal isOpen={this.props.isOpen} onRequestClose={this.close} style={customStyles}>
                 <h1>{attrs.shortName || attrs.name}</h1>
                 <h2>{label}</h2>
                 <ul className="list-group">{attrList}</ul>

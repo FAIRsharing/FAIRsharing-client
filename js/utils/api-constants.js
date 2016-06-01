@@ -44,3 +44,4 @@ export const TAG_TYPES = {
         }
     }
 };
+export const ALLOWED_FIELDS = ['application_id', 'name', 'shortName', 'domains', 'taxonomies', 'status', 'yearOfCreation'];

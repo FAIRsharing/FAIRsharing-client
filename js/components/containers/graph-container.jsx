@@ -11,7 +11,7 @@ import cyCola from 'cytoscape-cola';
 import cola from 'cola';
 import sigma from 'sigma';
 import _ from 'lodash';
-import { GRAPH_LAYOUTS, BIOSHARING_COLLECTION } from '../../utils/api-constants';
+import { GRAPH_LAYOUTS, BIOSHARING_COLLECTION, ALLOWED_FIELDS } from '../../utils/api-constants';
 import * as actions from '../../actions/graph-actions';
 
 
@@ -243,36 +243,12 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
         const elements = [], node_ids = [];
         const rootNode = _.find(nodes, {'path_length': 0});
-        /*
-        const forbiddenNodes = [];
-        Object.keys(visibilityMap).forEach(key => {
-            if (!visibilityMap[key]) {
-                forbiddenNodes.push(key);
-            }
-        });
-        forbiddenNodes.push(...TAG_NODES);
 
-        // filter the noeds by the allowed entity types (stored as labels)
-        let filtered_nodes = nodes.filter(el => forbiddenNodes.indexOf(el.labels && el.labels[0]) < 0);
-
-        // filter the nodes by the allowed tags;
-        filtered_nodes = this._filter_nodes_by_tags(filtered_nodes, tags);
-
-        filtered_nodes = this._filter_nodes_by_depth(filtered_nodes, depth);
-
-        filtered_nodes = filtered_nodes.sort((el1, el2) => el1.path_length - el2.path_length);
-        */
         for (const node of nodes) {
 
             if (node_ids.indexOf(node.properties.application_id) > 0) { // remove duplicate nodes (should be already handled on the server)
                 continue;
             }
-            /*
-            if (node.properties.recommendation) // This was added to remove recommendation nodes
-            {
-                filtered_nodes.splice(filtered_nodes.indexOf(node), 1);
-                continue;
-            } */
 
             elements.push({
                 group: 'nodes',
@@ -290,8 +266,6 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
         }
         const filtered_node_ids = nodes.map(el => el.properties && el.properties.application_id);
-
-        // this._tagsMap = this._get_unique_tags(filtered_nodes);
 
         const filtered_edges = edges.filter(el => filtered_node_ids.indexOf(el.source) > -1 && filtered_node_ids.indexOf(el.target) > -1);
 
@@ -609,7 +583,7 @@ const GraphContainer = React.createClass({
         return (
             <div>
                 <ModalDialog isOpen={this.props.modal.isOpen} data={this.props.modal.node}
-                    closeDetailsPanel={this.props.closeDetailsPanel} />
+                    allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
                 <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload}
                     handleLayoutChange={this.props.handleLayoutChange}
                     visibilityCheckboxChange={this.props.visibilityCheckboxChange}
