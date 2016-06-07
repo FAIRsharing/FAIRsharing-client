@@ -38,7 +38,8 @@ const EDGES_COLOR_MAP = new Map([
     ['TAGGED WITH', 'Chartreuse']
 ]);
 
-const SHADOW_DEPTH = Number.POSITIVE_INFINITY;
+const NODE_SHADOW_DEPTH = Number.POSITIVE_INFINITY;
+const EDGE_SHADOW_DEPTH = 2;
 
 export class AbstractGraphStrategy {
 
@@ -256,8 +257,8 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                     ...node.properties,
                     id: node.properties && node.properties.application_id,
                     label: node.labels && node.labels[0],
-                    _color: node.path_length < SHADOW_DEPTH ? NODES_COLOR_MAP.get(node.labels && node.labels[0]) : NODES_COLOR_MAP.get(undefined),
-                    parent: rootNode && node.path_length < SHADOW_DEPTH ? rootNode.properties.id : null,
+                    _color: node.path_length < NODE_SHADOW_DEPTH ? NODES_COLOR_MAP.get(node.labels && node.labels[0]) : NODES_COLOR_MAP.get(undefined),
+                    parent: rootNode && node.path_length < NODE_SHADOW_DEPTH ? rootNode.properties.id : null,
                     path_length: node.path_length
                 }
             });
@@ -274,8 +275,8 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
             source = _.find(nodes, {properties: {application_id: edge.source}});
             target = _.find(nodes, {properties: {application_id: edge.target}});
-            edge_color = (target.path_length < SHADOW_DEPTH && source.path_length < SHADOW_DEPTH) ?
-            EDGES_COLOR_MAP.get(edge.relationship) : EDGES_COLOR_MAP.get(undefined);
+            edge_color = (target.path_length < EDGE_SHADOW_DEPTH && source.path_length < EDGE_SHADOW_DEPTH) ?
+                EDGES_COLOR_MAP.get(edge.relationship) : EDGES_COLOR_MAP.get(undefined);
 
             elements.push({
                 group: 'edges',
@@ -345,6 +346,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             .style({
                 'height': scaleNodes,
                 'width': scaleNodes,
+                // colour of the node body
                 'background-color': function (ele) {
                     return ele.data('_color') || 'grey';
                 },
@@ -354,9 +356,10 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                     }
                     return ele.data('shortname') || ele.data('name').substring(0, 20);
                 },
+
                 'color': function (ele) {
                     // return ele.data('_color') || 'grey';
-                    return ele.data('path_length') < SHADOW_DEPTH ? 'Black' : ele.data('_color');
+                    return ele.data('path_length') < NODE_SHADOW_DEPTH ? 'Black' : ele.data('_color');
                 },
                 'font-size': scaleText,
                 'text-valign': 'center',
@@ -372,6 +375,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                     // return ele.data('path_length') < 2 ? 2 : 1;
                     return 0;
                 },
+                // colour of the node border
                 'border-color': function (ele) {
                     return ele.data('path_length') < 2 ? 'DimGrey' : 'LightGrey';
                     // return 'Grey';
