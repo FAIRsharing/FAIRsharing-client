@@ -16,6 +16,7 @@ const initialState = {
     layout: {
         name: GRAPH_LAYOUTS.COSE,
         visibility: visibilityObj,
+        isTagsPanelVisible: true,
         tags: tagSelectorObj,
         depth: 2    // depth of the graph (path length from central node)
     },
@@ -92,6 +93,16 @@ const graphReducer = function (state = initialState, action) {
             },
             reload: true
         };
+
+        case types.TAGS_VISIBILITY_CHECKBOX_CHANGE:
+            return {
+                ...state,
+                layout: {
+                    ...state.layout,
+                    isTagsPanelVisible: action.isVisible
+                },
+                reload: false
+            };
 
     case types.DEPTH_CHECKBOX_CHANGE:
         return {

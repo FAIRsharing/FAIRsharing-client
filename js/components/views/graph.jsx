@@ -3,7 +3,6 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import LayoutForm from './layout-form';
 
 // import spread from 'cytoscape-spread';
 
@@ -22,10 +21,6 @@ const Graph = React.createClass({
     render: function() {
         return (
             <div id="graphCnt">
-                <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }
-                    visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
-                    tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
-                    depth={this.props.layout.depth} depthCheckboxChange={this.props.depthCheckboxChange} />
 
                 <div class="row">
                     <div id="graph" ref="graph" className="graph col-md-10 col-xs-12"

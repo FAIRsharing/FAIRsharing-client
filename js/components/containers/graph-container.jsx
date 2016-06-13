@@ -2,6 +2,7 @@
 * Created by massi on 25/04/2016.
 */
 import React from 'react';
+import LayoutForm from '../views/layout-form';
 import Graph from '../views/graph';
 import ModalDialog from '../views/modal-dialog';
 import { connect } from 'react-redux';
@@ -102,6 +103,10 @@ export const nodeFilters = {
 
     filterOutRecommendations: function(node) {
         return !(node.properties.recommendation === true);
+    },
+
+    filterOutCollections: function (node) {
+        return node.labels.indexOf(BIOSHARING_COLLECTION) < 0 ? true : node.path_length === 0;
     }
 
 };
@@ -139,7 +144,7 @@ layoutMap.set('cose', {
     componentSpacing    : 100,
 
     // Node repulsion (non overlapping) multiplier
-    nodeRepulsion       : function( node ){ return 400000; },
+    nodeRepulsion       : function( node ){ return 4000000; },
 
     // Node repulsion (overlapping) multiplier
     nodeOverlap         : 100,
@@ -154,7 +159,7 @@ layoutMap.set('cose', {
     nestingFactor       : 5,
 
     // Gravity force (constant)
-    gravity             : 80,
+    gravity             : 40,
 
     // Maximum number of iterations to perform
     numIter             : 1000,
@@ -193,9 +198,11 @@ layoutMap.set('cola', {
 export class CytoscapeStrategy extends AbstractGraphStrategy {
 
     /**
-    * @constructor
-    * @param layoutName
-    */
+     * @constructor
+     * @param{function} openDetailsPanel
+     * @param{function} closeDetailsPanel
+     * @param{string} layoutName
+     */
     constructor({openDetailsPanel = () => {}, closeDetailsPanel = () => {}}, layoutName = GRAPH_LAYOUTS.COSE) {
         super();
         this.layout = layoutName;
@@ -242,7 +249,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     */
     _prepareElements(nodes, edges) {
 
-        const elements = [], node_ids = [];
+        const out_nodes = [], out_edges = [], node_ids = [];
         const rootNode = _.find(nodes, {'path_length': 0});
 
         for (const node of nodes) {
@@ -251,7 +258,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                 continue;
             }
 
-            elements.push({
+            out_nodes.push({
                 group: 'nodes',
                 data: {
                     ...node.properties,
@@ -270,25 +277,28 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
         const filtered_edges = edges.filter(el => filtered_node_ids.indexOf(el.source) > -1 && filtered_node_ids.indexOf(el.target) > -1);
 
-        let source, target, edge_color;
+        let source, target, edgeColor, minPathLength, maxPathLength;
         for (const edge of filtered_edges) {
 
             source = _.find(nodes, {properties: {application_id: edge.source}});
             target = _.find(nodes, {properties: {application_id: edge.target}});
-            edge_color = (target.path_length < EDGE_SHADOW_DEPTH && source.path_length < EDGE_SHADOW_DEPTH) ?
+            edgeColor = (target.path_length < EDGE_SHADOW_DEPTH && source.path_length < EDGE_SHADOW_DEPTH) ?
                 EDGES_COLOR_MAP.get(edge.relationship) : EDGES_COLOR_MAP.get(undefined);
-
-            elements.push({
+            minPathLength = Math.min(source.path_length, target.path_length);
+            maxPathLength = Math.max(source.path_length, target.path_length);
+            out_edges.push({
                 group: 'edges',
                 data: {
                     ...edge,
-                    _color: edge_color,
-                    in_collection: target.path_length < 2
+                    _color: edgeColor,
+                    in_collection: maxPathLength < EDGE_SHADOW_DEPTH,
+                    ranking: - minPathLength
                 }
             });
         }
 
-        return elements;
+
+        return _.sortBy(out_nodes, node => -node.path_length).concat(_.sortBy(out_edges, 'ranking'));
 
     }
 
@@ -326,7 +336,8 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         }
 
         function scaleText(ele) {
-            const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
+            // const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
+            const scaleFactor = 1;
             return 20/Math.pow(scaleFactor+1, 1);
         }
 
@@ -354,12 +365,12 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                     if (ele.data('label') === 'BiosharingCollection') {
                         return ele.data('name');
                     }
-                    return ele.data('shortname') || ele.data('name').substring(0, 20);
+                    return ele.data('shortname') || ele.data('name');
                 },
-
+                // node label (i.e. text element) colour
                 'color': function (ele) {
-                    // return ele.data('_color') || 'grey';
-                    return ele.data('path_length') < NODE_SHADOW_DEPTH ? 'Black' : ele.data('_color');
+                    return ele.data('path_length') < EDGE_SHADOW_DEPTH ? 'Black' : 'DimGrey';
+                    // return ele.data('path_length') < NODE_SHADOW_DEPTH ? 'Black' : ele.data('_color');
                 },
                 'font-size': scaleText,
                 'text-valign': 'center',
@@ -459,8 +470,8 @@ class SigmaStrategy extends AbstractGraphStrategy {
         });
 
         return {
-            nodes: out_nodes,
-            edges: out_edges
+            nodes: _.sortBy(out_nodes, node => -node.path_length),
+            edges: _.sortBy(out_edges, edge => -edge.source)
         };
 
     }
@@ -588,11 +599,18 @@ const GraphContainer = React.createClass({
             <div>
                 <ModalDialog isOpen={this.props.modal.isOpen} data={this.props.modal.node}
                     allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
+                <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }
+                    visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
+                    tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
+                    depth={this.props.layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
+                    isTagsPanelVisible={this.props.layout.isTagsPanelVisible} tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
+                />
                 <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload}
                     handleLayoutChange={this.props.handleLayoutChange}
                     visibilityCheckboxChange={this.props.visibilityCheckboxChange}
                     tagsSelectChange={this.props.tagsSelectChange}
-                    depthCheckboxChange={this.props.depthCheckboxChange} />
+                    depthCheckboxChange={this.props.depthCheckboxChange}
+                       tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange} />
             </div>
         );
     }
@@ -641,6 +659,10 @@ const mapDispatchToProps = function(dispatch) {
             dispatch(actions.depthCheckboxChange(ev.target.checked));
         },
 
+        tagsVisibilityCheckboxChange: ev => {
+            dispatch(actions.tagsVisibilityCheckboxChange(ev.target.checked));
+        },         
+
         tagsSelectChange: (name) => {
             return function(newValue) {
                 const selected = _.isArray(newValue) ? _.map(newValue, 'value') : [newValue.value];
@@ -661,7 +683,7 @@ const mapDispatchToProps = function(dispatch) {
 
         closeDetailsPanel: () => {
             dispatch(actions.closeDetailsPanel());
-        }
+        },
 
     };
 

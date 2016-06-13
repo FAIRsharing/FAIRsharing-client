@@ -23,6 +23,7 @@ describe('graphReducer', () => {
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
+                isTagsPanelVisible: true,
                 tags: tagSelectorObj,
                 depth: 2
             },
@@ -44,6 +45,7 @@ describe('graphReducer', () => {
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
+                isTagsPanelVisible: true,
                 depth: 2,
                 tags: {
                     domains: {
@@ -71,6 +73,7 @@ describe('graphReducer', () => {
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
+                isTagsPanelVisible: true,
                 tags: tagSelectorObj,
                 depth: 2
             },
@@ -88,6 +91,7 @@ describe('graphReducer', () => {
             graph: testGraph,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
+                isTagsPanelVisible: true,
                 visibility: visibilityObj,
                 tags: tagSelectorObj,
                 depth: 1
@@ -107,6 +111,7 @@ describe('graphReducer', () => {
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
+                isTagsPanelVisible: true,
                 tags: tagSelectorObj,
                 depth: 1
             },
@@ -125,6 +130,7 @@ describe('graphReducer', () => {
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
+                isTagsPanelVisible: true,
                 tags: tagSelectorObj,
                 depth: 1
             },
@@ -143,6 +149,7 @@ describe('graphReducer', () => {
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
+                isTagsPanelVisible: true,
                 tags: tagSelectorObj,
                 depth: 1
             },
@@ -160,6 +167,7 @@ describe('graphReducer', () => {
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
+                isTagsPanelVisible: true,
                 tags: tagSelectorObj,
                 depth: 1
             },

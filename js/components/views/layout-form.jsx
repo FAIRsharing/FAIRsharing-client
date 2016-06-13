@@ -49,11 +49,16 @@ const TagsSelect = React.createClass({
 });
 
 const LayoutForm = React.createClass({
-    /*
-    handleLayoutChange: function (ev) {
-        console.log(ev.target.value);
-        store.dispatch(layoutSelectChange({ name: ev.target.value }));
-    }, */
+
+    _toggleTagsSelectVisibility: function (ev) {
+        const toggledCnt = this.refs[ev.target.value];
+        if (ev.target.checked) {
+            toggledCnt.style.display = '';
+        }
+        else {
+            toggledCnt.style.display = 'none';
+        }
+    },
 
     render: function() {
 
@@ -71,9 +76,17 @@ const LayoutForm = React.createClass({
         }
         checkboxesList.push(<Checkbox key='depth' value='depth' label='Depth' isChecked={this.props.depth > 1} onChange={this.props.depthCheckboxChange} />);
 
-        for (let elem of TAGS_SELECTS) {
-            let val = elem.value, tags = this.props.tags[elem.value];
-            tagSelectsList.push(<TagsSelect key={val} tagType={val} tags={tags} onChange={this.props.tagsSelectChange} />);
+        // checkbox for tags visibility
+        checkboxesList.push(<Checkbox key='tagsVisibility' value='tagsSelectsDiv' label='Show tags panel'
+                                      isChecked={this.props.isTagsPanelVisible}
+                                      onChange={this.props.tagsVisibilityCheckboxChange} />);
+
+        if (this.props.isTagsPanelVisible) {
+            for (let elem of TAGS_SELECTS) {
+                let val = elem.value, tags = this.props.tags[elem.value];
+                tagSelectsList.push(<TagsSelect key={val} tagType={val} tags={tags}
+                                                onChange={this.props.tagsSelectChange}/>);
+            }
         }
 
         const formStyle = {
@@ -92,7 +105,7 @@ const LayoutForm = React.createClass({
                 </div>
             </div>
             <div className="row">{checkboxesList}</div>
-            <div className="row">{tagSelectsList}</div>
+            <div ref="tagsSelectsDiv" className="row">{tagSelectsList}</div>
 
 
         </form>;

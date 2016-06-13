@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import GraphContainer, { GraphHandler, nodeFilters } from '../../../../js/components/containers/graph-container';
+import { BIOSHARING_COLLECTION } from '../../../../js/utils/api-constants';
 
 describe('nodeFilters', () => {
 
@@ -158,6 +159,49 @@ describe('nodeFilters', () => {
                 'path_length': 0
             };
             expect(nodeFilters.filterOutRecommendations.call(thisArg, node)).to.equal(true);
+        });
+
+    });
+
+    describe('filterOutCollections', () => {
+
+        it('should return true if the node is labeled as a collection and is the central node', () => {
+             const node = {
+                labels: [BIOSHARING_COLLECTION],
+                properties: {
+                    'application_id': 'biosharingcollection-000001',
+                    'domains': ['Genome', 'Gene Annotation', 'Bao'],
+                    'taxonomies': ['Rattus norvegicus', 'Mus musculus']
+                },
+                'path_length': 0
+            };
+            expect(nodeFilters.filterOutCollections.call(thisArg, node)).to.equal(true);
+        });
+
+        it('should return false if the node is labeled as a collection and is not central node', () => {
+             const node = {
+                labels: [BIOSHARING_COLLECTION],
+                properties: {
+                    'application_id': 'biosharingcollection-000001',
+                    'domains': ['Genome', 'Gene Annotation', 'Bao'],
+                    'taxonomies': ['Rattus norvegicus', 'Mus musculus']
+                },
+                'path_length': 1
+            };
+            expect(nodeFilters.filterOutCollections.call(thisArg, node)).to.equal(false);
+        });
+
+        it('should return true if the node is not labeled as a collection', () => {
+             const node = {
+                labels: ['NOT_A_COLLECTION'],
+                properties: {
+                    'application_id': 'biosharingcollection-000001',
+                    'domains': ['Genome', 'Gene Annotation', 'Bao'],
+                    'taxonomies': ['Rattus norvegicus', 'Mus musculus']
+                },
+                'path_length': 1
+            };
+            expect(nodeFilters.filterOutCollections.call(thisArg, node)).to.equal(true);
         });
 
     });

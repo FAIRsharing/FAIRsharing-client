@@ -14,6 +14,12 @@ export function  layoutSelectChange(layout) {
     };
 }
 
+/**
+ * @method
+ * @name visibilityCheckboxChange
+ * @param{Object} checkboxState
+ * @returns {{type, visibility: {}}}
+ */
 export function visibilityCheckboxChange(checkboxState) {
     const visibility = {};
     visibility[checkboxState.value] = checkboxState.checked;
@@ -23,6 +29,21 @@ export function visibilityCheckboxChange(checkboxState) {
     };
 }
 
+/**
+ * @param{bool} checkboxState
+ * @returns {{type, checkboxState: *}}
+ */
+export function tagsVisibilityCheckboxChange(isVisible) {
+    return {
+        type: types.TAGS_VISIBILITY_CHECKBOX_CHANGE,
+        isVisible
+    };
+}
+
+/**
+ * @param{bool} checkboxState
+ * @returns {{type, checkboxState: *}}
+ */
 export function depthCheckboxChange(checkboxState) {
     const depth = checkboxState ? 2 : 1;
     return {
