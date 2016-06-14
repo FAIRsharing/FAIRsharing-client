@@ -605,12 +605,14 @@ const GraphContainer = React.createClass({
                     depth={this.props.layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
                     isTagsPanelVisible={this.props.layout.isTagsPanelVisible} tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
                 />
-                <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload}
-                    handleLayoutChange={this.props.handleLayoutChange}
-                    visibilityCheckboxChange={this.props.visibilityCheckboxChange}
-                    tagsSelectChange={this.props.tagsSelectChange}
-                    depthCheckboxChange={this.props.depthCheckboxChange}
+                <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload} />
+                { /*
+                       handleLayoutChange={this.props.handleLayoutChange}
+                        visibilityCheckboxChange={this.props.visibilityCheckboxChange}
+                        tagsSelectChange={this.props.tagsSelectChange}
+                        depthCheckboxChange={this.props.depthCheckboxChange}
                        tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange} />
+                      */ }
             </div>
         );
     }
