@@ -16,9 +16,9 @@ const initialState = {
     layout: {
         name: GRAPH_LAYOUTS.COSE,
         visibility: visibilityObj,
-        isTagsPanelVisible: true,
+        isTagsPanelVisible: false,
         tags: tagSelectorObj,
-        depth: 2    // depth of the graph (path length from central node)
+        depth: 1    // depth of the graph (path length from central node)
     },
     reload: true,
     // state about the modal dialog

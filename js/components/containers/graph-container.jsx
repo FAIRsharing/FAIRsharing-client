@@ -183,7 +183,7 @@ layoutMap.set('cola', {
     name: 'cola',
     nodeSpacing: 50,
     edgeLengthVal: 10,
-    padding:10,
+    padding: 1,
     animate: true,
     randomize: false,
     fit: true,
@@ -596,23 +596,20 @@ const GraphContainer = React.createClass({
         };
         this.handler = new GraphHandler(this.props.graph, this.props.layout, dispatchMethods);
         return (
-            <div>
+            <div className="row">
                 <ModalDialog isOpen={this.props.modal.isOpen} data={this.props.modal.node}
                     allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
-                <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }
-                    visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
-                    tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
-                    depth={this.props.layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
-                    isTagsPanelVisible={this.props.layout.isTagsPanelVisible} tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
-                />
-                <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload} />
-                { /*
-                       handleLayoutChange={this.props.handleLayoutChange}
-                        visibilityCheckboxChange={this.props.visibilityCheckboxChange}
-                        tagsSelectChange={this.props.tagsSelectChange}
-                        depthCheckboxChange={this.props.depthCheckboxChange}
-                       tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange} />
-                      */ }
+                <div className="col-md-3 col-xs-4">
+                    <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }
+                        visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
+                        tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
+                        depth={this.props.layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
+                        isTagsPanelVisible={this.props.layout.isTagsPanelVisible} tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
+                    />
+                </div>
+                <div className="col-md-9 col-xs-8">
+                    <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload} />
+                </div>
             </div>
         );
     }
