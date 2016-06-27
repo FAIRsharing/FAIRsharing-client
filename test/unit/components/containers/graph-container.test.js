@@ -5,7 +5,7 @@ import { BIOSHARING_COLLECTION } from '../../../../js/utils/api-constants';
 describe('nodeFilters', () => {
 
     const thisArg = {
-        blacklistedLabels: ['BLACKLISTED_00', 'BLACKLISTED_01', 'BLACKLISTED_02'],
+        blacklistedLabels: { 1: ['BLACKLISTED_1A', 'BLACKLISTED_1B'], 2:['BLACKLISTED_2A'] },
         tags: {
             'domains': {
                 selected: ['Genome', 'Proteome', 'Transcriptome'],
@@ -23,7 +23,7 @@ describe('nodeFilters', () => {
 
         it('should return false for a node that contains blacklisted labels', () => {
             const node = {
-                labels: ['BLACKLISTED_00'],
+                labels: ['BLACKLISTED_1A'],
                 properties: {
                     'application_id': 'bsg-000001'
                 },
@@ -34,11 +34,11 @@ describe('nodeFilters', () => {
 
         it('should return false for a node that contains blacklisted labels', () => {
             const node = {
-                labels: ['BLACKLISTED_01', 'ANOTHER_LABEL'],
+                labels: ['BLACKLISTED_2A', 'ANOTHER_LABEL'],
                 properties: {
                     'application_id': 'bsg-000001'
                 },
-                'path_length': 1
+                'path_length': 2
             };
             expect(nodeFilters.filterByLabel.call(thisArg, node)).to.equal(false);
         });
@@ -46,6 +46,17 @@ describe('nodeFilters', () => {
         it('should return true for a node that does not contain blacklisted labels', () => {
             const node = {
                 labels: ['LABEL', 'ANOTHER_LABEL'],
+                properties: {
+                    'application_id': 'bsg-000001'
+                },
+                'path_length': 1
+            };
+            expect(nodeFilters.filterByLabel.call(thisArg, node)).to.equal(true);
+        });
+
+        it('should return true for a node that does not contain blacklisted labels for that depth level', () => {
+            const node = {
+                labels: ['LABEL', 'ANOTHER_LABEL', 'BLACKLISTED_2A'],
                 properties: {
                     'application_id': 'bsg-000001'
                 },
@@ -166,7 +177,7 @@ describe('nodeFilters', () => {
     describe('filterOutCollections', () => {
 
         it('should return true if the node is labeled as a collection and is the central node', () => {
-             const node = {
+            const node = {
                 labels: [BIOSHARING_COLLECTION],
                 properties: {
                     'application_id': 'biosharingcollection-000001',
@@ -179,7 +190,7 @@ describe('nodeFilters', () => {
         });
 
         it('should return false if the node is labeled as a collection and is not central node', () => {
-             const node = {
+            const node = {
                 labels: [BIOSHARING_COLLECTION],
                 properties: {
                     'application_id': 'biosharingcollection-000001',
@@ -192,7 +203,7 @@ describe('nodeFilters', () => {
         });
 
         it('should return true if the node is not labeled as a collection', () => {
-             const node = {
+            const node = {
                 labels: ['NOT_A_COLLECTION'],
                 properties: {
                     'application_id': 'biosharingcollection-000001',

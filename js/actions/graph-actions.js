@@ -20,9 +20,11 @@ export function  layoutSelectChange(layout) {
  * @param{Object} checkboxState
  * @returns {{type, visibility: {}}}
  */
-export function visibilityCheckboxChange(checkboxState) {
+export function visibilityCheckboxChange(checkboxParams) {
+    // TODO finish this one!! And tests
     const visibility = {};
-    visibility[checkboxState.value] = checkboxState.checked;
+    visibility[checkboxParams.entityType] = { };
+    visibility[checkboxParams.entityType][checkboxParams.depthLevel] = checkboxParams.checked;
     return {
         type: types.VISIBILITY_CHECKBOX_CHANGE,
         visibility

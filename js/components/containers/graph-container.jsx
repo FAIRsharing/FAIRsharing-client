@@ -12,7 +12,7 @@ import cyCola from 'cytoscape-cola';
 import cola from 'cola';
 import sigma from 'sigma';
 import _ from 'lodash';
-import { GRAPH_LAYOUTS, BIOSHARING_COLLECTION, ALLOWED_FIELDS } from '../../utils/api-constants';
+import { GRAPH_LAYOUTS, BIOSHARING_COLLECTION, ALLOWED_FIELDS, DEPTH_LEVELS } from '../../utils/api-constants';
 import * as actions from '../../actions/graph-actions';
 
 
@@ -76,12 +76,12 @@ layoutMap.set('concentric', {
  * @description container for all the filter functions for the nodes
  */
 export const nodeFilters = {
-
     /**
      * @description filter out all the nodes that contain at least a label in the blacklist
+     * @returns {Boolean}
      */
     filterByLabel: function(node) {
-        return _.intersection(node.labels, this.blacklistedLabels).length === 0;
+        return _.intersection(node.labels, this.blacklistedLabels[node.path_length]).length === 0;
     },
 
     filterByTags: function(node) {
@@ -509,13 +509,20 @@ export class GraphHandler {
         this._depth = depth;
         this._strategy = new CytoscapeStrategy(dispatchFnc);
 
-        this._blacklistedLabels = [];
-        Object.keys(this._visibilityMap).forEach(key => {
-            if (!this._visibilityMap[key]) {
-                this._blacklistedLabels.push(key);
+        // initialize an array of empty objects for each depth level of the graph
+        this._blacklistedLabels = _.zipObject(DEPTH_LEVELS, _.map(DEPTH_LEVELS, () => []));
+
+        for (const entityType of Object.keys(this._visibilityMap)) {
+            for (const depthLevel of DEPTH_LEVELS) {
+                if (!this._visibilityMap[entityType][depthLevel]) {
+                    this._blacklistedLabels[depthLevel].push(entityType);
+                }
             }
-        });
-        this._blacklistedLabels.push(...TAG_NODES);
+        }
+        /*
+        for (const depthLevel of DEPTH_LEVELS) {
+            this._blacklistedLabels[depthLevel].push(...TAG_NODES);
+        } */
     }
 
     get strategy() {
@@ -647,9 +654,10 @@ const mapDispatchToProps = function(dispatch) {
             dispatch(actions.layoutSelectChange({name: ev.target.value}));
         },
 
-        visibilityCheckboxChange: (ev) => {
+        visibilityCheckboxChange: ev => {
             dispatch(actions.visibilityCheckboxChange({
-                value: ev.target.value,
+                entityType: ev.target.dataset.entityType,
+                depthLevel: parseInt(ev.target.dataset.depthLevel),
                 checked: ev.target.checked
             }));
         },
@@ -660,7 +668,7 @@ const mapDispatchToProps = function(dispatch) {
 
         tagsVisibilityCheckboxChange: ev => {
             dispatch(actions.tagsVisibilityCheckboxChange(ev.target.checked));
-        },         
+        },
 
         tagsSelectChange: (name) => {
             return function(newValue) {
@@ -682,7 +690,7 @@ const mapDispatchToProps = function(dispatch) {
 
         closeDetailsPanel: () => {
             dispatch(actions.closeDetailsPanel());
-        },
+        }
 
     };
 

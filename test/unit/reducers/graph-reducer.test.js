@@ -1,13 +1,13 @@
 import { expect } from 'chai';
 import graphReducer from '../../../js/reducers/graph-reducer';
-import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES, TAG_TYPES } from '../../../js/utils/api-constants';
+import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES, TAG_TYPES, DEPTH_LEVELS } from '../../../js/utils/api-constants';
 import _ from 'lodash';
 import * as types from '../../../js/actions/action-types';
 import * as actions from '../../../js/actions/graph-actions';
 import testGraph from '../../fixtures/graph.json';
 
 const visibilityObj = {};
-_.values(BIOSHARING_ENTITIES).forEach(entity => visibilityObj[entity.value] = true);
+_.values(BIOSHARING_ENTITIES).forEach(entity => visibilityObj[entity.value] = _.zipObject(DEPTH_LEVELS, _.map(DEPTH_LEVELS, () => true)));
 
 const tagSelectorObj = {};
 _.values(TAG_TYPES).forEach(tagType => tagSelectorObj[tagType.value] = tagType.initialState);
@@ -23,9 +23,9 @@ describe('graphReducer', () => {
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
-                isTagsPanelVisible: true,
+                isTagsPanelVisible: false,
                 tags: tagSelectorObj,
-                depth: 2
+                depth: 1
             },
             reload: true,
             modal: {
@@ -45,8 +45,8 @@ describe('graphReducer', () => {
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
-                isTagsPanelVisible: true,
-                depth: 2,
+                isTagsPanelVisible: false,
+                depth: 1,
                 tags: {
                     domains: {
                         selected: _.union(..._.map(_.map(testGraph.nodes, 'properties'), 'domains')),
@@ -57,6 +57,55 @@ describe('graphReducer', () => {
                         unselected: []
                     }
                 }
+            },
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            }
+        };
+        expect(nextState).to.eql(expectedState);
+    });
+
+    it('should handle the VISIBILITY_CHECKBOX_CHANGE event, turning Policy at level 1 to false', () => {
+        const previousState = {
+            graph: testGraph,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: {
+                    'BioDBCore':{1:true, 2:false},
+                    'Policy':{1:true, 2:true},
+                    'Standard':{1:true, 2:false}
+                },
+                isTagsPanelVisible: false,
+                tags: tagSelectorObj,
+                depth: 1
+            },
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            }
+        };
+        const nextState = graphReducer(previousState, {
+            type: types.VISIBILITY_CHECKBOX_CHANGE,
+            visibility: {
+                'Policy': {1: false}
+            }
+        });
+
+        const expectedState = {
+            graph: testGraph,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                isTagsPanelVisible: false,
+                visibility: {
+                    'BioDBCore':{1:true, 2:false},
+                    'Policy':{1:false, 2:true},
+                    'Standard':{1:true, 2:false}
+                },
+                tags: tagSelectorObj,
+                depth: 1
             },
             reload: true,
             modal: {

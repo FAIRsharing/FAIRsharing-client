@@ -33,11 +33,14 @@ describe('graph-actions', () => {
     describe('visibilityCheckboxChange', () => {
         it('should create an action to change the entity allowed to be visible in the graph', () => {
             const checkboxState = {
-                value: 'ENTITY',
-                checked: true
+                entityType: 'ENTITY',
+                depthLevel: 1,
+                checked: false
             };
             const visibility = {
-                'ENTITY': true
+                'ENTITY': {
+                    1: false
+                }
             };
             const expectedAction = {
                 type: types.VISIBILITY_CHECKBOX_CHANGE,

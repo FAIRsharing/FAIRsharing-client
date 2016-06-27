@@ -1,14 +1,14 @@
 /**
- * @author massi
- */
+* @author massi
+*/
 import 'react-select/scss/default.scss';
 
 import React from 'react';
 import Select from 'react-select';
-import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES, TAG_TYPES } from '../../utils/api-constants';
+import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES, TAG_TYPES, DEPTH_LEVELS } from '../../utils/api-constants';
 import _ from 'lodash';
 
-const CHECKBOXES = _.values(BIOSHARING_ENTITIES);
+//const CHECKBOXES = _.values(BIOSHARING_ENTITIES);
 const TAGS_SELECTS = _.values(TAG_TYPES);
 
 const Checkbox = React.createClass({
@@ -17,7 +17,9 @@ const Checkbox = React.createClass({
 
         return (
             <label className="checkbox-inline">
-                <input type="checkbox" value={this.props.value} checked={this.props.isChecked} onChange={this.props.onChange} />
+                <input type="checkbox" value={this.props.value} checked={this.props.isChecked}
+                    data-entity-type={this.props.entityType} data-depth-level={this.props.depthLevel}
+                    onChange={this.props.onChange} />
                 {this.props.label}
             </label>
         );
@@ -41,7 +43,7 @@ const TagsSelect = React.createClass({
 
         return (
             <Select ref="select" multi={true} options={options} value={tags.selected}
-                    onChange={this.props.onChange(this.props.tagType)} onValueClick={this.onValueClick}  />
+                onChange={this.props.onChange(this.props.tagType)} onValueClick={this.onValueClick}  />
         );
 
     }
@@ -49,6 +51,10 @@ const TagsSelect = React.createClass({
 });
 
 const LayoutForm = React.createClass({
+
+    inlineStyle: {
+        backgroundColor: '#f3ffff'
+    },
 
     _toggleTagsSelectVisibility: function (ev) {
         const toggledCnt = this.refs[ev.target.value];
@@ -69,23 +75,31 @@ const LayoutForm = React.createClass({
             optList.push(<option key={option} value={option} >{option}</option>);
         }
 
-        for (let elem of CHECKBOXES) {
-            const visibility = this.props.visibility && this.props.visibility[elem.value];
-            checkboxesList.push(<Checkbox key={elem.value} value={elem.value} label={elem.label}
-                                          isChecked={visibility} onChange={this.props.visibilityCheckboxChange} />);
+        for (let elem of Object.keys(this.props.visibility)) {
+            for (let depthLevel of Object.keys(this.props.visibility[elem])) {
+                const visibility = this.props.visibility[elem][depthLevel];
+
+                checkboxesList.push(<Checkbox key={`${elem}-${depthLevel}`}
+                    value={`${elem}-${depthLevel}`}
+                    label={`${elem} ${parseInt(depthLevel) <= 1 ? ' - Inner' : ' - Outer'}`}
+                    entityType={elem} depthLevel={depthLevel}
+                    isChecked={visibility} onChange={this.props.visibilityCheckboxChange}/>
+                );
+            }
         }
+
         checkboxesList.push(<Checkbox key='depth' value='depth' label='Depth' isChecked={this.props.depth > 1} onChange={this.props.depthCheckboxChange} />);
 
-        // checkbox for tags visibility
+    // checkbox for tags visibility
         checkboxesList.push(<Checkbox key='tagsVisibility' value='tagsSelectsDiv' label='Show tags panel'
-                                      isChecked={this.props.isTagsPanelVisible}
-                                      onChange={this.props.tagsVisibilityCheckboxChange} />);
+        isChecked={this.props.isTagsPanelVisible}
+        onChange={this.props.tagsVisibilityCheckboxChange} />);
 
         if (this.props.isTagsPanelVisible) {
             for (let elem of TAGS_SELECTS) {
                 let val = elem.value, tags = this.props.tags[elem.value];
                 tagSelectsList.push(<TagsSelect key={val} tagType={val} tags={tags}
-                                                onChange={this.props.tagsSelectChange}/>);
+                    onChange={this.props.tagsSelectChange}/>);
             }
         }
 
@@ -93,7 +107,7 @@ const LayoutForm = React.createClass({
             margin: '2px'
         };
 
-        return <form className="form">
+        return <form className="form" style={this.inlineStyle}>
             <div className="row">
                 <div className="form-group"  style={formStyle}>
                     <label htmlFor="layoutSelector" class="col-sm-2 col-xs-4">Layout </label>

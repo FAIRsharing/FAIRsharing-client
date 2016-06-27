@@ -1,9 +1,9 @@
 import * as types from '../actions/action-types';
-import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES, TAG_TYPES } from '../utils/api-constants';
+import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES, TAG_TYPES, DEPTH_LEVELS } from '../utils/api-constants';
 import _ from 'lodash';
 
 const visibilityObj = {};
-_.values(BIOSHARING_ENTITIES).forEach(entity => visibilityObj[entity.value] = true);
+_.values(BIOSHARING_ENTITIES).forEach(entity => visibilityObj[entity.value] = _.zipObject(DEPTH_LEVELS, _.map(DEPTH_LEVELS, () => true)));
 
 const tagSelectorObj = {};
 _.values(TAG_TYPES).forEach(tagType => tagSelectorObj[tagType.value] = tagType.initialState);
@@ -81,7 +81,10 @@ const graphReducer = function (state = initialState, action) {
     case types.LAYOUT_SELECT_CHANGE:
         return { ...state, layout: { ...state.layout, ...action.layout }, reload: true };
 
-    case types.VISIBILITY_CHECKBOX_CHANGE:
+    case types.VISIBILITY_CHECKBOX_CHANGE: {
+        for (const key of Object.keys(action.visibility)) {
+            action.visibility[key] = Object.assign({}, state.layout.visibility[key], action.visibility[key]);
+        }
         return {
             ...state,
             layout: {
@@ -93,16 +96,17 @@ const graphReducer = function (state = initialState, action) {
             },
             reload: true
         };
+    }
 
-        case types.TAGS_VISIBILITY_CHECKBOX_CHANGE:
-            return {
-                ...state,
-                layout: {
-                    ...state.layout,
-                    isTagsPanelVisible: action.isVisible
-                },
-                reload: false
-            };
+    case types.TAGS_VISIBILITY_CHECKBOX_CHANGE:
+        return {
+            ...state,
+            layout: {
+                ...state.layout,
+                isTagsPanelVisible: action.isVisible
+            },
+            reload: false
+        };
 
     case types.DEPTH_CHECKBOX_CHANGE:
         return {
