@@ -3,6 +3,7 @@
 */
 import React from 'react';
 import LayoutForm from '../views/layout-form';
+import StatsBox from '../views/stats-box';
 import Graph from '../views/graph';
 import ModalDialog from '../views/modal-dialog';
 import { connect } from 'react-redux';
@@ -12,14 +13,18 @@ import cyCola from 'cytoscape-cola';
 import cola from 'cola';
 import sigma from 'sigma';
 import _ from 'lodash';
-import { GRAPH_LAYOUTS, BIOSHARING_COLLECTION, ALLOWED_FIELDS, DEPTH_LEVELS } from '../../utils/api-constants';
+import { GRAPH_LAYOUTS, BIOSHARING_COLLECTION, ALLOWED_FIELDS, DEPTH_LEVELS,
+    ENTITIES_COLOR_MAP as NODES_COLOR_MAP, RELATIONS_COLOR_MAP as EDGES_COLOR_MAP,
+    TAG_ENTITIES as TAG_NODES
+} from '../../utils/api-constants';
 import * as actions from '../../actions/graph-actions';
 
 
 cyCola(cytoscape, cola);
 
-const TAG_NODES = ['Taxonomy', 'Domain'];
 
+
+/*
 const NODES_COLOR_MAP = new Map([
     [undefined, '#d9d9d9'],
     ['BiosharingCollection', '#ff4000'], //red
@@ -28,16 +33,8 @@ const NODES_COLOR_MAP = new Map([
     ['Standard', '#d4d413'],  // azure
     ['Taxonomy', 'YellowGreen'],
     ['Domain', 'DarkOrange']
-]);
+]); */
 
-const EDGES_COLOR_MAP = new Map([
-    [undefined, '#d9d9d9'],
-    ['CONTAINS', '#00cc66'],
-    ['RECOMMENDS', 'Teal'],
-    ['COLLECTS', '#0099cc'], //blue
-    ['IMPLEMENTS', '#99CCFF'],
-    ['TAGGED WITH', 'Chartreuse']
-]);
 
 const NODE_SHADOW_DEPTH = Number.POSITIVE_INFINITY;
 const EDGE_SHADOW_DEPTH = 2;
@@ -523,6 +520,9 @@ export class GraphHandler {
         for (const depthLevel of DEPTH_LEVELS) {
             this._blacklistedLabels[depthLevel].push(...TAG_NODES);
         } */
+        for (const filterFnc of Object.keys(nodeFilters)) {
+            this._nodes = this._nodes.filter(nodeFilters[filterFnc], this);
+        }
     }
 
     get strategy() {
@@ -563,12 +563,65 @@ export class GraphHandler {
         return this._depth;
     }
 
+    computeStats() {
+        // console.log(TAG_NODES);
+        // console.log(BIOSHARING_COLLECTION);
+        if (_.isEmpty(this._nodes)) {
+            return {};
+        }
+        const blacklistedNodes = _.clone(TAG_NODES);
+        blacklistedNodes.push(BIOSHARING_COLLECTION);
+        const innerVsOuterNodes = _.partition(this._nodes, node => node.path_length <= 1);
+
+        let countByEntityArray = [];
+        for (const partition of innerVsOuterNodes) {
+            const byEntity = _.groupBy(partition, node => {
+                return node.labels && node.labels[0];
+            });
+            const countByEntity = {};
+            for (const entityType of Object.keys(byEntity)) {
+                if (blacklistedNodes.indexOf(entityType) < 0) {
+                    countByEntity[entityType] = byEntity[entityType].length;
+                }
+            }
+            countByEntityArray.push(countByEntity);
+        }
+
+        /*
+        const byEntity = _.groupBy(this._nodes, node => {
+            return node.labels && node.labels[0];
+        });
+        let countByEntity = {};
+        for (const entityType of Object.keys(byEntity)) {
+            if (blacklistedNodes.indexOf(entityType) < 0) {
+                countByEntity[entityType] = byEntity[entityType].length;
+            }
+        } */
+
+        return _.isEmpty(countByEntityArray[1]) ? {
+            'Count': countByEntityArray[0]
+        } : {
+            'Count - Inner': countByEntityArray[0],
+            'Count - Outer': countByEntityArray[1],
+            'Count - Total': countByEntityArray.reduce((prevObj, currObj) => {
+                const nextObj = {};
+                for (const property of Object.keys(currObj)) {
+                    nextObj[property] = prevObj[property] ? currObj[property] + prevObj[property] : currObj[property];
+                }
+                return nextObj;
+            })
+        };
+    }
+
     render(rootEl, layout) {
+        /*
         let filteredNodes = this._nodes;
         for (const filterFnc of Object.keys(nodeFilters)) {
             filteredNodes = filteredNodes.filter(nodeFilters[filterFnc], this);
         }
-        this._strategy.render(rootEl, layout, filteredNodes, this._edges);
+        this._nodes = filteredNodes;
+        */
+        this._strategy.render(rootEl, layout, this._nodes, this._edges);
     }
 
     toggleElementsByLabel(label, remove) {
@@ -611,8 +664,10 @@ const GraphContainer = React.createClass({
                         visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
                         tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
                         depth={this.props.layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
-                        isTagsPanelVisible={this.props.layout.isTagsPanelVisible} tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
+                        isTagsPanelVisible={this.props.layout.isTagsPanelVisible}
+                        tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
                     />
+                    <StatsBox handler={this.handler} />
                 </div>
                 <div className="col-md-9 col-xs-8">
                     <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload} />
