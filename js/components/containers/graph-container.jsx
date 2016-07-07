@@ -605,8 +605,10 @@ export class GraphHandler {
             'Count - Outer': countByEntityArray[1],
             'Count - Total': countByEntityArray.reduce((prevObj, currObj) => {
                 const nextObj = {};
-                for (const property of Object.keys(currObj)) {
-                    nextObj[property] = prevObj[property] ? currObj[property] + prevObj[property] : currObj[property];
+                for (const property of _.union(Object.keys(prevObj), Object.keys(currObj))) {
+                    const curr = currObj[property] || 0;
+                    const prev = prevObj[property] || 0;
+                    nextObj[property] = curr + prev;
                 }
                 return nextObj;
             })

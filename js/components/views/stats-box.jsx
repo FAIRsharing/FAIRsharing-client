@@ -14,6 +14,9 @@ function addLabels(chart) {
     // const chartArea = chart.chartArea, opts = chart.options;
     const config = chart.config, ctx = chart.chart.ctx;
     ctx.fillStyle = '#00008b';
+    ctx.font = '18px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
     for (const dataset of config.data.datasets) {
         let total = 0, labelXY = [], offset = Math.PI/2, radius, centreX, centreY, lastEnd = 0;
 
@@ -27,7 +30,8 @@ function addLabels(chart) {
 
         for (let index = 0; index < meta.data.length; index++) {
             element = meta.data[index];
-            radius = 0.9 * element._view.outerRadius - element._view.innerRadius;
+            // radius = 0.9 * element._view.outerRadius - element._view.innerRadius;
+            radius = element._view.outerRadius;
             centreX = element._model.x;
             centreY = element._model.y;
             const thisPart = dataset.data[index], arcSector = 2 * Math.PI * (thisPart / total);
@@ -39,14 +43,15 @@ function addLabels(chart) {
             }
             lastEnd += arcSector;
         }
-
+        // ctx.fillText('*', centreX, centreY);
         let lRadius = 3/4 * radius;
         for (const idXY in labelXY) {
             if (labelXY[idXY] === -1) continue;
             const lAngle = labelXY[idXY],
                 dX = centreX + lRadius * Math.cos(lAngle),
                 dY = centreY + lRadius * Math.sin(lAngle);
-            ctx.fillText(config.data.labels[idXY], dX, dY);
+            // ctx.fillText(config.data.labels[idXY], dX, dY);
+            ctx.fillText(dataset.data[idXY], dX, dY);
         }
         ctx.restore();
         return true;
@@ -96,6 +101,9 @@ const StatsBox = React.createClass({
                 title: {
                     display: true,
                     text: stat
+                },
+                tooltips: {
+                    enabled: false
                 },
                 animation: {
                     onComplete: function() {

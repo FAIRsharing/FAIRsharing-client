@@ -79,3 +79,9 @@ export const ENTITY_LABELS_PLURAL = {
 };
 
 export const TAG_ENTITIES = ['Taxonomy', 'Domain'];
+
+// Count charts titles
+export const GRAPH_COUNT = 'Count';
+export const GRAPH_COUNT_INNER = 'Count - Inner';
+export const GRAPH_COUNT_OUTER = 'Count - Outer';
+export const GRAPH_COUNT_TOTAL = 'Count - Total';
