@@ -25,3 +25,15 @@ export function getGraph(graphId) {
             return json;
         });
 }
+
+export function getRelationalGraph(graphId) {
+    const graphUrl = `/${API_URL_ROOT}`;
+    return fetch(graphUrl)
+        .then(response => response.json())
+        .then(json => {
+            // TODO return json as a graph
+            // fire store.dispatch
+            return null;
+        });
+
+}
