@@ -49,6 +49,12 @@ export const TAG_TYPES = {
 export const ALLOWED_FIELDS = ['application_id', 'name', 'shortName', 'domains', 'taxonomies', 'status', 'yearOfCreation'];
 export const DEPTH_LEVELS = [1,2];
 
+export const GRAPH_RELATIONS = {
+    COLLECTS: 'COLLECTS',
+    RECOMMENDS: 'RECOMMENDS',
+    IMPLEMENTS: 'IMPLEMENTS'
+};
+
 // background colors for Biosharing Entities
 export const ENTITIES_COLOR_MAP = new Map([
     [undefined, '#d9d9d9'],
