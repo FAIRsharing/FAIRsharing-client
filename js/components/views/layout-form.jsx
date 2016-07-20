@@ -5,7 +5,7 @@ import 'react-select/scss/default.scss';
 
 import React from 'react';
 import Select from 'react-select';
-import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES, TAG_TYPES, DEPTH_LEVELS } from '../../utils/api-constants';
+import { GRAPH_LAYOUTS, TAG_TYPES, ENTITY_LABELS_PLURAL} from '../../utils/api-constants';
 import _ from 'lodash';
 
 //const CHECKBOXES = _.values(BIOSHARING_ENTITIES);
@@ -72,7 +72,7 @@ const LayoutForm = React.createClass({
         const options = Object.keys(GRAPH_LAYOUTS).map(key => GRAPH_LAYOUTS[key]);
 
         for (let option of options) {
-            optList.push(<option key={option} value={option} >{option}</option>);
+            optList.push(<option key={option} value={option} >{option.toUpperCase()}</option>);
         }
 
         for (let elem of Object.keys(this.props.visibility)) {
@@ -81,7 +81,7 @@ const LayoutForm = React.createClass({
 
                 checkboxesList.push(<Checkbox key={`${elem}-${depthLevel}`}
                     value={`${elem}-${depthLevel}`}
-                    label={`${elem} ${parseInt(depthLevel) <= 1 ? ' - Inner' : ' - Outer'}`}
+                    label={`${ENTITY_LABELS_PLURAL[elem]} ${parseInt(depthLevel) <= 1 ? ' - Inner' : ' - Outer'}`}
                     entityType={elem} depthLevel={depthLevel}
                     isChecked={visibility} onChange={this.props.visibilityCheckboxChange}/>
                 );
@@ -110,8 +110,8 @@ const LayoutForm = React.createClass({
         return <form className="form" style={this.inlineStyle}>
             <div className="row">
                 <div className="form-group"  style={formStyle}>
-                    <label htmlFor="layoutSelector" class="col-sm-2 col-xs-4">Layout </label>
-                    <div className="col-sm-4 col-xs-8">
+                    <label htmlFor="layoutSelector" className="col-xs-4">Layout </label>
+                    <div className="col-xs-8">
                         <select id="layoutSelector" className="form-control" onChange={this.props.handleLayoutChange} value={this.props.layoutName}>
                             {optList}
                         </select>

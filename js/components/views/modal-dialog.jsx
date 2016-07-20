@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
 import _ from 'lodash';
+import { ENTITY_LABELS_SINGULAR } from '../../utils/api-constants';
 
 const customStyles = {
     content : {
@@ -30,7 +31,7 @@ const ModalDialog = React.createClass({
     render: function() {
 
         const attrList = [], data = this.props.data, attrs = data ? data.properties : {},
-            label = data ? data.labels && data.labels[0] : '';
+            label = data ? data.labels && data.labels[0] &&  ENTITY_LABELS_SINGULAR[data.labels[0]] : '';
         for (const key of Object.keys(attrs)) {
             // add field only if in whitelist
             if (this.props.allowedFields.indexOf(key) > -1) {

@@ -75,6 +75,15 @@ export const RELATIONS_COLOR_MAP = new Map([
     ['TAGGED WITH', 'Chartreuse']
 ]);
 
+export const ENTITY_LABELS_SINGULAR = {
+    'BioDBCore': 'Database',
+    'Policy': 'Policy',
+    'Standard': 'Standard',
+    'BiosharingCollection': 'Collection',
+    'Domain': 'Domain',
+    'Taxonomy': 'Taxonomy'
+};
+
 export const ENTITY_LABELS_PLURAL = {
     'BioDBCore': 'Databases',
     'Policy': 'Policies',
