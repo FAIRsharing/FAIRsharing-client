@@ -178,8 +178,8 @@ layoutMap.set('cose', {
 // COLA layout
 layoutMap.set('cola', {
     name: 'cola',
-    nodeSpacing: 50,
-    edgeLengthVal: 10,
+    nodeSpacing: function() { return 25; },
+    edgeLength: 400,
     padding: 1,
     animate: true,
     randomize: false,
@@ -221,23 +221,42 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     }
 
     /**
-     * @name _filter_nodes_by_tags
-     *
-    _filter_nodes_by_tags(nodes, tags) {
-        for (const tagType of Object.keys(tags) ) {
-            nodes = nodes.filter(node => {
-                return _.intersection(node.properties[tagType], tags[tagType].selected).length > 0;
-            });
+     * @method
+     * @name makeLayout
+     * @description generates a new layout, given the params provided
+     * @param{Object} params
+     */
+    makeLayout(params) {
+        this._cyLayout && this._cyLayout.stop();
+        const options = layoutMap.get(this._layout && this._layout.name);
+        if (params.edgeLength) {
+            options.nodeSpacing = function () { return options.nodeSpacingValue; };
         }
-        return nodes;
-    } */
+        for (const param of Object.keys(params)) {
+            options[param] = params[param];
+        }
+        this._cyLayout = this._cy.makeLayout(options);
+        this._cyLayout.run();
+    }
 
     /**
-     * @name _filter_nodes_by_depth
-     *
-    _filter_nodes_by_depth(nodes, depth = 2) {
-        return nodes.filter(node => node.path_length <= depth);
-    } */
+     * @method
+     * @name getTunableParams
+     * @description return a the list of tunable params with range values for each strategy
+     */
+    getTunableParams() {
+        const layoutName = this._layout && this._layout.name;
+        switch (layoutName) {
+
+        case GRAPH_LAYOUTS.COLA:
+            return [
+                {paramName: 'nodeSpacingValue', min: 5, max: 40},
+                {paramName: 'edgeLength', min: 50, max: 500}
+            ];
+        default:
+            return [];
+        }
+    }
 
     /**
     * @method
@@ -403,12 +422,12 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                 },
                 'target-arrow-color': '#ccc',
                 'target-arrow-shape': 'triangle'
-            }),
-
-            layout: this.layout
+            })
 
         });
 
+        this._cyLayout = this._cy.makeLayout(this.layout);
+        this._cyLayout.start();
         this._registerNodeEvents();
 
     }
@@ -504,7 +523,7 @@ export class GraphHandler {
         this._visibilityMap = visibility;
         this._tags = tags;
         this._depth = depth;
-        this._strategy = new CytoscapeStrategy(dispatchFnc);
+        this._strategy = new CytoscapeStrategy(dispatchFnc, this._layoutName);
 
         // initialize an array of empty objects for each depth level of the graph
         this._blacklistedLabels = _.zipObject(DEPTH_LEVELS, _.map(DEPTH_LEVELS, () => []));
@@ -563,6 +582,16 @@ export class GraphHandler {
         return this._depth;
     }
 
+    makeLayout(params) {
+        return this._strategy.makeLayout(params);
+    }
+
+    /**
+     * @method
+     * @name computeStats
+     * @description compute the stats by label for the inner and outer part of the item
+     * @return{Object}
+     */
     computeStats() {
         // console.log(TAG_NODES);
         // console.log(BIOSHARING_COLLECTION);
@@ -613,6 +642,15 @@ export class GraphHandler {
                 return nextObj;
             })
         };
+    }
+
+    /**
+     * @method
+     * @name getTunableParams
+     * @description return a the list of tunable params with range values for each strategy
+     */
+    getTunableParams() {
+        return this._strategy.getTunableParams();
     }
 
     render(rootEl, layout) {

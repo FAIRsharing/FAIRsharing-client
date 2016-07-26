@@ -90,7 +90,7 @@ const LayoutForm = React.createClass({
 
         checkboxesList.push(<Checkbox key='depth' value='depth' label='Depth' isChecked={this.props.depth > 1} onChange={this.props.depthCheckboxChange} />);
 
-    // checkbox for tags visibility
+        // checkbox for tags visibility
         checkboxesList.push(<Checkbox key='tagsVisibility' value='tagsSelectsDiv' label='Show tags panel'
         isChecked={this.props.isTagsPanelVisible}
         onChange={this.props.tagsVisibilityCheckboxChange} />);
