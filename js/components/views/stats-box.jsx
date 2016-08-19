@@ -61,15 +61,15 @@ function addLabels(chart) {
 
 const StatsBox = React.createClass({
 
-    /*
     componentDidUpdate: function() {
         for (const ref of Object.keys(this.refs)) {
             if (this.refs[ref] instanceof DoughnutChart) {
-                const chart = this.refs[ref].getChart();
-                this._addLabels(chart);
+                // const chart = this.refs[ref].getChart();
+                // this._addLabels(chart);
+                const canvas = this.refs[ref].getCanvas();
             }
         }
-    }, */
+    },
 
     render: function() {
 
@@ -97,7 +97,7 @@ const StatsBox = React.createClass({
             };
 
             const options = {
-                cutOutPercentage: 55,
+                cutOutPercentage: 65,
                 title: {
                     display: true,
                     text: stat
@@ -114,10 +114,13 @@ const StatsBox = React.createClass({
 
             plots.push(
                 <div key={stat + 'Div'} className="col-xs-12" >
-                    <DoughnutChart key={stat} ref={stat} data={dataObj} options={options} height="420px" />
+                    <DoughnutChart key={stat} ref={stat} data={dataObj} options={options}
+                        width={200} height={320} />
                 </div>
             );
             counter++;
+
+
         }
 
         return(<div>{plots}</div>);

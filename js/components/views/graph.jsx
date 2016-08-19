@@ -8,6 +8,11 @@ import ReactDOM from 'react-dom';
 import Slider from 'rc-slider';
 // import spread from 'cytoscape-spread';
 
+const divHandleStyle = {
+    height: '5em',
+    lineHeight: '5em'
+};
+
 const handleStyle = {
     position: 'absolute',
     transform: 'translate(-50%, -50%)',
@@ -75,7 +80,7 @@ const Graph = React.createClass({
         return (
             <div id="graphCnt">
                 <form className="form">
-                    <div className="row">
+                    <div className="row" style={divHandleStyle}>
                         {sliders}
                     </div>
                 </form>

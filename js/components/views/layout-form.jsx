@@ -16,7 +16,7 @@ const Checkbox = React.createClass({
     render: function () {
 
         return (
-            <label className="checkbox-inline">
+            <label className="checkbox-inline" style={this.props.labelStyle}>
                 <input type="checkbox" value={this.props.value} checked={this.props.isChecked}
                     data-entity-type={this.props.entityType} data-depth-level={this.props.depthLevel}
                     onChange={this.props.onChange} />
@@ -68,8 +68,21 @@ const LayoutForm = React.createClass({
 
     render: function() {
 
-        const optList = [], checkboxesList = [], tagSelectsList = [];
+        const optList = [], tagSelectsList = [], innerCheckboxes = [], outerCheckboxes = [];
         const options = Object.keys(GRAPH_LAYOUTS).map(key => GRAPH_LAYOUTS[key]);
+
+        // checkbox for tags visibility
+        const tagsVisibilityCheckbox = <Checkbox key='tagsVisibility' value='tagsSelectsDiv'
+            label='Show tags panel' labelStyle={{marginTop: 6}}
+            isChecked={this.props.isTagsPanelVisible} onChange={this.props.tagsVisibilityCheckboxChange} />;
+
+        const outerCheckboxLabelStyle = {
+            fontWeight: 'bold',
+            marginTop: 6
+        };
+
+        const outerCheckbox = <Checkbox key='depth' value='depth' label='Outer' labelStyle={outerCheckboxLabelStyle}
+            isChecked={this.props.depth > 1} onChange={this.props.depthCheckboxChange} />;
 
         for (let option of options) {
             optList.push(<option key={option} value={option} >{option.toUpperCase()}</option>);
@@ -78,22 +91,18 @@ const LayoutForm = React.createClass({
         for (let elem of Object.keys(this.props.visibility)) {
             for (let depthLevel of Object.keys(this.props.visibility[elem])) {
                 const visibility = this.props.visibility[elem][depthLevel];
+                const targetList = depthLevel <= 1 ? innerCheckboxes : outerCheckboxes;
 
-                checkboxesList.push(<Checkbox key={`${elem}-${depthLevel}`}
+                if (depthLevel > 1 && this.props.depth <= 1) continue;
+
+                targetList.push(<Checkbox key={`${elem}-${depthLevel}`}
                     value={`${elem}-${depthLevel}`}
-                    label={`${ENTITY_LABELS_PLURAL[elem]} ${parseInt(depthLevel) <= 1 ? ' - Inner' : ' - Outer'}`}
+                    label={`${ENTITY_LABELS_PLURAL[elem]}`}
                     entityType={elem} depthLevel={depthLevel}
                     isChecked={visibility} onChange={this.props.visibilityCheckboxChange}/>
                 );
             }
         }
-
-        checkboxesList.push(<Checkbox key='depth' value='depth' label='Depth' isChecked={this.props.depth > 1} onChange={this.props.depthCheckboxChange} />);
-
-        // checkbox for tags visibility
-        checkboxesList.push(<Checkbox key='tagsVisibility' value='tagsSelectsDiv' label='Show tags panel'
-        isChecked={this.props.isTagsPanelVisible}
-        onChange={this.props.tagsVisibilityCheckboxChange} />);
 
         if (this.props.isTagsPanelVisible) {
             for (let elem of TAGS_SELECTS) {
@@ -108,7 +117,7 @@ const LayoutForm = React.createClass({
         };
 
         return <form className="form" style={this.inlineStyle}>
-            <div className="row">
+            <div className="">
                 <div className="form-group"  style={formStyle}>
                     <label htmlFor="layoutSelector" className="col-xs-4">Layout </label>
                     <div className="col-xs-8">
@@ -118,10 +127,12 @@ const LayoutForm = React.createClass({
                     </div>
                 </div>
             </div>
-            <div className="row">{checkboxesList}</div>
-            <div ref="tagsSelectsDiv" className="row">{tagSelectsList}</div>
-
-
+            <div className="">{tagsVisibilityCheckbox}</div>
+            <div className=""><div style={{ marginTop: 6}}><b>Inner</b></div></div>
+            <div className="">{innerCheckboxes}</div>
+            <div className="">{outerCheckbox}</div>
+            <div className="">{outerCheckboxes}</div>
+            <div ref="tagsSelectsDiv" className="">{tagSelectsList}</div>
         </form>;
 
     }
