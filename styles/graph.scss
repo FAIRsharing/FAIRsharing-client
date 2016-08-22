@@ -1,0 +1,42 @@
+$layout-background-color: #f3ffff;
+
+$layout-form-margin: 2px;
+
+.layout-form {
+    background-color: $layout-background-color;
+}
+
+.layout-selector-div {
+    margin: $layout-form-margin;
+}
+
+.graph-handler {
+
+}
+
+.graph-handler .graph-layout-form-div {
+    min-width: 280px;
+    max-width: 320px;
+}
+
+.graph-div {
+
+}
+
+.graph-div .graph-sliders-div {
+    height: 2.5em;
+    line-height: 1.25em;
+}
+
+.graph-div .graph-slider {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    padding: 2px;
+    border: 2px solid #abe2fb;
+    border-radius: 3px;
+    background: #fff;
+    font-size: 14px;
+    text-align: center;
+    z-index: 3
+}
