@@ -8,11 +8,6 @@ import ReactDOM from 'react-dom';
 import Slider from 'rc-slider';
 // import spread from 'cytoscape-spread';
 
-const divHandleStyle = {
-    height: '5em',
-    lineHeight: '5em'
-};
-
 const handleStyle = {
     position: 'absolute',
     transform: 'translate(-50%, -50%)',
@@ -69,7 +64,7 @@ const Graph = React.createClass({
                     </label>
                     <div className="col-xs-4">
                         <Slider id={`slider-${param.paramName}`} key={param.paramName}
-                                defaultValue={param.min} handle={<CustomHandle />}
+                                defaultValue={(param.min + param.max)/2} handle={<CustomHandle />}
                                 ref={param.paramName} min={param.min} max={param.max}
                                 onChange={this._sliderOnChange(param.paramName)} />
                     </div>
@@ -78,9 +73,9 @@ const Graph = React.createClass({
         }
 
         return (
-            <div id="graphCnt">
+            <div id="graphCnt" className="graph-div">
                 <form className="form">
-                    <div className="row" style={divHandleStyle}>
+                    <div className="row graph-sliders-div">
                         {sliders}
                     </div>
                 </form>

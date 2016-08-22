@@ -250,7 +250,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
         case GRAPH_LAYOUTS.COLA:
             return [
-                {paramName: 'nodeSpacingValue', min: 5, max: 40},
+                {paramName: 'nodeSpacingValue', min: 1, max: 100},
                 {paramName: 'edgeLength', min: 50, max: 500}
             ];
         default:
@@ -696,10 +696,10 @@ const GraphContainer = React.createClass({
         };
         this.handler = new GraphHandler(this.props.graph, this.props.layout, dispatchMethods);
         return (
-            <div className="row">
+            <div className="graph-handler row">
                 <ModalDialog isOpen={this.props.modal.isOpen} data={this.props.modal.node}
                     allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
-                <div className="col-md-3 col-xs-4">
+                <div className="col-md-3 col-xs-6 graph-layout-form-div">
                     <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }
                         visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
                         tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}

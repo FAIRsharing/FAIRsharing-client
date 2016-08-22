@@ -2,6 +2,7 @@
 * @author massi
 */
 import 'react-select/scss/default.scss';
+import '../../../styles/main.scss';
 
 import React from 'react';
 import Select from 'react-select';
@@ -51,10 +52,10 @@ const TagsSelect = React.createClass({
 });
 
 const LayoutForm = React.createClass({
-
+    /*
     inlineStyle: {
         backgroundColor: '#f3ffff'
-    },
+    }, */
 
     _toggleTagsSelectVisibility: function (ev) {
         const toggledCnt = this.refs[ev.target.value];
@@ -112,13 +113,14 @@ const LayoutForm = React.createClass({
             }
         }
 
+        /*
         const formStyle = {
             margin: '2px'
-        };
+        }; */
 
-        return <form className="form" style={this.inlineStyle}>
+        return <form className="form layout-form">
             <div className="">
-                <div className="form-group"  style={formStyle}>
+                <div className="form-group layout-selector-div">
                     <label htmlFor="layoutSelector" className="col-xs-4">Layout </label>
                     <div className="col-xs-8">
                         <select id="layoutSelector" className="form-control" onChange={this.props.handleLayoutChange} value={this.props.layoutName}>
