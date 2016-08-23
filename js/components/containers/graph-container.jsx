@@ -53,11 +53,19 @@ export class AbstractGraphStrategy {
     }
 }
 
+const basicLayoutProperties = {
+    fit: true,
+    animate: true,
+    userZoomingEnabled: false,
+    minZoom: 0.5,
+    maxZoom: 100
+};
+
 const layoutMap = new Map();
 // concentric layout
 layoutMap.set('concentric', {
+    ...basicLayoutProperties,
     name: 'concentric',
-    fit: true,
     padding: 10,
     concentric: function (node) {
         return node.degree();
@@ -110,15 +118,15 @@ export const nodeFilters = {
 
 // COSE layout
 layoutMap.set('cose', {
+
+    ...basicLayoutProperties,
+
     name: 'cose',
     // Called on `layoutready`
     ready               : function() {},
 
     // Called on `layoutstop`
     stop                : function() {},
-
-    // Whether to animate while running the layout
-    animate             : true,
 
     // The layout animates only after this many milliseconds
     // (prevents flashing on fast runs)
@@ -127,9 +135,6 @@ layoutMap.set('cose', {
     // Number of iterations between consecutive screen positions update
     // (0 -> only updated on the end)
     refresh             : 20,
-
-    // Whether to fit the network view after when done
-    fit                 : true,
 
     // Padding on fit
     padding             : 30,
@@ -177,13 +182,12 @@ layoutMap.set('cose', {
 
 // COLA layout
 layoutMap.set('cola', {
+    ...basicLayoutProperties,
     name: 'cola',
     nodeSpacing: function() { return 25; },
     edgeLength: 400,
     padding: 1,
-    animate: true,
     randomize: false,
-    fit: true,
     maxSimulationTime: 5000
 });
 
@@ -433,20 +437,29 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     }
 
     _registerNodeEvents() {
-        this._cy.on('mouseover', 'node', (event) => {
+        const cy = this._cy;
+
+        cy.on('mouseover', 'node', event => {
             const eles = event.cyTarget.closedNeighborhood();
             eles.select();
             this._removed = this._cy.$(':unselected').remove();
             eles.unselect();
         });
 
-        this._cy.on('mouseout', 'node', () => {
+        cy.on('mouseout', 'node', () => {
             this._removed.restore();
         });
 
-        this._cy.on('click', 'node', (event) => {
+        cy.on('click', 'node', event => {
             const node = event.cyTarget;
             this.openDetailsPanel(node.data('application_id'));
+        });
+
+        cy.container().addEventListener('wheel', event => {
+            cy.userZoomingEnabled();
+            console.log(cy);
+            console.log(event);
+            return false;
         });
     }
 
