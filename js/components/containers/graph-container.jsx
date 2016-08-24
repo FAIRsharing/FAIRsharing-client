@@ -53,18 +53,18 @@ export class AbstractGraphStrategy {
     }
 }
 
-const basicLayoutProperties = {
+/**
+ * @constant
+ * @description property objects for the various layout types
+ */
+
+const basicLayoutProps= {
     fit: true,
-    animate: true,
-    userZoomingEnabled: false,
-    minZoom: 0.5,
-    maxZoom: 100
+    animate: true
 };
 
-const layoutMap = new Map();
-// concentric layout
-layoutMap.set('concentric', {
-    ...basicLayoutProperties,
+const concentricLayoutProps = {
+    ...basicLayoutProps,
     name: 'concentric',
     padding: 10,
     concentric: function (node) {
@@ -74,8 +74,76 @@ layoutMap.set('concentric', {
         return 10;
     },
     avoidOverlap: false,
-    minNodeSpacing: 5
-});
+    minNodeSpacing: 3
+};
+
+const colaLayoutProps = {
+    ...basicLayoutProps,
+    name: 'cola',
+    nodeSpacing: function() { return 25; },
+    edgeLength: 400,
+    padding: 1,
+    randomize: false,
+    maxSimulationTime: 5000
+};
+
+const coseLayoutProps = {
+    ...basicLayoutProps,
+    name: 'cose',
+    // Called on `layoutready`
+    ready               : function() {},
+    // Called on `layoutstop`
+    stop                : function() {},
+    // The layout animates only after this many milliseconds
+    // (prevents flashing on fast runs)
+    animationThreshold  : 250,
+    // Number of iterations between consecutive screen positions update
+    // (0 -> only updated on the end)
+    refresh             : 20,
+    // Padding on fit
+    padding             : 30,
+    // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+    boundingBox         : undefined,
+    // Extra spacing between components in non-compound graphs
+    componentSpacing    : 100,
+    // Node repulsion (non overlapping) multiplier
+    nodeRepulsion       : function( node ){ return 4000000; },
+    // Node repulsion (overlapping) multiplier
+    nodeOverlap         : 100,
+    // Ideal edge (non nested) length
+    idealEdgeLength     : function( edge ){ return 10; },
+    // Divisor to compute edge forces
+    edgeElasticity      : function( edge ){ return 100; },
+    // Nesting factor (multiplier) to compute ideal edge length for nested edges
+    nestingFactor       : 5,
+    // Gravity force (constant)
+    gravity             : 40,
+    // Maximum number of iterations to perform
+    numIter             : 1000,
+    // Initial temperature (maximum node displacement)
+    initialTemp         : 200,
+    // Cooling factor (how the temperature is reduced between consecutive iterations
+    coolingFactor       : 0.95,
+    // Lower temperature threshold (below this point the layout will end)
+    minTemp             : 1.0,
+    // Whether to use threading to speed up the layout
+    useMultitasking     : true
+};
+
+/**
+ * @constant
+ * @name layoutMap
+ */
+const layoutMap = new Map();
+
+// concentric layout
+layoutMap.set('concentric', concentricLayoutProps);
+
+// COSE layout
+layoutMap.set('cose', coseLayoutProps);
+
+// COLA layout
+layoutMap.set('cola', colaLayoutProps);
 
 /**
  * @description container for all the filter functions for the nodes
@@ -115,81 +183,6 @@ export const nodeFilters = {
     }
 
 };
-
-// COSE layout
-layoutMap.set('cose', {
-
-    ...basicLayoutProperties,
-
-    name: 'cose',
-    // Called on `layoutready`
-    ready               : function() {},
-
-    // Called on `layoutstop`
-    stop                : function() {},
-
-    // The layout animates only after this many milliseconds
-    // (prevents flashing on fast runs)
-    animationThreshold  : 250,
-
-    // Number of iterations between consecutive screen positions update
-    // (0 -> only updated on the end)
-    refresh             : 20,
-
-    // Padding on fit
-    padding             : 30,
-
-    // Constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
-    boundingBox         : undefined,
-
-    // Extra spacing between components in non-compound graphs
-    componentSpacing    : 100,
-
-    // Node repulsion (non overlapping) multiplier
-    nodeRepulsion       : function( node ){ return 4000000; },
-
-    // Node repulsion (overlapping) multiplier
-    nodeOverlap         : 100,
-
-    // Ideal edge (non nested) length
-    idealEdgeLength     : function( edge ){ return 10; },
-
-    // Divisor to compute edge forces
-    edgeElasticity      : function( edge ){ return 100; },
-
-    // Nesting factor (multiplier) to compute ideal edge length for nested edges
-    nestingFactor       : 5,
-
-    // Gravity force (constant)
-    gravity             : 40,
-
-    // Maximum number of iterations to perform
-    numIter             : 1000,
-
-    // Initial temperature (maximum node displacement)
-    initialTemp         : 200,
-
-    // Cooling factor (how the temperature is reduced between consecutive iterations
-    coolingFactor       : 0.95,
-
-    // Lower temperature threshold (below this point the layout will end)
-    minTemp             : 1.0,
-
-    // Whether to use threading to speed up the layout
-    useMultitasking     : true
-
-});
-
-// COLA layout
-layoutMap.set('cola', {
-    ...basicLayoutProperties,
-    name: 'cola',
-    nodeSpacing: function() { return 25; },
-    edgeLength: 400,
-    padding: 1,
-    randomize: false,
-    maxSimulationTime: 5000
-});
 
 /**
 * @class
@@ -426,7 +419,12 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                 },
                 'target-arrow-color': '#ccc',
                 'target-arrow-shape': 'triangle'
-            })
+            }),
+
+            // zooming options
+            userZoomingEnabled: false,
+            minZoom: 0.25,
+            maxZoom: 40
 
         });
 
@@ -438,6 +436,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
     _registerNodeEvents() {
         const cy = this._cy;
+        const width = cy.container().offsetWidth, height = cy.container().offsetHeight;
 
         cy.on('mouseover', 'node', event => {
             const eles = event.cyTarget.closedNeighborhood();
@@ -456,9 +455,14 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         });
 
         cy.container().addEventListener('wheel', event => {
-            cy.userZoomingEnabled();
-            console.log(cy);
-            console.log(event);
+            if (event.wheelDelta === 0) {
+                return;
+            }
+            const zoomingFactor = event.wheelDelta > 0 ? 1.1 : 1/1.1;
+            cy.zoom({
+                level: zoomingFactor * cy.zoom(),
+                renderedPosition: { x: width/2, y: height/2}
+            });
             return false;
         });
     }
