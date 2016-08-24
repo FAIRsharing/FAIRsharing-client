@@ -61,24 +61,28 @@ function addLabels(chart) {
 
 const StatsBox = React.createClass({
 
+    /*
     componentDidUpdate: function() {
+        let legend;
         for (const ref of Object.keys(this.refs)) {
             if (this.refs[ref] instanceof DoughnutChart) {
                 // const chart = this.refs[ref].getChart();
                 // this._addLabels(chart);
-                const canvas = this.refs[ref].getCanvas();
+                const chart = this.refs[ref].getChart();
+                legend = chart.generateLegend();
             }
         }
-    },
+        this.refs['doughnutsLegendCnt'].innerHTML = legend;
+    }, */
 
     render: function() {
 
         const stats = this.props.handler.computeStats();
-
         const plots = [];
-        let counter = 0;
+        let counter = 0, statsLegend;
 
         for (const stat of Object.keys(stats)) {
+            console.log(stat);
             const labels = [], data = [], backgroundColors = [];
             for (const entityType of Object.keys(stats[stat])) {
                 labels.push(ENTITY_LABELS_PLURAL[entityType]);
@@ -112,18 +116,23 @@ const StatsBox = React.createClass({
                 }
             };
 
-            plots.push(
-                <div key={stat + 'Div'} className="col-xs-12" >
-                    <DoughnutChart key={stat} ref={stat} data={dataObj} options={options}
-                        width={200} height={320} />
-                </div>
-            );
+            const chartElem = <DoughnutChart key={stat} ref={stat} data={dataObj} options={options}
+                width={180} height={240} />;
+            plots.push(<div key={stat + 'Div'} className="col-xs-12" >{chartElem}</div>);
             counter++;
-
 
         }
 
-        return(<div>{plots}</div>);
+        return(
+            <div className="stats-box">
+                {/* <div id="doughnutsLegendCnt" ref="doughnutsLegendCnt">
+                    {statsLegend}
+                </div> */}
+                <div id="doughnutsCnt">
+                    {plots}
+                </div>
+            </div>
+            );
     }
 
 });
