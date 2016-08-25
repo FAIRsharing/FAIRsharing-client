@@ -63,7 +63,7 @@ const basicLayoutProps= {
     animate: true
 };
 
-const concentricLayoutProps = {
+export const concentricLayoutProps = {
     ...basicLayoutProps,
     name: 'concentric',
     padding: 10,
@@ -77,7 +77,7 @@ const concentricLayoutProps = {
     minNodeSpacing: 3
 };
 
-const colaLayoutProps = {
+export const colaLayoutProps = {
     ...basicLayoutProps,
     name: 'cola',
     nodeSpacing: function() { return 25; },
@@ -87,7 +87,7 @@ const colaLayoutProps = {
     maxSimulationTime: 5000
 };
 
-const coseLayoutProps = {
+export const coseLayoutProps = {
     ...basicLayoutProps,
     name: 'cose',
     // Called on `layoutready`
@@ -197,7 +197,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
      * @param{function} closeDetailsPanel
      * @param{string} layoutName
      */
-    constructor({openDetailsPanel = () => {}, closeDetailsPanel = () => {}}, layoutName = GRAPH_LAYOUTS.COSE) {
+    constructor({openDetailsPanel = () => {}, closeDetailsPanel = () => {}} = {}, layoutName = GRAPH_LAYOUTS.COSE) {
         super();
         this.layout = layoutName;
         this._cy = null;
@@ -221,9 +221,13 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
      * @method
      * @name makeLayout
      * @description generates a new layout, given the params provided
-     * @param{Object} params
+     * @param{Object} params, containing any of the params allowed in the Cytoscape layouts
+     *                (see http://js.cytoscape.org/#layouts)
      */
     makeLayout(params) {
+        if (!this._cy) {
+            return; // should it throw an Exception?
+        }
         this._cyLayout && this._cyLayout.stop();
         const options = layoutMap.get(this._layout && this._layout.name);
         if (params.edgeLength) {
@@ -341,7 +345,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
      * @description renders the graph using cytoscape.js
      *
      */
-    render(rootEl, layout = {}, nodes = [], edges = []) {
+    render(rootEl = undefined, layout = {}, nodes = [], edges = []) {
 
         function scaleNodes(ele) {
             const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
@@ -357,6 +361,8 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         this.layout = layout.name;
 
         const elements = this._prepareElements(nodes, edges);
+        const isHeadless = rootEl ? false : true;
+        console.log("Headless graph instance: " + isHeadless);
 
         this._cy = cytoscape({
             container: rootEl,
@@ -424,7 +430,10 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             // zooming options
             userZoomingEnabled: false,
             minZoom: 0.25,
-            maxZoom: 40
+            maxZoom: 40,
+
+            // rendering options
+            headless: isHeadless
 
         });
 
@@ -435,8 +444,9 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     }
 
     _registerNodeEvents() {
-        const cy = this._cy;
-        const width = cy.container().offsetWidth, height = cy.container().offsetHeight;
+        const cy = this._cy, container = cy.container();
+        if (!container) return;
+        const width = container.offsetWidth, height = container.offsetHeight;
 
         cy.on('mouseover', 'node', event => {
             const eles = event.cyTarget.closedNeighborhood();
@@ -454,7 +464,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             this.openDetailsPanel(node.data('application_id'));
         });
 
-        cy.container().addEventListener('wheel', event => {
+        container.addEventListener('wheel', event => {
             if (event.wheelDelta === 0) {
                 return;
             }

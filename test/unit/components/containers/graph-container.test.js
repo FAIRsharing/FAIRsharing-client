@@ -1,6 +1,8 @@
 import { expect } from 'chai';
-import GraphContainer, { GraphHandler, nodeFilters } from '../../../../js/components/containers/graph-container';
-import { BIOSHARING_COLLECTION } from '../../../../js/utils/api-constants';
+import GraphContainer, { GraphHandler, CytoscapeStrategy, coseLayoutProps,
+    nodeFilters } from '../../../../js/components/containers/graph-container';
+import { BIOSHARING_COLLECTION, GRAPH_LAYOUTS } from '../../../../js/utils/api-constants';
+import testGraph from '../../../fixtures/graph-bsg-c000001.json';
 
 describe('nodeFilters', () => {
 
@@ -219,6 +221,75 @@ describe('nodeFilters', () => {
 
 });
 
-describe('GraphHandler', () => {});
+/**
+ * TODO add tests!!
+ */
+describe('GraphHandler', () => {
 
+});
+
+/**
+ * TODO add tests!!
+ */
+describe('CytoscapeStrategy', () => {
+
+    describe('#constructor', () => {
+
+        it('should initialise the layout, the cytoscape entity and the open/close panel detail functions', () => {
+            const strategy = new CytoscapeStrategy();
+            expect(strategy._layout).to.have.property('name');
+            expect(strategy._layout.name).to.equal(GRAPH_LAYOUTS.COSE);
+            expect(strategy.openDetailsPanel).to.be.a('function');
+            expect(strategy.closeDetailsPanel).to.be.a('function');
+        });
+
+    });
+
+    describe('makeLayout', () => {
+
+        let strategy;
+
+        beforeEach(() => {
+            strategy = new CytoscapeStrategy();
+        });
+
+        it('should make and run the desired layout', () => {
+            strategy.makeLayout(coseLayoutProps);
+            expect(strategy._cyLayout).to.exist;
+            for (const prop of Object.keys(coseLayoutProps)) {
+                /*
+                if (prop === 'edgeLength') {
+                    expect(strategy._cyLayout).to.have.property('nodeSpacing');
+                }
+                else { */
+                expect(strategy._cyLayout).to.have.property(prop);
+            }
+        });
+
+    });
+
+    describe('render', () => {
+
+        let strategy;
+
+        beforeEach(() => {
+            strategy = new CytoscapeStrategy();
+        });
+
+        it('should render the provided graph', () => {
+            const nodesCount = testGraph.nodes.length, edgesCount = testGraph.edges.length;
+            strategy.render(undefined, undefined, ...testGraph);
+            expect(strategy._cy).to.exist;
+            // expect(strategy._cy.layout()).to.equal(GRAPH_LAYOUTS.COSE);
+            expect(strategy._cy.nodes()).to.have.length(nodesCount);
+            expect(strategy._cy.edges()).to.have.length(edgesCount);
+        });
+
+    });
+
+});
+
+/**
+ * TODO add tests!!
+ */
 describe('GraphContainer', () => {});

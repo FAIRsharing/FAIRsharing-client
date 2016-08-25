@@ -82,7 +82,6 @@ const StatsBox = React.createClass({
         let counter = 0, statsLegend;
 
         for (const stat of Object.keys(stats)) {
-            console.log(stat);
             const labels = [], data = [], backgroundColors = [];
             for (const entityType of Object.keys(stats[stat])) {
                 labels.push(ENTITY_LABELS_PLURAL[entityType]);
