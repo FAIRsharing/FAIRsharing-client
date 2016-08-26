@@ -1,7 +1,9 @@
 import { expect } from 'chai';
+import sinon from 'sinon';
 import GraphContainer, { GraphHandler, CytoscapeStrategy, coseLayoutProps,
     nodeFilters } from '../../../../js/components/containers/graph-container';
-import { BIOSHARING_COLLECTION, GRAPH_LAYOUTS } from '../../../../js/utils/api-constants';
+import { BIOSHARING_COLLECTION, BIOSHARING_ENTITIES, GRAPH_LAYOUTS } from '../../../../js/utils/api-constants';
+import synthGraph from '../../../fixtures/graph.json';
 import testGraph from '../../../fixtures/graph-bsg-c000001.json';
 
 describe('nodeFilters', () => {
@@ -224,7 +226,7 @@ describe('nodeFilters', () => {
 /**
  * TODO add tests!!
  */
-describe('GraphHandler', () => {
+describe('GraphContainer', () => {
 
 });
 
@@ -245,29 +247,6 @@ describe('CytoscapeStrategy', () => {
 
     });
 
-    describe('makeLayout', () => {
-
-        let strategy;
-
-        beforeEach(() => {
-            strategy = new CytoscapeStrategy();
-        });
-
-        it('should make and run the desired layout', () => {
-            strategy.makeLayout(coseLayoutProps);
-            expect(strategy._cyLayout).to.exist;
-            for (const prop of Object.keys(coseLayoutProps)) {
-                /*
-                if (prop === 'edgeLength') {
-                    expect(strategy._cyLayout).to.have.property('nodeSpacing');
-                }
-                else { */
-                expect(strategy._cyLayout).to.have.property(prop);
-            }
-        });
-
-    });
-
     describe('render', () => {
 
         let strategy;
@@ -278,7 +257,7 @@ describe('CytoscapeStrategy', () => {
 
         it('should render the provided graph', () => {
             const nodesCount = testGraph.nodes.length, edgesCount = testGraph.edges.length;
-            strategy.render(undefined, undefined, ...testGraph);
+            strategy.render(testGraph);
             expect(strategy._cy).to.exist;
             // expect(strategy._cy.layout()).to.equal(GRAPH_LAYOUTS.COSE);
             expect(strategy._cy.nodes()).to.have.length(nodesCount);
@@ -287,9 +266,121 @@ describe('CytoscapeStrategy', () => {
 
     });
 
+    describe('makeLayout', () => {
+
+        let strategy;
+
+        beforeEach(() => {
+            strategy = new CytoscapeStrategy();
+            strategy.render(testGraph);
+        });
+
+        it('should make and run the desired layout', () => {
+            strategy.makeLayout(coseLayoutProps);
+            expect(strategy._cyLayout).to.exist;
+            expect(strategy._cyLayout).to.have.property('options');
+            for (const prop of Object.keys(coseLayoutProps)) {
+                expect(strategy._cyLayout.options).to.have.property(prop);
+            }
+        });
+
+    });
+
+    describe('_prepareElements', () => {
+
+        let strategy;
+
+        beforeEach(() => {
+            strategy = new CytoscapeStrategy();
+        });
+
+        it('should create an array to be fed to the cytoscape.js graph initialiser', () => {
+            const graphElems = strategy._prepareElements(synthGraph.nodes, synthGraph.edges);
+            expect(graphElems).to.be.an('array');
+        });
+
+        it('should create an array containing the recommendation nodes and links', () => {
+            const nodesCount = synthGraph.nodes.length, edgesCount = synthGraph.edges.length;
+            const graphElems = strategy._prepareElements(synthGraph.nodes, synthGraph.edges);
+            expect(graphElems).to.have.length(nodesCount + edgesCount);
+        });
+
+    });
+
+    describe('toggleElementsByLabel', () => {
+
+        let strategy;
+
+        beforeEach(() => {
+            strategy = new CytoscapeStrategy();
+            strategy.render(synthGraph);
+        });
+
+        it('should remove the elements with a certain label from the graph, if remove param is true', () => {
+            strategy.toggleElementsByLabel(BIOSHARING_ENTITIES.DATABASE.value, true);
+            expect(strategy._cy.nodes(`[label='${BIOSHARING_ENTITIES.DATABASE.value}']`)).to.have.length(0);
+        });
+
+        it('should remove the elements with a certain label from the graph, if remove param is not provided', () => {
+            strategy.toggleElementsByLabel(BIOSHARING_ENTITIES.DATABASE.value, true);
+            expect(strategy._cy.nodes(`[label='${BIOSHARING_ENTITIES.DATABASE.value}']`)).to.have.length(0);
+        });
+
+    });
+
+
+
 });
 
 /**
  * TODO add tests!!
  */
-describe('GraphContainer', () => {});
+describe('GraphHandler', () => {
+
+    describe('#constructor', () => {
+
+        it('should initialize a graph handler with a cytoscape.js strategy', () => {
+            const graph = new GraphHandler();
+            expect(graph).to.have.property('strategy');
+            expect(graph.strategy).to.be.an.instanceof(CytoscapeStrategy);
+        });
+
+        it('should initialize a graph handler from the provided graph', () => {
+            const handler = new GraphHandler(testGraph);
+            expect(handler).to.have.property('_nodes');
+            expect(handler).to.have.property('_edges');
+            expect(handler._nodes).not.to.be.empty;
+            expect(handler._edges).not.to.be.empty;
+        });
+
+    });
+
+    describe('render', () => {
+
+        let handler, stub;
+
+        beforeEach(() => {
+            handler = new GraphHandler(testGraph);
+            stub = sinon.stub(handler.strategy, 'render');
+        });
+
+        afterEach(() => {
+            handler.strategy.render.restore();
+        });
+
+        it('should invoke the strategy render method when render is called', () => {
+            handler.render(null, GRAPH_LAYOUTS.COSE);
+            expect(stub.calledOnce).to.be.true;
+        });
+
+        it('should invoke the strategy render method with null container, COLA layout and the graph as arguments', () => {
+            handler.render(null, GRAPH_LAYOUTS.COLA);
+            expect(stub.calledWithExactly({
+                nodes: handler._nodes,
+                edges: handler._edges
+            }, GRAPH_LAYOUTS.COLA, null)).to.be.true;
+        });
+
+    });
+
+});

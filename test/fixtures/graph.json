@@ -7,7 +7,7 @@
                     "admin_updated": "2016-05-05T16:08:27.639000",
                     "updated": "2016-05-06T10:39:02.397000",
                     "taxonomies": [],
-                    "application_id": "biosharingcollection-000000",
+                    "application_id": "bsg-c000000",
                     "description": "A description",
                     "relational_db_pk": 1,
                     "editsApproved": true,
@@ -131,7 +131,7 @@
                 "Policy"
             ],
             "properties": {
-                "application_id": "policy-000000",
+                "application_id": "bsg-p000000",
                 "contactEmail": "varsha.khodiyar@nature.com",
                 "year": 2015,
                 "admin_notes": "",
@@ -174,7 +174,7 @@
                 "Standard"
             ],
             "properties": {
-                "application_id": "bsg-000000",
+                "application_id": "bsg-s000000",
                 "approved": true,
                 "contactEmail": "webmaster@plastercaster.castrol",
                 "isOBO": false,
@@ -213,7 +213,7 @@
                 "Standard"
             ],
             "properties": {
-                "application_id": "bsg-000001",
+                "application_id": "bsg-s000001",
                 "approved": true,
                 "contactEmail": "webmaster@burzol.ei",
                 "isOBO": false,
@@ -253,5 +253,36 @@
             "path_length": 1
         }
     ],
-    "edges": []
+    "edges": [
+        {
+            "source": "bsg-p000000",
+            "target": "biodbcore-000000",
+            "relationship": "RECOMMENDS"
+        },
+        {
+            "source": "bsg-p000000",
+            "target": "biodbcore-000001",
+            "relationship": "RECOMMENDS"
+        },
+        {
+            "source": "bsg-p000000",
+            "target": "bsg-s000000",
+            "relationship": "RECOMMENDS"
+        },
+        {
+            "source": "bsg-p000000",
+            "target": "bsg-s000001",
+            "relationship": "RECOMMENDS"
+        },
+        {
+            "source": "biodbcore-000001",
+            "target": "bsg-s000000",
+            "relationship": "IMPLEMENTS"
+        },
+        {
+            "source": "biodbcore-000000",
+            "target": "biodbcore-000001",
+            "relationship": "RELATED TO"
+        }
+    ]
 }
