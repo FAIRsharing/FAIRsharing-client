@@ -262,7 +262,10 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     /**
     * @method
     * @name _prepareElementsToRender
+    * @param{Array} nodes
+    * @param{Array} edges
     * @returns {Array} - the array of annotated elements ready to be displayed on cytoscape
+    * TODO this method
     */
     _prepareElements(nodes, edges) {
 
@@ -324,8 +327,13 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     * @name toggleElementsByLabel
     * @param label - string
     * @param remove - boolean: states whether the subgraph elements should be added or removed
+    * @description
     */
     toggleElementsByLabel(label, remove = true) {
+
+        if (!this._removed) {
+            this._removed = new Map();
+        }
 
         if (remove) {
             let removed = this._cy.nodes().filter((i, ele) => ele.data('label') === label).remove();
@@ -343,9 +351,13 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
      * @method
      * @name render
      * @description renders the graph using cytoscape.js
-     *
+     * @param{Object} graph, consisting of two properties:
+     *              - {Array} nodes
+     *              - {Array} edges
+     * @param{Object} layout. (for the allowed properties ee http://js.cytoscape.org/#layouts)
+     * @param{HTMLElement} rootEl - the container of the graph. If falsy the graph is run headllessly
      */
-    render(rootEl = undefined, layout = {}, nodes = [], edges = []) {
+    render({ nodes = [], edges = []} = {}, layout = {}, rootEl) {
 
         function scaleNodes(ele) {
             const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
@@ -362,7 +374,6 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
         const elements = this._prepareElements(nodes, edges);
         const isHeadless = rootEl ? false : true;
-        console.log("Headless graph instance: " + isHeadless);
 
         this._cy = cytoscape({
             container: rootEl,
@@ -543,7 +554,7 @@ export class GraphHandler {
      * @param{Obj} layout - properties: name{string}, visibility{Object}, tags{Object}, depth{integer}
      * @param{Obj} dispatchFnc - an object containg methods for dispatch calls to Redux
      */
-    constructor({nodes = [], edges = []}, {name = GRAPH_LAYOUTS.COSE, visibility = {}, tags = {}, depth = 2}, dispatchFnc)  {
+    constructor({nodes = [], edges = []} = {}, {name = GRAPH_LAYOUTS.COSE, visibility = {}, tags = {}, depth = 2} = {}, dispatchFnc)  {
         this._nodes = nodes;
         this._edges = edges;
         this._layoutName = name;
@@ -688,7 +699,11 @@ export class GraphHandler {
         }
         this._nodes = filteredNodes;
         */
-        this._strategy.render(rootEl, layout, this._nodes, this._edges);
+        const graph = {
+            nodes: this._nodes,
+            edges: this._edges
+        };
+        this._strategy.render(graph, layout, rootEl);
     }
 
     toggleElementsByLabel(label, remove) {
