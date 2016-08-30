@@ -13,6 +13,7 @@ const initialState = {
         nodes: [],
         edges: []
     },
+    isFetching: false,
     layout: {
         name: GRAPH_LAYOUTS.COSE,
         visibility: visibilityObj,
@@ -55,6 +56,13 @@ const graphReducer = function (state = initialState, action) {
 
     switch (action.type) {
 
+    case types.GET_GRAPH_REQUEST: {
+        return {
+            ...state,
+            isFetching: true
+        };
+    }
+
     case types.GET_GRAPH_SUCCESS: {
         const tagsMap = getUniqueTags(action.graph.nodes);
         const nextTags = [];
@@ -67,6 +75,7 @@ const graphReducer = function (state = initialState, action) {
         return {
             ...state,
             graph: action.graph,
+            isFetching: false,
             layout: {
                 ...state.layout,
                 tags: {

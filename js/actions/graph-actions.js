@@ -1,5 +1,11 @@
 import * as types from './action-types';
 
+export function getGraphRequest() {
+    return {
+        type: types.GET_GRAPH_REQUEST
+    };
+}
+
 export function  getGraphSuccess(graph) {
     return {
         type: types.GET_GRAPH_SUCCESS,

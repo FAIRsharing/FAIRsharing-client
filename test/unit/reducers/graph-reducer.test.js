@@ -20,6 +20,7 @@ describe('graphReducer', () => {
                 nodes: [],
                 edges: []
             },
+            isFetching: false,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
@@ -35,13 +36,92 @@ describe('graphReducer', () => {
         });
     });
 
+    it('should handle the GET_GRAPH_REQUEST event', () => {
+        const nextState = graphReducer(undefined, {
+            type: types.GET_GRAPH_REQUEST
+        });
+        const expectedState = {
+            graph: {
+                nodes: [],
+                edges: []
+            },
+            isFetching: true,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: visibilityObj,
+                isTagsPanelVisible: false,
+                tags: tagSelectorObj,
+                depth: 1
+            },
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            }
+        };
+        expect(nextState).to.eql(expectedState);
+    });
+
     it('should handle the GET_GRAPH_SUCCESS event', () => {
+        const previousState = {
+            graph: {
+                nodes: [],
+                edges: []
+            },
+            isFetching: true,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: visibilityObj,
+                isTagsPanelVisible: false,
+                tags: tagSelectorObj,
+                depth: 1
+            },
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            }
+        };
+        const nextState = graphReducer(previousState, {
+            type: types.GET_GRAPH_SUCCESS,
+            graph: testGraph
+        });
+        const expectedState = {
+            graph: testGraph,
+            isFetching: false,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: visibilityObj,
+                isTagsPanelVisible: false,
+                depth: 1,
+                tags: {
+                    domains: {
+                        selected: _.union(..._.map(_.map(testGraph.nodes, 'properties'), 'domains')),
+                        unselected: []
+                    },
+                    taxonomies: {
+                        selected: _.union(..._.map(_.map(testGraph.nodes, 'properties'), 'taxonomies')),
+                        unselected: []
+                    }
+                }
+            },
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            }
+        };
+        expect(nextState).to.eql(expectedState);
+    });
+
+    it('should handle the GET_GRAPH_SUCCESS event from a preexisting fetching state', () => {
         const nextState = graphReducer(undefined, {
             type: types.GET_GRAPH_SUCCESS,
             graph: testGraph
         });
         const expectedState = {
             graph: testGraph,
+            isFetching: false,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
@@ -70,6 +150,7 @@ describe('graphReducer', () => {
     it('should handle the VISIBILITY_CHECKBOX_CHANGE event, turning Policy at level 1 to false', () => {
         const previousState = {
             graph: testGraph,
+            isFetching: false,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: {
@@ -96,6 +177,7 @@ describe('graphReducer', () => {
 
         const expectedState = {
             graph: testGraph,
+            isFetching: false,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 isTagsPanelVisible: false,
@@ -119,6 +201,7 @@ describe('graphReducer', () => {
     it('should handle the DEPTH_CHECKBOX_CHANGE event', () => {
         const previousState = {
             graph: testGraph,
+            isFetching: false,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
@@ -138,6 +221,7 @@ describe('graphReducer', () => {
         });
         const expectedState = {
             graph: testGraph,
+            isFetching: false,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 isTagsPanelVisible: true,
@@ -157,6 +241,7 @@ describe('graphReducer', () => {
     it('should handle the OPEN_DETAILS_PANEL event', () => {
         const previousState = {
             graph: testGraph,
+            isFetching: false,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
@@ -176,6 +261,7 @@ describe('graphReducer', () => {
         });
         const expectedState = {
             graph: testGraph,
+            isFetching: false,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
@@ -195,6 +281,7 @@ describe('graphReducer', () => {
     it('should handle the CLOSE_DETAILS_PANEL event', () => {
         const previousState = {
             graph: testGraph,
+            isFetching: false,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,
@@ -213,6 +300,7 @@ describe('graphReducer', () => {
         });
         const expectedState = {
             graph: testGraph,
+            isFetching: false,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,

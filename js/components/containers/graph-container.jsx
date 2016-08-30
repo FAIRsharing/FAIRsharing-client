@@ -1,11 +1,13 @@
 /**
 * Created by massi on 25/04/2016.
 */
+import 'font-awesome/scss/font-awesome.scss';
 import React from 'react';
 import LayoutForm from '../views/layout-form';
 import StatsBox from '../views/stats-box';
 import Graph from '../views/graph';
 import ModalDialog from '../views/modal-dialog';
+import Modal from 'react-modal';
 import { connect } from 'react-redux';
 import * as graphApi from '../../api/graph-api';
 import cytoscape from 'cytoscape';
@@ -739,6 +741,9 @@ const GraphContainer = React.createClass({
         this.handler = new GraphHandler(this.props.graph, this.props.layout, dispatchMethods);
         return (
             <div className="graph-handler row">
+                <Modal isOpen={this.props.isFetching} >
+                    <i className="fa fa-spinner fa-spin fa-6"></i>
+                </Modal>
                 <ModalDialog isOpen={this.props.modal.isOpen} data={this.props.modal.node}
                     allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
                 <div className="col-md-3 col-xs-6 graph-layout-form-div">
@@ -765,6 +770,7 @@ const mapStateToProps = function(store) {
     const modalNode = modal && modal.isOpen ? _.find(store.graphState.graph.nodes, node => node.properties.application_id === modal.node) : null;
     return {
         graph: store.graphState.graph,
+        isFetching: store.graphState.isFetching,
         layout: store.graphState.layout,
         reload: store.graphState.reload,
         modal: {

@@ -6,8 +6,17 @@ import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES } from '../../../js/utils/api-consta
 
 describe('graph-actions', () => {
 
+    describe('getGraphRequest', () => {
+        it('should create an action to notify that is fetching the graph remotely', () => {
+            const expectedAction = {
+                type: types.GET_GRAPH_REQUEST
+            };
+            expect(actions.getGraphRequest()).to.eql(expectedAction);
+        });
+    });
+
     describe('getGraphSuccess', () => {
-        it('it should create an action to intantiate a new graph', () => {
+        it('should create an action to instantiate a new graph', () => {
             const graph = {};
             const expectedAction = {
                 type: types.GET_GRAPH_SUCCESS,
