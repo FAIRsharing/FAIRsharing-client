@@ -1,0 +1,61 @@
+$fa-icon-color: #808080;
+
+.centred-cnt {
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: table;
+}
+
+.centred-cnt .centred-elem {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.is-fetching-modal {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    border: 0;
+    background: #fff;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 4px;
+    outline: none;
+    padding: 20px;
+
+}
+
+.jumbotron {
+    background-color: transparent;
+}
+
+.jumbotron-icon {
+    color: $fa-icon-color;
+}
+
+.jumbotron-icon .fa-1 {
+
+}
+
+.jumbotron-icon .fa-2 {
+    font-size: 2em;
+}
+
+.jumbotron-icon .fa-3 {
+    font-size: 4em;
+}
+
+.jumbotron-icon .fa-4 {
+    font-size: 7em;
+}
+
+.jumbotron-icon .fa-5 {
+    font-size: 12em;
+}
+
+.jumbotron-icon .fa-6 {
+    font-size: 20em;
+}
