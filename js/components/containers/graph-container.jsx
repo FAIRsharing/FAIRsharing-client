@@ -741,8 +741,10 @@ const GraphContainer = React.createClass({
         this.handler = new GraphHandler(this.props.graph, this.props.layout, dispatchMethods);
         return (
             <div className="graph-handler row">
-                <Modal isOpen={this.props.isFetching} >
-                    <i className="fa fa-spinner fa-spin fa-6"></i>
+                <Modal isOpen={this.props.isFetching} className="is-fetching-modal">
+                    <div className="jumbotron jumbotron-icon centred-cnt">
+                        <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
+                    </div>
                 </Modal>
                 <ModalDialog isOpen={this.props.modal.isOpen} data={this.props.modal.node}
                     allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
@@ -754,7 +756,7 @@ const GraphContainer = React.createClass({
                         isTagsPanelVisible={this.props.layout.isTagsPanelVisible}
                         tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
                     />
-                    <StatsBox handler={this.handler} />
+                    <StatsBox handler={this.handler} reload={this.props.reload}/>
                 </div>
                 <div className="col-md-9 col-xs-8">
                     <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload} />

@@ -72,7 +72,7 @@ export const RELATIONS_COLOR_MAP = new Map([
     ['RECOMMENDS', 'Teal'],
     ['COLLECTS', '#0099cc'], //blue
     ['IMPLEMENTS', '#99CCFF'],
-    ['TAGGED WITH', 'Chartreuse']
+    ['RELATED TO', 'Chartreuse']
 ]);
 
 export const ENTITY_LABELS_SINGULAR = {

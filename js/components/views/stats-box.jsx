@@ -61,6 +61,10 @@ function addLabels(chart) {
 
 const StatsBox = React.createClass({
 
+    shouldComponentUpdate: function(nextProps) {
+        return nextProps.reload;
+    },
+
     /*
     componentDidUpdate: function() {
         let legend;
