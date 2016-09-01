@@ -1,4 +1,6 @@
 $layout-background-color: #f3ffff;
+$modal-dialog-title-color: #27aae1;
+$modal-dialog-subtitle-color:#337ab7;
 
 $layout-form-margin: 2px;
 
@@ -39,4 +41,29 @@ $layout-form-margin: 2px;
     font-size: 14px;
     text-align: center;
     z-index: 3
+}
+
+.graph-dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #ccc;
+    background: #fff;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 4px;
+    outline: none;
+    padding: 20px;
+}
+
+.graph-dialog h1 {
+    color: $modal-dialog-title-color
+}
+
+.graph-dialog h2 {
+    color: $modal-dialog-subtitle-color
 }

@@ -41,7 +41,7 @@ const ModalDialog = React.createClass({
         }
 
         return (
-            <Modal isOpen={this.props.isOpen} onRequestClose={this.close} style={customStyles}>
+            <Modal isOpen={this.props.isOpen} onRequestClose={this.close} className="graph-dialog">
                 <h1>{attrs.shortName || attrs.name}</h1>
                 <h2>{label}</h2>
                 <ul className="list-group">{attrList}</ul>
@@ -53,7 +53,7 @@ const ModalDialog = React.createClass({
         const data = this.props.data, entityType = data && data.labels && data.labels[0];
         let label = entityType ? ENTITY_LABELS_SINGULAR[entityType] : '';
         if (entityType === BIOSHARING_ENTITIES.STANDARD.value) {
-            label = `${label} - ${null}`;
+            label = `${label} - ${data.properties.type}`;
         }
         return label;
     }

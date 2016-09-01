@@ -462,6 +462,9 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         const width = container.offsetWidth, height = container.offsetHeight;
 
         cy.on('mouseover', 'node', event => {
+            // if there were some selected elements from previous operations deselect them
+            this._cy.$(':selected').unselect();
+            
             const eles = event.cyTarget.closedNeighborhood();
             eles.select();
             this._removed = this._cy.$(':unselected').remove();

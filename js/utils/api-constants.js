@@ -1,7 +1,7 @@
 /**
  * Created by massi on 25/04/2016.
  */
-import _ from 'lodash';
+//import _ from 'lodash';
 
 export const API_URL_ROOT = 'api';
 export const GRAPH_ENDPOINT = 'graph';
