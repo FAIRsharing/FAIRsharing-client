@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
 import _ from 'lodash';
-import { ENTITY_LABELS_SINGULAR } from '../../utils/api-constants';
+import { ENTITY_LABELS_SINGULAR, BIOSHARING_ENTITIES } from '../../utils/api-constants';
 
 const customStyles = {
     content : {
@@ -31,7 +31,7 @@ const ModalDialog = React.createClass({
     render: function() {
 
         const attrList = [], data = this.props.data, attrs = data ? data.properties : {},
-            label = data ? data.labels && data.labels[0] &&  ENTITY_LABELS_SINGULAR[data.labels[0]] : '';
+            label = this._generateLabel();
         for (const key of Object.keys(attrs)) {
             // add field only if in whitelist
             if (this.props.allowedFields.indexOf(key) > -1) {
@@ -47,6 +47,15 @@ const ModalDialog = React.createClass({
                 <ul className="list-group">{attrList}</ul>
             </Modal>
         );
+    },
+
+    _generateLabel: function() {
+        const data = this.props.data, entityType = data && data.labels && data.labels[0];
+        let label = entityType ? ENTITY_LABELS_SINGULAR[entityType] : '';
+        if (entityType === BIOSHARING_ENTITIES.STANDARD.value) {
+            label = `${label} - ${null}`;
+        }
+        return label;
     }
 
 });
