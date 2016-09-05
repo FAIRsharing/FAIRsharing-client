@@ -7,6 +7,7 @@ import LayoutForm from '../views/layout-form';
 import StatsBox from '../views/stats-box';
 import Graph from '../views/graph';
 import ModalDialog from '../views/modal-dialog';
+import TagsForm from '../views/tags-form';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
 import * as graphApi from '../../api/graph-api';
@@ -464,7 +465,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         cy.on('mouseover', 'node', event => {
             // if there were some selected elements from previous operations deselect them
             this._cy.$(':selected').unselect();
-            
+
             const eles = event.cyTarget.closedNeighborhood();
             eles.select();
             this._removed = this._cy.$(':unselected').remove();
@@ -743,26 +744,34 @@ const GraphContainer = React.createClass({
         };
         this.handler = new GraphHandler(this.props.graph, this.props.layout, dispatchMethods);
         return (
-            <div className="graph-handler row">
-                <Modal isOpen={this.props.isFetching} className="is-fetching-modal">
-                    <div className="jumbotron jumbotron-icon centred-cnt">
-                        <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
+            <div>
+                <div className="graph-handler row">
+                    <Modal isOpen={this.props.isFetching} className="is-fetching-modal">
+                        <div className="jumbotron jumbotron-icon centred-cnt">
+                            <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
+                        </div>
+                    </Modal>
+                    <ModalDialog isOpen={this.props.modal.isOpen} data={this.props.modal.node}
+                        allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
+                    <div className="col-md-3 col-xs-6 graph-layout-form-div">
+                        <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }
+                            visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
+                            // tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
+                            depth={this.props.layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
+                            isTagsPanelVisible={this.props.layout.isTagsPanelVisible}
+                            tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
+                        />
+                        <StatsBox handler={this.handler} reload={this.props.reload}/>
                     </div>
-                </Modal>
-                <ModalDialog isOpen={this.props.modal.isOpen} data={this.props.modal.node}
-                    allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
-                <div className="col-md-3 col-xs-6 graph-layout-form-div">
-                    <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }
-                        visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
-                        tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
-                        depth={this.props.layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
-                        isTagsPanelVisible={this.props.layout.isTagsPanelVisible}
-                        tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
-                    />
-                    <StatsBox handler={this.handler} reload={this.props.reload}/>
+                    <div className="col-md-9 col-xs-8">
+                        <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload} />
+                    </div>
                 </div>
-                <div className="col-md-9 col-xs-8">
-                    <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload} />
+                <div className="row">
+                    <div className="col-xs-12">
+                        <TagsForm isTagsPanelVisible={this.props.layout.isTagsPanelVisible} tags={this.props.layout.tags}
+                            tagsSelectChange={this.props.tagsSelectChange}  />
+                    </div>
                 </div>
             </div>
         );
@@ -820,8 +829,16 @@ const mapDispatchToProps = function(dispatch) {
 
         tagsSelectChange: (name) => {
             return function(newValue) {
-                const selected = _.isArray(newValue) ? _.map(newValue, 'value') : [newValue.value];
-                const unselected = _.difference(_.map(this.options, 'value'), selected);
+                let selected, unselected;
+                //use the clear option to reset the selector, i.e. selecting all options
+                if (!newValue) {
+                    selected = _.map(this.options, 'value');
+                    unselected = [];
+                }
+                else {
+                    selected = _.isArray(newValue) ? _.map(newValue, 'value') : [newValue.value];
+                    unselected = _.difference(_.map(this.options, 'value'), selected);
+                }
                 dispatch(actions.tagsSelectChange({
                     name: name,
                     value: {

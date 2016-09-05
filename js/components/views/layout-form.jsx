@@ -29,6 +29,7 @@ const Checkbox = React.createClass({
 
 });
 
+/*
 const TagsSelect = React.createClass({
 
     onValueClick: function(value) {
@@ -44,12 +45,13 @@ const TagsSelect = React.createClass({
 
         return (
             <Select ref="select" multi={true} options={options} value={tags.selected}
-                onChange={this.props.onChange(this.props.tagType)} onValueClick={this.onValueClick}  />
+                onChange={this.props.onChange(this.props.tagType)} onValueClick={this.onValueClick}
+                clearAllText='Reset' backspaceToRemoveMessage=''  />
         );
 
     }
 
-});
+}); */
 
 const LayoutForm = React.createClass({
     /*
@@ -104,14 +106,14 @@ const LayoutForm = React.createClass({
                 );
             }
         }
-
+        /*
         if (this.props.isTagsPanelVisible) {
             for (let elem of TAGS_SELECTS) {
                 let val = elem.value, tags = this.props.tags[elem.value];
                 tagSelectsList.push(<TagsSelect key={val} tagType={val} tags={tags}
-                    onChange={this.props.tagsSelectChange}/>);
+                    onChange={this.props.tagsSelectChange} />);
             }
-        }
+        } */
 
         /*
         const formStyle = {
@@ -134,7 +136,7 @@ const LayoutForm = React.createClass({
             <div className="">{innerCheckboxes}</div>
             <div className="">{outerCheckbox}</div>
             <div className="">{outerCheckboxes}</div>
-            <div ref="tagsSelectsDiv" className="">{tagSelectsList}</div>
+            {/* <div ref="tagsSelectsDiv" className="">{tagSelectsList}</div> */}
         </form>;
 
     }
