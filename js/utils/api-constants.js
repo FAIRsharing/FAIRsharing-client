@@ -17,15 +17,18 @@ export const BIOSHARING_COLLECTION = 'BiosharingCollection';
 export const BIOSHARING_ENTITIES = {
     DATABASE: {
         value: 'BioDBCore',
-        label: 'Database'
-    },
-    POLICY: {
-        value: 'Policy',
-        label: 'Policy'
+        label: 'Database',
+        rank: 1
     },
     STANDARD: {
         value: 'Standard',
-        label: 'Standard'
+        label: 'Standard',
+        rank: 2
+    },
+    POLICY: {
+        value: 'Policy',
+        label: 'Policy',
+        rank: 3
     }
 };
 export const TAG_TYPES = {

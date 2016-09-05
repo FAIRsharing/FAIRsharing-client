@@ -1,10 +1,17 @@
 import React from 'react';
+import _ from 'lodash';
 // import chart from 'src/chart.js';
-import { ENTITIES_COLOR_MAP, ENTITY_LABELS_PLURAL } from '../../utils/api-constants';
+import { BIOSHARING_ENTITIES, ENTITIES_COLOR_MAP, ENTITY_LABELS_PLURAL } from '../../utils/api-constants';
 
 
 
 import { Doughnut as DoughnutChart } from 'react-chartjs';
+
+
+function compareEntityTypeByRank(firstType, secondType) {
+    const entitiesArr = _.values(BIOSHARING_ENTITIES);
+    return _.find(entitiesArr, ['value', secondType]).rank - _.find(entitiesArr, ['value', firstType]).rank ;
+}
 
 /**
  * @method
@@ -87,7 +94,7 @@ const StatsBox = React.createClass({
 
         for (const stat of Object.keys(stats)) {
             const labels = [], data = [], backgroundColors = [];
-            for (const entityType of Object.keys(stats[stat])) {
+            for (const entityType of Object.keys(stats[stat]).sort(compareEntityTypeByRank)) {
                 labels.push(ENTITY_LABELS_PLURAL[entityType]);
                 data.push(stats[stat][entityType]);
                 backgroundColors.push(ENTITIES_COLOR_MAP.get(entityType));
