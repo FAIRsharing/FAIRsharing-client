@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
+import TestUtils from 'react-addons-test-utils';
 import GraphContainer, { GraphHandler, CytoscapeStrategy, coseLayoutProps,
     nodeFilters } from '../../../../js/components/containers/graph-container';
 import { BIOSHARING_COLLECTION, BIOSHARING_ENTITIES, GRAPH_LAYOUTS } from '../../../../js/utils/api-constants';
@@ -230,9 +231,7 @@ describe('GraphContainer', () => {
 
 });
 
-/**
- * TODO add tests!!
- */
+
 describe('CytoscapeStrategy', () => {
 
     describe('#constructor', () => {

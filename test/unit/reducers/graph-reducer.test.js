@@ -1,16 +1,19 @@
 import { expect } from 'chai';
 import graphReducer from '../../../js/reducers/graph-reducer';
-import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES, TAG_TYPES, DEPTH_LEVELS } from '../../../js/utils/api-constants';
+import { GRAPH_LAYOUTS } from '../../../js/utils/api-constants';
 import _ from 'lodash';
 import * as types from '../../../js/actions/action-types';
-import * as actions from '../../../js/actions/graph-actions';
+// import * as actions from '../../../js/actions/graph-actions';
 import testGraph from '../../fixtures/graph.json';
+import { visibilityObj, tagSelectorObj } from '../../test-constants.js';
 
+/*
 const visibilityObj = {};
 _.values(BIOSHARING_ENTITIES).forEach(entity => visibilityObj[entity.value] = _.zipObject(DEPTH_LEVELS, _.map(DEPTH_LEVELS, () => true)));
 
 const tagSelectorObj = {};
 _.values(TAG_TYPES).forEach(tagType => tagSelectorObj[tagType.value] = tagType.initialState);
+*/
 
 describe('graphReducer', () => {
 
