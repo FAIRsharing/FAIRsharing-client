@@ -40,6 +40,8 @@ CustomHandle.propTypes = {
 /**
  * @class
  * @name Graph
+ * @prop{components.containers.GraphHandler} handler
+ * @prop{Object} layout
  */
 const Graph = React.createClass({
 
@@ -47,7 +49,12 @@ const Graph = React.createClass({
         return nextProps.reload;
     },
 
-    componentDidUpdate: function () {
+    componentDidMount: function() {
+        let graphDOMNode = this.refs.graph;
+        this.props.handler.render(graphDOMNode, this.props.layout);
+    },
+
+    componentDidUpdate: function() {
         let graphDOMNode = this.refs.graph;
         this.props.handler.render(graphDOMNode, this.props.layout);
     },

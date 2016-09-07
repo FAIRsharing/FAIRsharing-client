@@ -49,7 +49,7 @@ const TagsForm = React.createClass({
                 onChange={this.props.tagsSelectChange} />);
         }
 
-        return <form className="form">
+        return <form id="tagsForm" className="form">
             <div>{tagSelectsList}</div>
         </form>;
 

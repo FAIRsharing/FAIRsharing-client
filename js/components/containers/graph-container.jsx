@@ -746,7 +746,7 @@ const GraphContainer = React.createClass({
         return (
             <div>
                 <div className="graph-handler row">
-                    <Modal isOpen={this.props.isFetching} className="is-fetching-modal">
+                    <Modal id="isFetchingModal" isOpen={this.props.isFetching} className="is-fetching-modal">
                         <div className="jumbotron jumbotron-icon centred-cnt">
                             <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
                         </div>

@@ -15,10 +15,10 @@ const customStyles = {
 };
 
 const ModalDialog = React.createClass({
-
+    /*
     shouldComponentUpdate: function(nextProps) {
         return true;
-    },
+    },*/
 
     open: function() {
         return null;
