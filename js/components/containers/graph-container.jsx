@@ -460,7 +460,6 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     _registerNodeEvents() {
         const cy = this._cy, container = cy.container();
         if (!container) return;
-        const width = container.offsetWidth, height = container.offsetHeight;
 
         cy.on('mouseover', 'node', event => {
             // if there were some selected elements from previous operations deselect them
@@ -485,6 +484,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             if (event.wheelDelta === 0) {
                 return;
             }
+            const width = container.offsetWidth, height = container.offsetHeight;
             const zoomingFactor = event.wheelDelta > 0 ? 1.1 : 1/1.1;
             cy.zoom({
                 level: zoomingFactor * cy.zoom(),
@@ -753,7 +753,7 @@ const GraphContainer = React.createClass({
                     </Modal>
                     <ModalDialog isOpen={this.props.modal.isOpen} data={this.props.modal.node}
                         allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
-                    <div className="col-md-3 col-xs-6 graph-layout-form-div">
+                    <div className="col-sm-3 col-xs-6 graph-layout-form-div">
                         <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }
                             visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
                             // tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
@@ -763,7 +763,7 @@ const GraphContainer = React.createClass({
                         />
                         <StatsBox handler={this.handler} reload={this.props.reload}/>
                     </div>
-                    <div className="col-md-9 col-xs-8">
+                    <div className="col-sm-9 col-xs-12">
                         <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload} />
                     </div>
                 </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import _ from 'lodash';
 import Select from 'react-select';
 import { TAG_TYPES } from '../../utils/api-constants';
@@ -19,9 +20,12 @@ const TagsSelect = React.createClass({
         });
 
         return (
-            <Select ref="select" multi={true} options={options} value={tags.selected}
-                onChange={this.props.onChange(this.props.tagType)} onValueClick={this.onValueClick}
-                clearAllText='Reset' backspaceToRemoveMessage=''  />
+            <div className="tag-select">
+                <h4 className="tag-select-label">{this.props.label}</h4>
+                <Select ref="select" multi={true} options={options} value={tags.selected}
+                    onChange={this.props.onChange(this.props.tagType)} onValueClick={this.onValueClick}
+                    clearAllText='Reset' backspaceToRemoveMessage=''  />
+            </div>
         );
 
     }
@@ -35,6 +39,14 @@ const TagsSelect = React.createClass({
  */
 const TagsForm = React.createClass({
 
+    componentDidUpdate: function(prevProps) {
+        // if the panel was activated scroll it into view
+        if (this.props.isTagsPanelVisible && !prevProps.isTagsPanelVisible) {
+            const rootNode = ReactDOM.findDOMNode(this);
+            rootNode && rootNode.scrollIntoView();
+        }
+    },
+
     render: function() {
 
         if (!this.props.isTagsPanelVisible) {
@@ -45,7 +57,7 @@ const TagsForm = React.createClass({
 
         for (let elem of TAGS_SELECTS) {
             let val = elem.value, tags = this.props.tags[elem.value];
-            tagSelectsList.push(<TagsSelect key={val} tagType={val} tags={tags}
+            tagSelectsList.push(<TagsSelect label={elem.label} key={val} tagType={val} tags={tags}
                 onChange={this.props.tagsSelectChange} />);
         }
 

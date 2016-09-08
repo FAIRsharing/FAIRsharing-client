@@ -1,6 +1,7 @@
 $layout-background-color: #f3ffff;
 $modal-dialog-title-color: #27aae1;
-$modal-dialog-subtitle-color:#337ab7;
+$modal-dialog-subtitle-color: #337ab7;
+$tag-select-label-color: #337ab7;
 
 $layout-form-margin: 2px;
 
@@ -17,7 +18,7 @@ $layout-form-margin: 2px;
 }
 
 .graph-handler .graph-layout-form-div {
-    min-width: 280px;
+    /* min-width: 280px; */
     max-width: 300px;
 }
 
@@ -66,4 +67,10 @@ $layout-form-margin: 2px;
 
 .graph-dialog h2 {
     color: $modal-dialog-subtitle-color
+}
+
+.tag-select {}
+
+.tag-select .tag-select-label {
+    color: $tag-select-label-color;
 }
