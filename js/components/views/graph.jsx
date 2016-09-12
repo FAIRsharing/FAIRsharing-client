@@ -6,6 +6,7 @@ import 'rc-slider/assets/index.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Slider from 'rc-slider';
+import GraphHandler from '../../models/graph';
 // import spread from 'cytoscape-spread';
 
 const handleStyle = {
@@ -44,6 +45,18 @@ CustomHandle.propTypes = {
  * @prop{Object} layout
  */
 const Graph = React.createClass({
+
+    propTypes: {
+        handler: React.PropTypes.instanceOf(GraphHandler),
+        layout: React.PropTypes.shape({
+            name: React.PropTypes.string,
+            visibility: React.PropTypes.object,
+            depth: React.PropTypes.number,
+            tags: React.PropTypes.object,
+            isTagsPanelVisible: React.PropTypes.bool
+        }).isRequired,
+        reload: React.PropTypes.bool
+    },
 
     shouldComponentUpdate: function(nextProps) {
         return nextProps.reload;
