@@ -2,6 +2,8 @@ $layout-background-color: #f3ffff;
 $modal-dialog-title-color: #27aae1;
 $modal-dialog-subtitle-color: #337ab7;
 $tag-select-label-color: #337ab7;
+$graph-background-color: #fcffff;
+$graph-border-color: #d0ffff;
 
 $layout-form-margin: 2px;
 
@@ -67,6 +69,12 @@ $layout-form-margin: 2px;
 
 .graph-dialog h2 {
     color: $modal-dialog-subtitle-color
+}
+
+.graph {
+    border: 3px solid $graph-border-color;
+    background-color: $graph-background-color;
+    border-radius: 6px;
 }
 
 .tag-select {}

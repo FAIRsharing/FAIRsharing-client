@@ -61,33 +61,37 @@ const Graph = React.createClass({
 
     render: function() {
 
-        const sliders = [], handler = this.props.handler;
+        const sliders = [], handler = this.props.handler, tunableParams = handler.getTunableParams();
+        let sliderForm = null;
 
-        for (const param of handler.getTunableParams()) {
-            sliders.push(
-                <div key={`div-${param.paramName}`}>
-                    <label htmlFor={`slider-${param.paramName}`} className="col-xs-2">
-                        {param.paramName}
-                    </label>
-                    <div className="col-xs-4">
-                        <Slider id={`slider-${param.paramName}`} key={param.paramName}
-                                defaultValue={(param.min + param.max)/2} handle={<CustomHandle />}
-                                ref={param.paramName} min={param.min} max={param.max}
-                                onChange={this._sliderOnChange(param.paramName)} />
+        if (tunableParams.length > 0) {
+            for (const param of tunableParams) {
+                sliders.push(
+                    <div key={`div-${param.paramName}`}>
+                        <label htmlFor={`slider-${param.paramName}`} className="col-xs-2">
+                            {param.paramName}
+                        </label>
+                        <div className="col-xs-4">
+                            <Slider id={`slider-${param.paramName}`} key={param.paramName}
+                                    defaultValue={(param.min + param.max)/2} handle={<CustomHandle />}
+                                    ref={param.paramName} min={param.min} max={param.max}
+                                    onChange={this._sliderOnChange(param.paramName)} />
+                        </div>
                     </div>
+                );
+            }
+            sliderForm = <form className="form">
+                <div className="row graph-sliders-div">
+                    {sliders}
                 </div>
-            );
+            </form>;
         }
 
         return (
             <div id="graphCnt" className="graph-div">
-                <form className="form">
-                    <div className="row graph-sliders-div">
-                        {sliders}
-                    </div>
-                </form>
+                {sliderForm}
                 <div className="row">
-                    <div id="graph" ref="graph" className="graph col-md-10 col-xs-12"
+                    <div id="graph" ref="graph" className="graph"
                         style={{'height': '100%', 'width': '100%'}} >
                     </div>
                 </div>
