@@ -13,6 +13,13 @@ export function  getGraphSuccess(graph) {
     };
 }
 
+export function getGraphError(error) {
+    return {
+        type: types.GET_GRAPH_ERROR,
+        error
+    };
+}
+
 export function  layoutSelectChange(layout) {
     return {
         type: types.LAYOUT_SELECT_CHANGE,
