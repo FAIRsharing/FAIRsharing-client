@@ -1,5 +1,6 @@
 import store from '../store';
-import { getGraphRequest, getGraphSuccess } from '../actions/graph-actions';
+import { handleHTTPErrors } from '../utils/helper-funcs';
+import { getGraphRequest, getGraphSuccess, getGraphError } from '../actions/graph-actions';
 import { API_URL_ROOT, GRAPH_ENDPOINT } from '../utils/api-constants';
 
 const MAX_PATH_LENGTH = 2;
@@ -19,14 +20,19 @@ export function getGraph(graphId) {
     const graphUrl = `/${API_URL_ROOT}/${GRAPH_ENDPOINT}/${graphId}/?${queryParams}`;
     store.dispatch(getGraphRequest());
     return fetch(graphUrl)
+        .then(handleHTTPErrors)
         .then(response => response.json())
         .then(json => {
             // console.log(json);
             store.dispatch(getGraphSuccess(json));
             return json;
+        })
+        .catch(err => {
+            store.dispatch(getGraphError(err));
         });
 }
 
+/*
 export function getRelationalGraph(graphId) {
     const graphUrl = `/${API_URL_ROOT}`;
     return fetch(graphUrl)
@@ -37,4 +43,4 @@ export function getRelationalGraph(graphId) {
             return null;
         });
 
-}
+} */
