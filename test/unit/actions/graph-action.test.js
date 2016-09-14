@@ -26,6 +26,17 @@ describe('graph-actions', () => {
         });
     });
 
+    describe('getGraphError', () => {
+        it('should create an action to instantiate a new graph', () => {
+            const error = '500 Internal Server Error';
+            const expectedAction = {
+                type: types.GET_GRAPH_ERROR,
+                error
+            };
+            expect(actions.getGraphError(error)).to.eql(expectedAction);
+        });
+    });
+
     describe('layoutSelectChange', () => {
         it('should create an action to change the graph layout', () => {
             const layout = {

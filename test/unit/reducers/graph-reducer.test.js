@@ -150,6 +150,53 @@ describe('graphReducer', () => {
         expect(nextState).to.eql(expectedState);
     });
 
+    it('should handle the GET_GRAPH_ERROR event', () => {
+        const previousState = {
+            graph: {
+                nodes: [],
+                edges: []
+            },
+            isFetching: true,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: visibilityObj,
+                isTagsPanelVisible: false,
+                tags: tagSelectorObj,
+                depth: 1
+            },
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            }
+        };
+        const nextState = graphReducer(previousState, {
+            type: types.GET_GRAPH_ERROR,
+            error: 'INTERNAL SERVER ERROR'
+        });
+        const expectedState = {
+            graph: {
+                nodes: [],
+                edges: []
+            },
+            isFetching: true,
+            layout: {
+                name: GRAPH_LAYOUTS.COSE,
+                visibility: visibilityObj,
+                isTagsPanelVisible: false,
+                tags: tagSelectorObj,
+                depth: 1
+            },
+            reload: true,
+            modal: {
+                isOpen: false,
+                node: null
+            },
+            error: 'INTERNAL SERVER ERROR'
+        };
+        expect(nextState).to.eql(expectedState);
+    });
+
     it('should handle the VISIBILITY_CHECKBOX_CHANGE event, turning Policy at level 1 to false', () => {
         const previousState = {
             graph: testGraph,
