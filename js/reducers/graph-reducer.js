@@ -87,6 +87,10 @@ const graphReducer = function (state = initialState, action) {
         };
     } // end CASE
 
+    case types.GET_GRAPH_ERROR: {
+        return { ...state, isFetching: false, error: action.error };
+    }
+
     case types.LAYOUT_SELECT_CHANGE:
         return { ...state, layout: { ...state.layout, ...action.layout }, reload: true };
 
@@ -147,7 +151,6 @@ const graphReducer = function (state = initialState, action) {
 
     case types.CLOSE_DETAILS_PANEL:
         return { ...state, modal: { isOpen: false, node: null}, reload: false};
-
     }
 
     return state;
