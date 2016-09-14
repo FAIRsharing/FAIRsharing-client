@@ -1,6 +1,7 @@
 /**
 * Created by massi on 25/04/2016.
 */
+import '../../../styles/graph.scss';
 import 'font-awesome/scss/font-awesome.scss';
 import React from 'react';
 import LayoutForm from '../views/layout-form';
@@ -69,13 +70,20 @@ const GraphContainer = React.createClass({
     */
 
     render: function() {
+        if (this.props.error) {
+            return (
+                <div className="graph-error">
+                    {'An unexpected error occurred while retrieving the graph. Sorry for the inconvenience.' }
+                </div>
+            );
+        }
         const dispatchMethods = {
             openDetailsPanel: this.props.openDetailsPanel,
             closeDetailsPanel: this.props.closeDetailsPanel
         };
         this.handler = new GraphHandler(this.props.graph, this.props.layout, dispatchMethods);
         return (
-            <div>
+            <div className="graph-container">
                 <div className="graph-handler row">
                     <Modal id="isFetchingModal" isOpen={this.props.isFetching} className="is-fetching-modal">
                         <div className="jumbotron jumbotron-icon centred-cnt">
@@ -121,7 +129,8 @@ const mapStateToProps = function(store) {
         modal: {
             isOpen: modal.isOpen,
             node: modalNode
-        }
+        },
+        error: store.graphState.error
     };
 };
 
