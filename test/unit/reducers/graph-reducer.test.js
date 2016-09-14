@@ -179,7 +179,7 @@ describe('graphReducer', () => {
                 nodes: [],
                 edges: []
             },
-            isFetching: true,
+            isFetching: false,
             layout: {
                 name: GRAPH_LAYOUTS.COSE,
                 visibility: visibilityObj,

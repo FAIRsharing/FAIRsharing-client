@@ -35,17 +35,18 @@ describe('graph', () => {
     it('should render the form for the sliders controls', () => {
         const form = ReactTestUtils.findRenderedDOMComponentWithTag(component, 'form');
         // const divs = ReactTestUtils.scryRenderedDOMComponentsWithTag(component, 'div');
-        expect(form.children).to.have.lengthOf(1);
-        const formChild = form.children[0];
+        expect(form.children).to.have.lengthOf(2);
+        // the cond child is the custom slider
+        const formChild = form.children[1];
         expect(formChild.classList).to.have.lengthOf(2);
         expect(formChild.classList[1]).to.equal('graph-sliders-div');
         // console.log(graphCanvases.length);
     });
 
-    it('should contain as many slider as are the tunable params in the selected layout (COLA)', () => {
+    it('should contain as many slider as are the tunable params in the selected layout (COLA) plus the ZOOM slider', () => {
         const sliders = ReactTestUtils.scryRenderedComponentsWithType(component, Slider);
         const tunableParams = testHandler.getTunableParams();
-        expect(sliders).to.have.lengthOf(tunableParams.length);
+        expect(sliders).to.have.lengthOf(tunableParams.length + 1);
     });
 
 });
