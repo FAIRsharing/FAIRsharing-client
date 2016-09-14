@@ -1,8 +1,10 @@
+// import '../../../styles/graph.scss';
 import React from 'react';
 import Modal from 'react-modal';
 import _ from 'lodash';
 import { ENTITY_LABELS_SINGULAR, BIOSHARING_ENTITIES } from '../../utils/api-constants';
 
+/*
 const customStyles = {
     content : {
         top: '50%',
@@ -12,7 +14,8 @@ const customStyles = {
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)'
     }
-};
+}; */
+
 
 const ModalDialog = React.createClass({
     /*
@@ -41,7 +44,7 @@ const ModalDialog = React.createClass({
         }
 
         return (
-            <Modal isOpen={this.props.isOpen} onRequestClose={this.close} className="graph-dialog">
+            <Modal isOpen={this.props.isOpen} onRequestClose={this.close} className="graph-dialog" style={{overlay: {zIndex: 5}}}>
                 <h1>{attrs.shortName || attrs.name}</h1>
                 <h2>{label}</h2>
                 <ul className="list-group">{attrList}</ul>

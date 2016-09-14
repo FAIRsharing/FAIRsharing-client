@@ -23,7 +23,7 @@ import * as actions from '../../actions/graph-actions';
 
 
 // cyCola(cytoscape, cola);
-
+const modalStyles = {overlay: {zIndex: 10}};
 
 const GraphContainer = React.createClass({
 
@@ -85,7 +85,7 @@ const GraphContainer = React.createClass({
         return (
             <div className="graph-container">
                 <div className="graph-handler row">
-                    <Modal id="isFetchingModal" isOpen={this.props.isFetching} className="is-fetching-modal">
+                    <Modal id="isFetchingModal" isOpen={this.props.isFetching} className="is-fetching-modal" style={modalStyles}>
                         <div className="jumbotron jumbotron-icon centred-cnt">
                             <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
                         </div>

@@ -58,7 +58,11 @@ $layout-form-margin: 2px;
     background: #fff;
     font-size: 14px;
     text-align: center;
-    z-index: 3
+    z-index: 3;
+}
+
+.graph-dialog-overlay {
+    z-index: 5;
 }
 
 .graph-dialog {
