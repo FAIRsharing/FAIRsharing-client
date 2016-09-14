@@ -428,6 +428,24 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
     }
 
+    /**
+     * @method
+     * @name zoom
+     * @description performs the zoom of the graph
+     * @param{Number}
+     */
+    zoom(zoomFactor) {
+        const cy = this._cy, container = cy.container();
+        const width = container.offsetWidth, height = container.offsetHeight;
+        cy.zoom({
+            level: zoomFactor,
+            renderedPosition: { x: width/2, y: height/2}
+        });
+    }
+
+    /**
+     * @private
+     */
     _registerNodeEvents() {
         const cy = this._cy, container = cy.container();
         if (!container) return;
@@ -451,6 +469,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             this.openDetailsPanel(node.data('application_id'));
         });
 
+        /*
         container.addEventListener('wheel', event => {
             if (event.wheelDelta === 0) {
                 return;
@@ -462,7 +481,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                 renderedPosition: { x: width/2, y: height/2}
             });
             return false;
-        });
+        }); */
     }
 
 }
@@ -685,6 +704,10 @@ export default class GraphHandler {
 
     toggleElementsByLabel(label, remove) {
         this._strategy.toggleElementsByLabel(label, remove);
+    }
+
+    zoom(level) {
+        this._strategy.zoom(level);
     }
 
 }
