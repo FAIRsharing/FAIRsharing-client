@@ -139,7 +139,10 @@ export const nodeFilters = {
 
         let flag = true;
         for (const tagType of Object.keys(this.tags)) {
-            flag = flag &&  _.intersection(node.properties[tagType], this.tags[tagType].selected).length > 0;
+            // if there is some filtering on tags perform it, otherwise skip it
+            if (!_.isEmpty(this.tags[tagType].unselected)) {
+                flag = flag &&  _.intersection(node.properties[tagType], this.tags[tagType].selected).length > 0;
+            }
         }
         return flag;
     },

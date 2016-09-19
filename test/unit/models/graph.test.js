@@ -14,11 +14,11 @@ describe('nodeFilters', () => {
         blacklistedLabels: { 1: ['BLACKLISTED_1A', 'BLACKLISTED_1B'], 2:['BLACKLISTED_2A'] },
         tags: {
             'domains': {
-                selected: ['Genome', 'Proteome', 'Transcriptome'],
-                unselected: []
+                selected: ['Genome', 'Gene Annotation', 'Proteome', 'Transcriptome'],
+                unselected: ['Metabolome']
             },
             'taxonomies': {
-                selected: ['Homo sapiens', 'Mus musculus'],
+                selected: ['Homo sapiens', 'Mus musculus', 'Rattus norvegicus',  'Gorilla gorilla gorilla'],
                 unselected: []
             }
         },
@@ -76,13 +76,26 @@ describe('nodeFilters', () => {
 
     describe('filterByTags', () => {
 
-        it('should return false for a node that does not contain at lest a tag per tag type', () => {
+        it('should return true for a node that does not contain any tag for a type if no tags are unselected', () => {
             const node = {
                 labels: ['LABEL', 'ANOTHER_LABEL'],
                 properties: {
                     'application_id': 'bsg-000001',
-                    'domains': ['Genome', 'Gene Annotation', 'Bao'],
-                    'taxonomies': ['Rattus norvegicus', 'Gorilla gorilla gorilla']
+                    'domains': ['Genome'],
+                    'taxonomies': []
+                },
+                'path_length': 1
+            };
+            expect(nodeFilters.filterByTags.call(thisArg, node)).to.equal(true);
+        });
+
+        it('should return false for a node that does not contain at lest a tag per tag type if at least one is unselected', () => {
+            const node = {
+                labels: ['LABEL', 'ANOTHER_LABEL'],
+                properties: {
+                    'application_id': 'bsg-000001',
+                    'domains': ['Metabolome'],
+                    'taxonomies': ['Homo sapiens', 'Mus musculus']
                 },
                 'path_length': 1
             };
@@ -94,7 +107,7 @@ describe('nodeFilters', () => {
                 labels: ['LABEL', 'ANOTHER_LABEL'],
                 properties: {
                     'application_id': 'bsg-000001',
-                    'domains': ['Genome', 'Gene Annotation', 'Bao'],
+                    'domains': ['Genome', 'Gene Annotation', 'Proteome'],
                     'taxonomies': ['Rattus norvegicus', 'Mus musculus']
                 },
                 'path_length': 1
