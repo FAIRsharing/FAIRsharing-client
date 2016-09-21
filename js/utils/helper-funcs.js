@@ -42,3 +42,14 @@ export function handleHTTPErrors(response) {
     }
     return response;
 }
+
+/**
+ * @method
+ * @name getBaseUrl
+ * @return{String} Domain base-url
+ */
+export function getBaseUrl() {
+    if (typeof window !== 'undefined') {
+        return `${window.location.protocol}/${window.location.host}`;
+    }
+}
