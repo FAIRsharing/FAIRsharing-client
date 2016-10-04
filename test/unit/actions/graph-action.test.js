@@ -5,15 +5,15 @@ import * as actions from '../../../js/actions/graph-actions';
 import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES } from '../../../js/utils/api-constants';
 
 describe('graph-actions', () => {
-
+    /*
     describe('getGraphRequest', () => {
         it('should create an action to notify that is fetching the graph remotely', () => {
             const expectedAction = {
-                type: types.GET_GRAPH_REQUEST
+                type: types.SEND_REMOTE_REQUEST
             };
             expect(actions.getGraphRequest()).to.eql(expectedAction);
         });
-    });
+    }); */
 
     describe('getGraphSuccess', () => {
         it('should create an action to instantiate a new graph', () => {
@@ -26,6 +26,7 @@ describe('graph-actions', () => {
         });
     });
 
+    /*
     describe('getGraphError', () => {
         it('should create an action to instantiate a new graph', () => {
             const error = '500 Internal Server Error';
@@ -35,7 +36,7 @@ describe('graph-actions', () => {
             };
             expect(actions.getGraphError(error)).to.eql(expectedAction);
         });
-    });
+    }); */
 
     describe('layoutSelectChange', () => {
         it('should create an action to change the graph layout', () => {

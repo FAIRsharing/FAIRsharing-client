@@ -1,10 +1,10 @@
 import * as types from './action-types';
-
+/*
 export function getGraphRequest() {
     return {
         type: types.GET_GRAPH_REQUEST
     };
-}
+} */
 
 export function  getGraphSuccess(graph) {
     return {
@@ -13,12 +13,13 @@ export function  getGraphSuccess(graph) {
     };
 }
 
+/*
 export function getGraphError(error) {
     return {
         type: types.GET_GRAPH_ERROR,
         error
     };
-}
+} */
 
 export function  layoutSelectChange(layout) {
     return {

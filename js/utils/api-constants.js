@@ -1,10 +1,13 @@
 /**
  * Created by massi on 25/04/2016.
  */
-//import _ from 'lodash';
 
+// API urls
 export const API_URL_ROOT = 'api';
 export const GRAPH_ENDPOINT = 'graph';
+export const DATABASE_ENDPOINT = 'database';
+
+// Layouts
 export const COLA_LAYOUT = 'cola';
 export const COSE_LAYOUT = 'cose';
 export const CONCENTRIC_LAYOUT = 'concentric';
@@ -13,6 +16,8 @@ export const GRAPH_LAYOUTS = {
     COSE: 'cose',
     CONCENTRIC: 'concentric'
 };
+
+// Biosharing entities
 export const BIOSHARING_COLLECTION = 'BiosharingCollection';
 export const BIOSHARING_ENTITIES = {
     DATABASE: {

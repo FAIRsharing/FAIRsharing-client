@@ -56,7 +56,7 @@ const graphReducer = function (state = initialState, action) {
 
     switch (action.type) {
 
-    case types.GET_GRAPH_REQUEST: {
+    case types.SEND_REMOTE_REQUEST: {
         return {
             ...state,
             isFetching: true
@@ -87,7 +87,7 @@ const graphReducer = function (state = initialState, action) {
         };
     } // end CASE
 
-    case types.GET_GRAPH_ERROR: {
+    case types.GET_REMOTE_ERROR: {
         return { ...state, isFetching: false, error: action.error };
     }
 

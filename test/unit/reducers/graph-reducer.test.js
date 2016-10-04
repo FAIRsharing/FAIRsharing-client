@@ -18,7 +18,8 @@ _.values(TAG_TYPES).forEach(tagType => tagSelectorObj[tagType.value] = tagType.i
 describe('graphReducer', () => {
 
     it('should return the initial state', () => {
-        expect(graphReducer(undefined, {})).to.eql({
+        const nextState = graphReducer(undefined, {});
+        expect(nextState).to.eql({
             graph: {
                 nodes: [],
                 edges: []
