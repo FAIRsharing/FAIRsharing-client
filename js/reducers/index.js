@@ -1,10 +1,15 @@
 import { combineReducers } from 'redux';
 
-//reducers
+import { reducer as formReducer } from 'redux-form';
+
+// custom-made reducers
 import graphReducer from './graph-reducer';
+import databaseReducer from './database-reducer';
 
 const reducers = combineReducers({
-    graphState: graphReducer
+    databaseState: databaseReducer,
+    graphState: graphReducer,
+    form: formReducer
 });
 
 export default reducers;

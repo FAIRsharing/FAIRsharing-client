@@ -40,9 +40,9 @@ describe('graphReducer', () => {
         });
     });
 
-    it('should handle the GET_GRAPH_REQUEST event', () => {
+    it('should handle the SEND_REMOTE_REQUEST event', () => {
         const nextState = graphReducer(undefined, {
-            type: types.GET_GRAPH_REQUEST
+            type: types.SEND_REMOTE_REQUEST
         });
         const expectedState = {
             graph: {
@@ -151,7 +151,7 @@ describe('graphReducer', () => {
         expect(nextState).to.eql(expectedState);
     });
 
-    it('should handle the GET_GRAPH_ERROR event', () => {
+    it('should handle the GET_REMOTE_ERROR event', () => {
         const previousState = {
             graph: {
                 nodes: [],
@@ -172,7 +172,7 @@ describe('graphReducer', () => {
             }
         };
         const nextState = graphReducer(previousState, {
-            type: types.GET_GRAPH_ERROR,
+            type: types.GET_REMOTE_ERROR,
             error: 'INTERNAL SERVER ERROR'
         });
         const expectedState = {

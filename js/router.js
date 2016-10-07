@@ -4,7 +4,7 @@
 import React from 'react';
 import { Router, Route, hashHistory } from 'react-router';
 import GraphContainer from './components/containers/graph-container';
-import DatabaseEditContainer from './components/containers/database-edit-container';
+import DatabaseEditContainer from './components/containers/database-container';
 
 export default (
     <Router history={hashHistory}>
@@ -13,7 +13,7 @@ export default (
         </Route>
         <Route path="database">
             <Route path="edit">
-                <Route path=":id" component={DatabaseEditContainer} />
+                <Route path=":biodbcoreId" component={DatabaseEditContainer} />
             </Route>
         </Route>
     </Router>

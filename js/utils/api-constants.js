@@ -108,3 +108,27 @@ export const GRAPH_COUNT = 'Count';
 export const GRAPH_COUNT_INNER = 'Count - Inner';
 export const GRAPH_COUNT_OUTER = 'Count - Outer';
 export const GRAPH_COUNT_TOTAL = 'Count - Total';
+
+// Resource/Entity Statuses
+export const RESOURCE_STATUSES = [
+    {
+        value: 'UNC',
+        label: 'Uncertain',
+        rank: 1
+    },
+    {
+        value: 'DEP',
+        label: 'Deprecated',
+        rank: 2
+    },
+    {
+        value: 'DEV',
+        label: 'In development',
+        rank: 3
+    },
+    {
+        value: 'RDY',
+        label: 'Ready',
+        rank: 4
+    }
+];

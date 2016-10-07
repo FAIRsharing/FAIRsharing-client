@@ -1,6 +1,7 @@
 import store from '../store';
 import { handleHTTPErrors } from '../utils/helper-funcs';
-import { getGraphRequest, getGraphSuccess, getGraphError } from '../actions/graph-actions';
+import { sendRemoteRequest, getRemoteError } from '../actions/main-actions';
+import { getGraphSuccess } from '../actions/graph-actions';
 import { API_URL_ROOT, GRAPH_ENDPOINT } from '../utils/api-constants';
 
 const MAX_PATH_LENGTH = 2;
@@ -18,7 +19,7 @@ export function getGraph(graphId) {
         .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParamsObj[key])}`)
         .join('&').replace(/%20/g, '+');
     const graphUrl = `/${API_URL_ROOT}/${GRAPH_ENDPOINT}/${graphId}/?${queryParams}`;
-    store.dispatch(getGraphRequest());
+    store.dispatch(sendRemoteRequest());
     return fetch(graphUrl)
         .then(handleHTTPErrors)
         .then(response => response.json())
@@ -28,7 +29,7 @@ export function getGraph(graphId) {
             return json;
         })
         .catch(err => {
-            store.dispatch(getGraphError(err));
+            store.dispatch(getRemoteError(err));
         });
 }
 
