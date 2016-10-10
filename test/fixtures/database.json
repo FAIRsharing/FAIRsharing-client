@@ -1,0 +1,147 @@
+{
+    "pk": 1562,
+    "bsg_id": "bsg-d000517",
+    "biodbcore_id": "biodbcore-000517",
+    "name": "The Pizzo Database",
+    "shortname": "Pizzo",
+    "homepage": "http://pizzo.org/",
+    "description": "The Pizzo Database of Ns Signora della Cosa Ns is a collection of biological specimens who owes us the pizzo",
+    "approved": true,
+    "hidden": false,
+    "status": "RDY",
+    "editsApproved": true,
+    "added": null,
+    "updated": "2016-07-04T22:01:07.551000",
+    "yearOfCreation": null,
+    "domains": [
+        "Interactions",
+        "Life Science",
+        "Protein",
+        "Structure data"
+    ],
+    "taxonomies": [
+        "All"
+    ],
+    "publications": [
+        {
+            "id": 981,
+            "pubmedId": "20900963",
+            "publicationTitle": "A random paper",
+            "publicationAuthors": "Tizzi, Cai et Sempronii ",
+            "publicationJournal": "Nucleic Acids Res.",
+            "doi": "",
+            "publicationYear": "2011"
+        }
+    ],
+    "organisation": [
+        {
+            "id": 1812,
+            "name": "Pippo community",
+            "abbreviated_name": "",
+            "url": "http://pippo.org/Community",
+            "doi": "",
+            "image_name": "",
+            "role": 1232,
+            "countries": []
+        }
+    ],
+    "supportLinks": [],
+    "grants": [],
+    "countries": [
+        "Spain"
+    ],
+    "licenses": [
+        {
+            "id": 86,
+            "name": "Attribution required",
+            "version": "",
+            "url": "",
+            "applicable_to": "data"
+        },
+        {
+            "id": 25,
+            "name": "Ciccio Open access",
+            "version": "",
+            "url": "http://cicciorepository.org/terms_of_service",
+            "applicable_to": "data"
+        },
+        {
+            "id": 63,
+            "name": "attribution required",
+            "version": "",
+            "url": "",
+            "applicable_to": "data"
+        },
+        {
+            "id": 64,
+            "name": "free for non-commercial use",
+            "version": "",
+            "url": "",
+            "applicable_to": "data"
+        }
+    ],
+    "standardsImplemented": [
+        {
+            "pk": 544,
+            "bsg_id": "bsg-s000089",
+            "name": "Gene Ontology",
+            "shortname": "GO",
+            "homepage": "http://purl.bioontology.org/ontology/GO",
+            "description": "\"Gene Ontology\" is a standard, specialising in the fields described under \"scope and data types\", below. Until this entry is claimed, more information on this project can be found at http://purl.bioontology.org/ontology/GO. This text was generated automatically. If you work on the project responsible for \"Gene Ontology\" then please consider helping us  by claiming this record  and updating it appropriately.",
+            "approved": true,
+            "hidden": false,
+            "status": "RDY"
+        },
+        {
+            "pk": 682,
+            "bsg_id": "bsg-s000228",
+            "name": "FASTA Sequence Format",
+            "shortname": "FASTA Sequence Format",
+            "homepage": "http://blast.ncbi.nlm.nih.gov/blastcgihelp.shtml",
+            "description": "\"FASTA Sequence Format\" is a standard, specialising in the fields described under \"scope and data types\", below. Until this entry is claimed, more information on this project can be found at http://blast.ncbi.nlm.nih.gov/blastcgihelp.shtml. This text was generated automatically. If you work on the project responsible for \"FASTA Sequence Format\" then please consider helping us  by claiming this record  and updating it appropriately.",
+            "approved": true,
+            "hidden": false,
+            "status": "RDY"
+        },
+        {
+            "pk": 693,
+            "bsg_id": "bsg-s000239",
+            "name": "HMMER Format",
+            "shortname": "HMMER Format",
+            "homepage": "http://www.genome.jp/tools/motif/hmmformat.htm",
+            "description": "\"HMMER Format\" is a standard, specialising in the fields described under \"scope and data types\", below. Until this entry is claimed, more information on this project can be found at http://www.genome.jp/tools/motif/hmmformat.htm. This text was generated automatically. If you work on the project responsible for \"HMMER Format\" then please consider helping us  by claiming this record  and updating it appropriately.",
+            "approved": true,
+            "hidden": false,
+            "status": "RDY"
+        },
+        {
+            "pk": 709,
+            "bsg_id": "bsg-s000255",
+            "name": "Protein Data Bank Format",
+            "shortname": "PDB",
+            "homepage": "http://www.wwpdb.org/documentation/format33/v3.3.html",
+            "description": "an exchange format for reporting experimentally determined three-dimensional structures of biological macromolecules that serves a global community of researchers, educators, and students. The data contained in the archive include atomic coordinates, bibliographic citations, primary and secondary structure, information, and crystallographic structure factors and NMR experimental data",
+            "approved": true,
+            "hidden": false,
+            "status": "RDY"
+        }
+    ],
+    "accessPoints": [],
+    "communities": [],
+    "dataProcesses": [
+        {
+            "id": 1220,
+            "name": "Download",
+            "type": "data access",
+            "url": "http://pizzo.org/download.html"
+        }
+    ],
+    "tools": [
+        {
+            "id": 1184,
+            "name": "search",
+            "version": "",
+            "url": "http://pizzo.org/iquery.html"
+        }
+    ]
+}
