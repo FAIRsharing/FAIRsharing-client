@@ -5,7 +5,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Col, Row } from 'react-bootstrap';
 import { reduxForm } from 'redux-form';
-import { TextInput, Textarea, Select } from '../views/form';
+import { TextInput, Textarea, Select, MultiSelect } from '../views/form';
 import * as databaseApi from '../../api/database-api';
 import { RESOURCE_STATUSES } from '../../utils/api-constants';
 
@@ -20,7 +20,22 @@ const fields = {
     miriam_url: {name: 'miriam_url', label: 'MIRIAM URL', placeholder: '', helpText: 'Please add the MIRIAM URL (https://www.ebi.ac.uk/miriam/main/collections or http://identifiers.org) here. This is required for looking up the record there.'},
     contact: {name: 'contact', label: 'Contact Name', placeholder: '', helpText: 'A person responsible for the maintenance of the resource. Alternatively a group contact (e.g. a particular helpdesk or department) may be given.'},
     contactEmail: {name: 'contactEmail', label: 'Contact Email', placeholder: '', helpText: 'The contact email address for the contact. This may be an individual or a group address (e.g. Helpdesk).'},
-    contactORCID: {name: 'contactORCID', label: 'Contact\'s ORCID', placeholder: '', helpText: 'If the designated contact is an individual, their ORCID ID can be entered here.'}
+    contactORCID: {name: 'contactORCID', label: 'Contact\'s ORCID', placeholder: '', helpText: 'If the designated contact is an individual, their ORCID ID can be entered here.'},
+    countries: {
+        name: 'countries', label: 'Countries', placeholder: '',
+        helpText: 'The country or countries in which the resource was developed and/or is currently maintained. As you type, you will be presented with a list of matching values. If the country provided does not match our approved country list, you will be asked to change the value supplied.',
+        size: 12
+    },
+    taxonomies: {
+        name: 'taxonomies', label: 'Taxonomy', placeholder: '',
+        helpText: 'The taxonomies covered by this resource. Please use latin names where possible. As you type, you will be presented with a list of matching values in a scrollable, drop-down menu. If you do not find an appropriate species, you may enter your own.',
+        size: 12
+    },
+    domains: {
+        name: 'domains', label: 'Domains', placeholder: '',
+        helpText: 'The biological domains covered by this resource. As you type, you will be presented with a list of matching values in a scrollable drop-down menu. If you do not find an appropriate term,  you may enter your own.',
+        size: 12
+    }
 };
 
 /**
@@ -58,6 +73,15 @@ export let DatabaseEditForm = React.createClass({
                 </Row>
                 <Row>
                     <TextInput field={_.omit(fields.contactORCID, ['helpText', 'label'])} helpText={fields.contactORCID.helpText} label={fields.contactORCID.label} />
+                </Row>
+                <Row>
+                    <MultiSelect field={_.omit(fields.countries, ['helpText', 'label', 'size'])} helpText={fields.countries.helpText} label={fields.countries.label} size={fields.countries.size} />
+                </Row>
+                <Row>
+                    <MultiSelect field={_.omit(fields.taxonomies, ['helpText', 'label', 'size'])} helpText={fields.taxonomies.helpText} label={fields.taxonomies.label} size={fields.taxonomies.size} />
+                </Row>
+                <Row>
+                    <MultiSelect field={_.omit(fields.domains, ['helpText', 'label', 'size'])} helpText={fields.domains.helpText} label={fields.domains.label} size={fields.domains.size} />
                 </Row>
             </form>
         </div>);

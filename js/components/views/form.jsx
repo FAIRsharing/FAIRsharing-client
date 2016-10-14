@@ -1,8 +1,10 @@
 import classnames from 'classnames';
+import _ from 'lodash';
 import React, { PropTypes } from 'react';
 import { Col, Row, OverlayTrigger, Glyphicon, Tooltip } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import { Field } from 'redux-form';
+import ReactSelect from 'react-select';
 
 const FIELD_EVENT_HANDLER = /^(?:on|handle)[A-Z]/;
 
@@ -206,3 +208,37 @@ export const Select = React.createClass({
     }
 
 });
+
+/**
+ * @class
+ * @name ReactMultiSelectComponent
+ * @description a wrapper component for the react-select library to be used within redux-form
+ */
+export class ReactMultiSelectComponent extends React.Component {
+
+    render() {
+        const { input: { value, onChange } } = this.props;
+        const optsArray = _.isArray(value) ? value.map(option => {
+            return { value: option.value || option, label: option.label || option};
+        }) : null;
+        return (<ReactSelect multi value={value} options={optsArray} />);
+    }
+
+}
+
+export class MultiSelect extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        const { field, helpText, label, size, onChange, ...selectProps } = this.props;
+
+        return(<FormField field={field} helpText={helpText} inputProps={selectProps} label={label} size={size}>
+            <Field component={ReactMultiSelectComponent} {...selectProps} className="form-control" name={field.name} />
+        </FormField>);
+
+    }
+
+}
