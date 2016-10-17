@@ -6,3 +6,10 @@ export function getDatabaseSuccess(database) {
         database
     };
 }
+
+export function getTagsSuccess(tags) {
+    return {
+        type: types.GET_TAGS_SUCCESS,
+        tags
+    };
+}

@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import databaseReducer, { initialState } from '../../../js/reducers/database-reducer';
 import * as types from '../../../js/actions/action-types';
 import testDatabase from '../../fixtures/database.json';
+import testTags from '../../fixtures/tags.json';
 
 describe('databaseReducer', () => {
 
@@ -34,6 +35,22 @@ describe('databaseReducer', () => {
             ...initialState,
             database: testDatabase,
             isFetching: false
+        };
+        expect(nextState).to.eql(expectedState);
+    });
+
+    it('should handle the GET_TAGS_SUCCESS event', () => {
+        const currState = {
+            ...initialState,
+            database: testDatabase
+        };
+        const nextState = databaseReducer(currState, {
+            type: types.GET_TAGS_SUCCESS,
+            tags: testTags
+        });
+        const expectedState = {
+            ...currState,
+            tags: testTags
         };
         expect(nextState).to.eql(expectedState);
     });

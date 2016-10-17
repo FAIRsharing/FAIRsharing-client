@@ -31,6 +31,14 @@ const databaseReducer = function (state = initialState, action) {
             };
         }
 
+        case types.GET_TAGS_SUCCESS: {
+            return {
+                ...state,
+                tags: action.tags,
+                isFetching: false
+            };
+        }
+
         case types.GET_REMOTE_ERROR: {
             return {
                 ...state,

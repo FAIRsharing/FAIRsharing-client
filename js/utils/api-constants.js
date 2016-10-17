@@ -6,6 +6,7 @@
 export const API_URL_ROOT = 'api';
 export const GRAPH_ENDPOINT = 'graph';
 export const DATABASE_ENDPOINT = 'database';
+export const TAGS_ENDPOINT = 'tags';
 
 // Layouts
 export const COLA_LAYOUT = 'cola';
