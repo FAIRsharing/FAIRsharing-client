@@ -217,8 +217,8 @@ export const Select = React.createClass({
 export class ReactMultiSelectComponent extends React.Component {
 
     render() {
-        const { input: { value, onChange } } = this.props;
-        const optsArray = _.isArray(value) ? value.map(option => {
+        const { input: { value, onChange }, options } = this.props;
+        const optsArray = _.isArray(options) ? options.map(option => {
             return { value: option.value || option, label: option.label || option};
         }) : null;
         return (<ReactSelect multi value={value} options={optsArray} />);

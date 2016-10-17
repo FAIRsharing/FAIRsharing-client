@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { Col, Row } from 'react-bootstrap';
 import { reduxForm } from 'redux-form';
 import { TextInput, Textarea, Select, MultiSelect } from '../views/form';
+import { getDatabaseSuccess, getTagsSuccess } from '../../actions/database-actions';
+import { getRemoteError } from '../../actions/main-actions';
 import * as databaseApi from '../../api/database-api';
 import { RESOURCE_STATUSES } from '../../utils/api-constants';
 
@@ -43,161 +45,25 @@ const fields = {
  * @name DatabaseEditForm
  */
  //TODO handle internationalisation issues
-export let DatabaseEditForm = React.createClass({
+class DatabaseEditFormComponent extends React.Component {
 
-    render: function() {
-
-        const { handleSubmit, pristine, reset, submitting } = this.props;
-
-        return (<div className='container'>
-            <form className='form-horizontal' onSubmit={handleSubmit}>
-                <Row>
-                    <TextInput field={_.omit(fields.name, ['helpText', 'label'])} helpText={fields.name.helpText} label={fields.name.label} />
-                    <TextInput field={_.omit(fields.shortname, ['helpText', 'label'])} helpText={fields.shortname.helpText} label={fields.shortname.label} />
-                </Row>
-                <Row>
-                    <Select field={_.omit(fields.status, ['helpText', 'label', 'options'])}
-                        helpText={fields.status.helpText} label={fields.status.label} options={fields.status.options}/>
-                    <TextInput field={_.omit(fields.homepage, ['helpText', 'label'])} helpText={fields.homepage.helpText} label={fields.homepage.label} />
-                </Row>
-                <Row>
-                    <Textarea field={_.omit(fields.description, ['helpText', 'label', 'size'])} helpText={fields.description.helpText} label={fields.description.label} size={fields.description.size}  />
-                </Row>
-                <Row>
-                    <TextInput field={_.omit(fields.yearOfCreation, ['helpText', 'label'])} helpText={fields.yearOfCreation.helpText} label={fields.yearOfCreation.label} />
-                    <TextInput field={_.omit(fields.miriam_url, ['helpText', 'label'])} helpText={fields.miriam_url.helpText} label={fields.miriam_url.label} />
-                </Row>
-                <Row>
-                    <TextInput field={_.omit(fields.contact, ['helpText', 'label'])} helpText={fields.contact.helpText} label={fields.contact.label} />
-                    <TextInput field={_.omit(fields.contactEmail, ['helpText', 'label'])} helpText={fields.contactEmail.helpText} label={fields.contactEmail.label} />
-                </Row>
-                <Row>
-                    <TextInput field={_.omit(fields.contactORCID, ['helpText', 'label'])} helpText={fields.contactORCID.helpText} label={fields.contactORCID.label} />
-                </Row>
-                <Row>
-                    <MultiSelect field={_.omit(fields.countries, ['helpText', 'label', 'size'])} helpText={fields.countries.helpText} label={fields.countries.label} size={fields.countries.size} />
-                </Row>
-                <Row>
-                    <MultiSelect field={_.omit(fields.taxonomies, ['helpText', 'label', 'size'])} helpText={fields.taxonomies.helpText} label={fields.taxonomies.label} size={fields.taxonomies.size} />
-                </Row>
-                <Row>
-                    <MultiSelect field={_.omit(fields.domains, ['helpText', 'label', 'size'])} helpText={fields.domains.helpText} label={fields.domains.label} size={fields.domains.size} />
-                </Row>
-            </form>
-        </div>);
+    componentDidMount() {
+        const biodbcoreId = this.props.params.biodbcoreId, { storeDatabase, storeTags, handleError } = this.props;
+        Promise.all([
+            databaseApi.getDatabase(biodbcoreId),
+            databaseApi.getTags()
+        ])
+        .then(values => {
+            storeDatabase(values.database);
+            storeTags(values.tags);
+        })
+        .catch(err => {
+            handleError(err);
+        });
     }
 
-});
+    render() {
 
-/*
-export let DatabaseEditForm = props => {
-
-    const { handleSubmit, pristine, reset, submitting } = props;
-
-    return (<form onSubmit={handleSubmit}>
-        <div>
-            <label>Full Name of Database</label>
-            <div>
-                <Field name='name' component='input' type='text' placeholder='' />
-            </div>
-        </div>
-        <div>
-            <label>Abbreviation</label>
-            <div>
-                <Field name='shortname' component='input' type='text' placeholder='' />
-            </div>
-        </div>
-        <div>
-            <label>Resource Status</label>
-            <div>
-                <Field name='status' component='select' >
-                    {statusesOptions}
-                </Field>
-            </div>
-        </div>
-        <div>
-            <label>Description</label>
-            <div>
-                <Field name='description' component='textarea' />
-            </div>
-        </div>
-        <div>
-            <label>Homepage</label>
-            <div>
-                <Field name='homepage' component='input' type='text' />
-            </div>
-        </div>
-        <div>
-            <label>Year Of Creation</label>
-            <div>
-                <Field name='yearOfCreation' component='input' type='text' />
-            </div>
-        </div>
-        <div>
-            <label>MIRIAM URL</label>
-            <div>
-                <Field name='miriam_url' component='input' type='text' />
-            </div>
-        </div>
-        <div>
-            <label>Contact Name</label>
-            <div>
-                <Field name='contact' component='input' type='text' />
-            </div>
-        </div>
-        <div>
-            <label>Contact Email</label>
-            <div>
-                <Field name='contactEmail' component='input' type='text' />
-            </div>
-        </div>
-        <div>
-            <label>Contact's ORCID</label>
-            <div>
-                <Field name='contactORCID' component='input' type='text' />
-            </div>
-        </div>
-        <div>
-            <button type="submit" disabled={pristine || submitting}>Submit</button>
-            <button type="button" disabled={pristine || submitting} onClick={reset}>Clear Values</button>
-        </div>
-    </form>);
-}; */
-
-DatabaseEditForm = reduxForm({
-    form: 'databaseEdit'
-})(DatabaseEditForm);
-
-const mapStateToProps = function(store) {
-    return {
-        initialValues: store.databaseState.database,
-        isFetching: store.databaseState.isFetching,
-        error: store.databaseState.error
-    };
-};
-
-const mapDispatchToProps = function(dispatch) {
-    return {};
-};
-
-DatabaseEditForm = connect(mapStateToProps, mapDispatchToProps)(DatabaseEditForm);
-
-
-/**
- * @class
- * @name DatabaseEditContainer
- * @description containet class for the database editing operations
- */
-const DatabaseEditContainer = React.createClass({
-
-    propTypes: {},
-
-    componentDidMount: function() {
-        const biodbcoreId = this.props.params.biodbcoreId;
-        databaseApi.getDatabase(biodbcoreId);
-    },
-
-    render: function() {
         if (this.props.error) {
             return (
                 <div className="bs-entity-error">
@@ -205,16 +71,89 @@ const DatabaseEditContainer = React.createClass({
                 </div>
             );
         }
+
+        const { handleSubmit, pristine, reset, submitting, tags = {} } = this.props;
+
         return (
-        <div className='bs-edit'>
-            <h3> Edit <b>{this.props.params.biodbcoreId}</b></h3>
-            <div className='bs-entity-form-cnt'>
-                <DatabaseEditForm />
-            </div>
-        </div>
-        );
+            <div className='bs-edit'>
+                <h3> Edit <b>{this.props.params.biodbcoreId}</b></h3>
+                <div className='bs-entity-form-cnt'>
+                    <div className='container'>
+                        <form className='form-horizontal' onSubmit={handleSubmit}>
+                            <Row>
+                                <TextInput field={_.omit(fields.name, ['helpText', 'label'])} helpText={fields.name.helpText} label={fields.name.label} />
+                                <TextInput field={_.omit(fields.shortname, ['helpText', 'label'])} helpText={fields.shortname.helpText} label={fields.shortname.label} />
+                            </Row>
+                            <Row>
+                                <Select field={_.omit(fields.status, ['helpText', 'label', 'options'])}
+                                    helpText={fields.status.helpText} label={fields.status.label} options={fields.status.options}/>
+                                <TextInput field={_.omit(fields.homepage, ['helpText', 'label'])} helpText={fields.homepage.helpText} label={fields.homepage.label} />
+                            </Row>
+                            <Row>
+                                <Textarea field={_.omit(fields.description, ['helpText', 'label', 'size'])} helpText={fields.description.helpText} label={fields.description.label} size={fields.description.size}  />
+                            </Row>
+                            <Row>
+                                <TextInput field={_.omit(fields.yearOfCreation, ['helpText', 'label'])} helpText={fields.yearOfCreation.helpText} label={fields.yearOfCreation.label} />
+                                <TextInput field={_.omit(fields.miriam_url, ['helpText', 'label'])} helpText={fields.miriam_url.helpText} label={fields.miriam_url.label} />
+                            </Row>
+                            <Row>
+                                <TextInput field={_.omit(fields.contact, ['helpText', 'label'])} helpText={fields.contact.helpText} label={fields.contact.label} />
+                                <TextInput field={_.omit(fields.contactEmail, ['helpText', 'label'])} helpText={fields.contactEmail.helpText} label={fields.contactEmail.label} />
+                            </Row>
+                            <Row>
+                                <TextInput field={_.omit(fields.contactORCID, ['helpText', 'label'])} helpText={fields.contactORCID.helpText} label={fields.contactORCID.label} />
+                            </Row>
+                            <Row>
+                                <MultiSelect field={_.omit(fields.countries, ['helpText', 'label', 'size'])} helpText={fields.countries.helpText}
+                                    label={fields.countries.label} size={fields.countries.size} options={tags.countries}/>
+                            </Row>
+                            <Row>
+                                <MultiSelect field={_.omit(fields.taxonomies, ['helpText', 'label', 'size'])} helpText={fields.taxonomies.helpText}
+                                    label={fields.taxonomies.label} size={fields.taxonomies.size} options={tags.taxonomies} />
+                            </Row>
+                            <Row>
+                                <MultiSelect field={_.omit(fields.domains, ['helpText', 'label', 'size'])} helpText={fields.domains.helpText}
+                                    label={fields.domains.label} size={fields.domains.size} options={tags.domains} />
+                            </Row>
+                        </form>
+                    </div>
+                </div>
+        </div>);
     }
 
-});
+}
 
-export default DatabaseEditContainer;
+let DatabaseEditForm = reduxForm({
+    form: 'databaseEdit'
+})(DatabaseEditFormComponent);
+
+const mapStateToProps = function(store) {
+    return {
+        initialValues: store.databaseState.database,
+        tags: store.databaseState.tags,
+        isFetching: store.databaseState.isFetching,
+        error: store.databaseState.error
+    };
+};
+
+const mapDispatchToProps = function(dispatch) {
+    return {
+
+        storeDatabase: database => {
+            dispatch(getDatabaseSuccess(database));
+        },
+
+        storeTags: tags => {
+            dispatch(getTagsSuccess(tags));
+        },
+
+        handleError: err => {
+            dispatch(getRemoteError(err));
+        }
+
+    };
+};
+
+DatabaseEditForm = connect(mapStateToProps, mapDispatchToProps)(DatabaseEditForm);
+
+export default DatabaseEditForm;
