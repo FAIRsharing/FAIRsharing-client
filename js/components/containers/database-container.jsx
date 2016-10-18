@@ -37,12 +37,39 @@ const fields = {
         name: 'domains', label: 'Domains', placeholder: '',
         helpText: 'The biological domains covered by this resource. As you type, you will be presented with a list of matching values in a scrollable drop-down menu. If you do not find an appropriate term,  you may enter your own.',
         size: 12
+    },
+    implementedStandards: {
+        name: 'implementedStandards', label: 'Implemented Standards', placeholder: '',
+        helpText: 'Create links to the records for data standards that are implemented by this resource. Please begin typing the appropriate bsg- identifier, or name of the standard, and the matching BioSharing records will appear in a scrollable drop-down menu as you type.',
+        size: 12
+    },
+    relatedDatabases: {
+        name: 'relatedDatabases', label: 'Related Databases', placeholder: '',
+        helpText: 'Create links to database records associated with this resource. Please begin by typing the appropriate full name or BioDBcore- identifier, and the matching BioSharing records will appear in a scrollable drop-down menu as you type.',
+        size: 12
     }
 };
 
 /**
+ * @function
+ * @name getStandardOptions
+ */
+function getStandardOptions(str) {
+    return databaseApi.getFullStandardList({
+        name: str
+    })
+    .then( results => {
+        const options = results.map(elem => `${elem.bsg_id}: ${elem.name}`);
+        return {
+            options
+        };
+    });
+}
+
+/**
  * @class
  * @name DatabaseEditForm
+ * @description container class for the database edit form
  */
  //TODO handle internationalisation issues
 class DatabaseEditFormComponent extends React.Component {
@@ -53,13 +80,87 @@ class DatabaseEditFormComponent extends React.Component {
             databaseApi.getDatabase(biodbcoreId),
             databaseApi.getTags()
         ])
-        .then(values => {
-            storeDatabase(values.database);
-            storeTags(values.tags);
+        .then(results => {
+            storeDatabase(results[0]);
+            storeTags(results[1]);
         })
         .catch(err => {
             handleError(err);
         });
+    }
+
+    /**
+     * @method
+     * @name _makeGeneralInformationBox
+     * @description generates the virtual DOM part for the General Information Box. Does not require to be bound given that it is only for private use
+     */
+    _makeGeneralInformationBox() {
+        const { tags = {} } = this.props;
+        return (
+            <div>
+                <h4>General Information</h4>
+                <div>
+                    <Row>
+                        <TextInput field={_.omit(fields.name, ['helpText', 'label'])} helpText={fields.name.helpText} label={fields.name.label} />
+                        <TextInput field={_.omit(fields.shortname, ['helpText', 'label'])} helpText={fields.shortname.helpText} label={fields.shortname.label} />
+                    </Row>
+                    <Row>
+                        <Select field={_.omit(fields.status, ['helpText', 'label', 'options'])}
+                            helpText={fields.status.helpText} label={fields.status.label} options={fields.status.options}/>
+                        <TextInput field={_.omit(fields.homepage, ['helpText', 'label'])} helpText={fields.homepage.helpText} label={fields.homepage.label} />
+                    </Row>
+                    <Row>
+                        <Textarea field={_.omit(fields.description, ['helpText', 'label', 'size'])} helpText={fields.description.helpText} label={fields.description.label} size={fields.description.size}  />
+                    </Row>
+                    <Row>
+                        <TextInput field={_.omit(fields.yearOfCreation, ['helpText', 'label'])} helpText={fields.yearOfCreation.helpText} label={fields.yearOfCreation.label} />
+                        <TextInput field={_.omit(fields.miriam_url, ['helpText', 'label'])} helpText={fields.miriam_url.helpText} label={fields.miriam_url.label} />
+                    </Row>
+                    <Row>
+                        <TextInput field={_.omit(fields.contact, ['helpText', 'label'])} helpText={fields.contact.helpText} label={fields.contact.label} />
+                        <TextInput field={_.omit(fields.contactEmail, ['helpText', 'label'])} helpText={fields.contactEmail.helpText} label={fields.contactEmail.label} />
+                    </Row>
+                    <Row>
+                        <TextInput field={_.omit(fields.contactORCID, ['helpText', 'label'])} helpText={fields.contactORCID.helpText} label={fields.contactORCID.label} />
+                    </Row>
+                    <Row>
+                        <MultiSelect field={_.omit(fields.countries, ['helpText', 'label', 'size'])} helpText={fields.countries.helpText}
+                            label={fields.countries.label} size={fields.countries.size} options={tags.countries}/>
+                    </Row>
+                    <Row>
+                        <MultiSelect field={_.omit(fields.taxonomies, ['helpText', 'label', 'size'])} helpText={fields.taxonomies.helpText}
+                            label={fields.taxonomies.label} size={fields.taxonomies.size} options={tags.taxonomies} creatable />
+                    </Row>
+                    <Row>
+                        <MultiSelect field={_.omit(fields.domains, ['helpText', 'label', 'size'])} helpText={fields.domains.helpText}
+                            label={fields.domains.label} size={fields.domains.size} options={tags.domains} creatable />
+                    </Row>
+                </div>
+            </div>
+        );
+    }
+
+    /**
+     * @method
+     * @name _makeAssociatedRecordsBox
+     * @description generates the virtual DOM part for the General Information Box.
+     */
+    _makeAssociatedRecordsBox() {
+        return (
+            <div>
+                <h4>General Information</h4>
+                <div>
+                    <Row>
+                        { /*
+                        <MultiSelect field={_.omit(fields.implementedStandards, ['helpText', 'label', 'size'])} helpText={fields.implementedStandards.helpText}
+                            label={fields.implementedStandards.label} /> */}
+                    </Row>
+                    <Row>
+
+                    </Row>
+                </div>
+            </div>
+        );
     }
 
     render() {
@@ -73,6 +174,7 @@ class DatabaseEditFormComponent extends React.Component {
         }
 
         const { handleSubmit, pristine, reset, submitting, tags = {} } = this.props;
+        const genetalInfoBox = this._makeGeneralInformationBox();
 
         return (
             <div className='bs-edit'>
@@ -80,41 +182,7 @@ class DatabaseEditFormComponent extends React.Component {
                 <div className='bs-entity-form-cnt'>
                     <div className='container'>
                         <form className='form-horizontal' onSubmit={handleSubmit}>
-                            <Row>
-                                <TextInput field={_.omit(fields.name, ['helpText', 'label'])} helpText={fields.name.helpText} label={fields.name.label} />
-                                <TextInput field={_.omit(fields.shortname, ['helpText', 'label'])} helpText={fields.shortname.helpText} label={fields.shortname.label} />
-                            </Row>
-                            <Row>
-                                <Select field={_.omit(fields.status, ['helpText', 'label', 'options'])}
-                                    helpText={fields.status.helpText} label={fields.status.label} options={fields.status.options}/>
-                                <TextInput field={_.omit(fields.homepage, ['helpText', 'label'])} helpText={fields.homepage.helpText} label={fields.homepage.label} />
-                            </Row>
-                            <Row>
-                                <Textarea field={_.omit(fields.description, ['helpText', 'label', 'size'])} helpText={fields.description.helpText} label={fields.description.label} size={fields.description.size}  />
-                            </Row>
-                            <Row>
-                                <TextInput field={_.omit(fields.yearOfCreation, ['helpText', 'label'])} helpText={fields.yearOfCreation.helpText} label={fields.yearOfCreation.label} />
-                                <TextInput field={_.omit(fields.miriam_url, ['helpText', 'label'])} helpText={fields.miriam_url.helpText} label={fields.miriam_url.label} />
-                            </Row>
-                            <Row>
-                                <TextInput field={_.omit(fields.contact, ['helpText', 'label'])} helpText={fields.contact.helpText} label={fields.contact.label} />
-                                <TextInput field={_.omit(fields.contactEmail, ['helpText', 'label'])} helpText={fields.contactEmail.helpText} label={fields.contactEmail.label} />
-                            </Row>
-                            <Row>
-                                <TextInput field={_.omit(fields.contactORCID, ['helpText', 'label'])} helpText={fields.contactORCID.helpText} label={fields.contactORCID.label} />
-                            </Row>
-                            <Row>
-                                <MultiSelect field={_.omit(fields.countries, ['helpText', 'label', 'size'])} helpText={fields.countries.helpText}
-                                    label={fields.countries.label} size={fields.countries.size} options={tags.countries}/>
-                            </Row>
-                            <Row>
-                                <MultiSelect field={_.omit(fields.taxonomies, ['helpText', 'label', 'size'])} helpText={fields.taxonomies.helpText}
-                                    label={fields.taxonomies.label} size={fields.taxonomies.size} options={tags.taxonomies} />
-                            </Row>
-                            <Row>
-                                <MultiSelect field={_.omit(fields.domains, ['helpText', 'label', 'size'])} helpText={fields.domains.helpText}
-                                    label={fields.domains.label} size={fields.domains.size} options={tags.domains} />
-                            </Row>
+                            {genetalInfoBox}
                         </form>
                     </div>
                 </div>

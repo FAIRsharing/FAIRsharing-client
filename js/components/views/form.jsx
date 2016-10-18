@@ -59,31 +59,29 @@ function shouldFormFieldUpdate(nextProps) {
  * @class
  * @name Help
  */
-export const Help = React.createClass({
+export class Help extends React.Component {
 
-    propTypes: {
+    static propTypes = {
         text: React.PropTypes.string.isRequired
-    },
+    }
 
-    render: function() {
+    render() {
         const tooltip = <Tooltip>{this.props.text}</Tooltip>;
         return (<OverlayTrigger overlay={tooltip} delayShow={300} delayHide={150}>
             {/*<Glyphicon className="Help" glyph="question-sign"/> */}
             <FontAwesome name="question-circle" />
         </OverlayTrigger>);
     }
-});
+}
 
 /**
  * A form field in Bootstrap 3
  */
-export const FormField = React.createClass({
+export class FormField extends React.Component {
 
-    statics: {
-        shouldFormFieldUpdate: shouldFormFieldUpdate
-    },
+    static shouldFormFieldUpdate = shouldFormFieldUpdate
 
-    propTypes: {
+    static propTypes = {
         // A redux-form field Object
         field: PropTypes.object,
         // Help text to be displayed next to the input containers
@@ -99,15 +97,13 @@ export const FormField = React.createClass({
         // if the form field size (a third, half or the full row)
         size: PropTypes.oneOf([6, 12])
 
-    },
+    }
 
-    getDefaultProps: function() {
-        return {
-            size: 6
-        };
-    },
+    static defaultProps = {
+        size: 6
+    }
 
-    render: function() {
+    render() {
         const { field, helpText, inputClass, inputProps, label, loading, size } = this.props;
 
         // TODO ?? understand this
@@ -128,22 +124,22 @@ export const FormField = React.createClass({
 
     }
 
-});
+}
 
 /**
  * @class
  * @name TextInput
  * @description a text input form field
  */
-export const TextInput = React.createClass({
+export class TextInput extends React.Component {
 
-    propTypes: {
+    static propTypes = {
         field: PropTypes.object.isRequired
-    },
+    }
 
-    shouldComponentUpdate: FormField.shouldFormFieldUpdate,
+    //shouldComponentUpdate: FormField.shouldFormFieldUpdate,
 
-    render: function() {
+    render() {
         const { field, helpText, label, size, onChange, ...inputProps } = this.props;
 
         return (<FormField field={field} helpText={helpText} inputProps={inputProps} label={label} size={size} >
@@ -152,22 +148,22 @@ export const TextInput = React.createClass({
         </FormField>);
     }
 
-});
+}
 
 /**
  * @class
  * @name Textarea
  * @description a textarea input form field
  */
-export const Textarea = React.createClass({
+export class Textarea extends React.Component {
 
-    propTypes: {
+    static propTypes = {
         field: PropTypes.object.isRequired
-    },
+    }
 
-    shouldComponentUpdate: FormField.shouldFormFieldUpdate,
+    //shouldComponentUpdate: FormField.shouldFormFieldUpdate,
 
-    render: function() {
+    render() {
         const { field, helpText, label, size, onChange, ...inputProps } = this.props;
 
         return (<FormField field={field} helpText={helpText} inputProps={inputProps} label={label} size={size}>
@@ -177,17 +173,22 @@ export const Textarea = React.createClass({
 
     }
 
-});
+}
 
-export const Select = React.createClass({
+/**
+ * @class
+ * @name Select
+ * @description a standard single option select box wrapper for react-redux
+ */
+export class Select extends React.Component {
 
-    propTypes: {
+    static propTypes = {
         field: PropTypes.object.isRequired
-    },
+    }
 
-    shouldComponentUpdate: FormField.shouldFormFieldUpdate,
+    //shouldComponentUpdate: FormField.shouldFormFieldUpdate,
 
-    render: function() {
+    render() {
         const { field, helpText, label, size, onChange, options, ...selectProps } = this.props;
         const optsArray = [];
 
@@ -203,11 +204,9 @@ export const Select = React.createClass({
                 {optsArray}
             </Field>
         </FormField>);
-
-
     }
 
-});
+}
 
 /**
  * @class
@@ -217,19 +216,56 @@ export const Select = React.createClass({
 export class ReactMultiSelectComponent extends React.Component {
 
     render() {
-        const { input: { value, onChange }, options } = this.props;
+        const { input: { value, onChange, onBlur }, options, creatable } = this.props;
         const optsArray = _.isArray(options) ? options.map(option => {
             return { value: option.value || option, label: option.label || option};
         }) : null;
-        return (<ReactSelect multi value={value} options={optsArray} />);
+        const selectProps = {
+            value: value,
+            options: optsArray,
+            onChange: onChange,
+            onBlur: () => onBlur(value)
+        }
+        return creatable ? (<ReactSelect.Creatable multi {...selectProps} />)
+            : (<ReactSelect multi {...selectProps} />);
     }
 
 }
 
+/**
+ * @class
+ * @name ReactSelectAsyncComponent
+ * @description a wrapper component for the async react-select to be used within redux-form
+ */
+ export class ReactSelectAsyncComponent extends React.Component {
+
+     render() {
+         const { input: { value, onChange, onBlur }, creatable, getOptions } = this.props;
+         const selectProps = {
+             value: value,
+             loadOptions: getOptions,
+             onChange: onChange,
+             onBlur: () => onBlur(value)
+         }
+         return creatable ? <ReactSelect.CreatableAsync multi {...selectProps} />
+            : <ReactSelect.Async multi {...selectProps} />;
+     }
+
+ }
+
+/**
+ * @class
+ * @name MultiSelect
+ * @description a multi-select for redux-form based on the ReactMultiSelectComponent
+ */
 export class MultiSelect extends React.Component {
 
     constructor(props) {
         super(props);
+    }
+
+    static propTypes = {
+        field: PropTypes.object.isRequired
     }
 
     render() {
@@ -242,3 +278,18 @@ export class MultiSelect extends React.Component {
     }
 
 }
+
+/**
+ *
+ *
+ export class Autocomplete extends React.Component {
+
+     onSuggestionsFetchRequested = ({ value }) => {
+
+     }
+
+     render() {
+
+     }
+
+ } */
