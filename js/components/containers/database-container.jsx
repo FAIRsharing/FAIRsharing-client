@@ -4,11 +4,12 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Col, Row } from 'react-bootstrap';
+import FontAwesome from 'react-fontawesome';
 import { reduxForm } from 'redux-form';
 import { TextInput, Textarea, Select, MultiSelect } from '../views/form';
 import { getDatabaseSuccess, getTagsSuccess } from '../../actions/database-actions';
 import { getRemoteError } from '../../actions/main-actions';
-import * as databaseApi from '../../api/database-api';
+import * as api from '../../api/database-api';
 import { RESOURCE_STATUSES } from '../../utils/api-constants';
 
 
@@ -53,16 +54,42 @@ const fields = {
 /**
  * @function
  * @name getStandardOptions
+ * @param{string} str
+ * @return{Array}
  */
 function getStandardOptions(str) {
-    return databaseApi.getFullStandardList({
-        name: str
+    return api.getStandardList({
+        pattern: str,
+        fields: 'bsg_id,name' // return only ID and name
     })
     .then( results => {
-        const options = results.map(elem => `${elem.bsg_id}: ${elem.name}`);
-        return {
-            options
-        };
+        return results.map(elem => {
+            return {
+                value: elem.bsg_id,
+                label: `${elem.bsg_id}: ${elem.name}`
+            };
+        });
+    });
+}
+
+/**
+ * @function
+ * @name getDatabaseOptions
+ * @param{string} str
+ * @return{Array}
+ */
+function getDatabaseOptions(str) {
+    return api.getDatabaseList({
+        pattern: str,
+        fields: 'bsg_id,name' // return only ID and name
+    })
+    .then( results => {
+        return results.map(elem => {
+            return {
+                value: elem.biodbcore_id,
+                label: `${elem.biodbcore_id}: ${elem.name}`
+            };
+        });
     });
 }
 
@@ -77,8 +104,8 @@ class DatabaseEditFormComponent extends React.Component {
     componentDidMount() {
         const biodbcoreId = this.props.params.biodbcoreId, { storeDatabase, storeTags, handleError } = this.props;
         Promise.all([
-            databaseApi.getDatabase(biodbcoreId),
-            databaseApi.getTags()
+            api.getDatabase(biodbcoreId),
+            api.getTags()
         ])
         .then(results => {
             storeDatabase(results[0]);
@@ -98,7 +125,10 @@ class DatabaseEditFormComponent extends React.Component {
         const { tags = {} } = this.props;
         return (
             <div>
-                <h4>General Information</h4>
+                <Row>
+                    <FontAwesome name='info' />
+                    <h4>General Information</h4>
+                </Row>
                 <div>
                     <Row>
                         <TextInput field={_.omit(fields.name, ['helpText', 'label'])} helpText={fields.name.helpText} label={fields.name.label} />
@@ -148,15 +178,18 @@ class DatabaseEditFormComponent extends React.Component {
     _makeAssociatedRecordsBox() {
         return (
             <div>
-                <h4>General Information</h4>
+                <Row>
+                    <FontAwesome name='share-alt' />
+                    <h4>Associated Records</h4>
+                </Row>
                 <div>
                     <Row>
-                        { /*
-                        <MultiSelect field={_.omit(fields.implementedStandards, ['helpText', 'label', 'size'])} helpText={fields.implementedStandards.helpText}
-                            label={fields.implementedStandards.label} /> */}
+                        <MultiSelect async field={_.omit(fields.implementedStandards, ['helpText', 'label', 'size'])} helpText={fields.implementedStandards.helpText}
+                            label={fields.implementedStandards.label} size={fields.implementedStandards.size} getOptions={getStandardOptions} />
                     </Row>
                     <Row>
-
+                        <MultiSelect async field={_.omit(fields.relatedDatabases, ['helpText', 'label', 'size'])} helpText={fields.relatedDatabases.helpText}
+                            label={fields.relatedDatabases.label} size={fields.relatedDatabases.size} getOptions={getDatabaseOptions} />
                     </Row>
                 </div>
             </div>
@@ -174,7 +207,7 @@ class DatabaseEditFormComponent extends React.Component {
         }
 
         const { handleSubmit, pristine, reset, submitting, tags = {} } = this.props;
-        const genetalInfoBox = this._makeGeneralInformationBox();
+        const genetalInfoBox = this._makeGeneralInformationBox(), associatedRecordsBox = this._makeAssociatedRecordsBox();
 
         return (
             <div className='bs-edit'>
@@ -183,6 +216,7 @@ class DatabaseEditFormComponent extends React.Component {
                     <div className='container'>
                         <form className='form-horizontal' onSubmit={handleSubmit}>
                             {genetalInfoBox}
+                            {associatedRecordsBox}
                         </form>
                     </div>
                 </div>

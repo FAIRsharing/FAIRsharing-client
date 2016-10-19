@@ -3,7 +3,7 @@ import store from '../store';
 import { handleHTTPErrors, serialize } from '../utils/helper-funcs';
 import { sendRemoteRequest, getRemoteError } from '../actions/main-actions';
 import { getDatabaseSuccess, getTagsSuccess } from '../actions/database-actions';
-import { API_URL_ROOT, DATABASE_ENDPOINT, TAGS_ENDPOINT } from '../utils/api-constants';
+import { API_URL_ROOT, DATABASE_ENDPOINT, STANDARD_ENDPOINT, TAGS_ENDPOINT } from '../utils/api-constants';
 
 export function getDatabase(biodbcoreId) {
     const databaseUrl = `/${API_URL_ROOT}/${DATABASE_ENDPOINT}/${biodbcoreId}`;
@@ -36,11 +36,32 @@ export function getTags() {
         }); */
 }
 
-export function getFullStandardList(queryParams) {
-    const queryStr = _.compact([`${serialize(queryParams)}`,'fields=bsg_id,name']).join('&');
-    const standardUrl = `/${API_URL_ROOT}/${0}/?${queryStr}`;
+/**
+ * @method
+ * @name getStandardList
+ * @param{Object} - queryParams
+ * @return Promise - returning an array of Standards
+ */
+export function getStandardList(queryParams) {
+    // TODO check for allowed parameters?
+    const queryStr = `${serialize(queryParams)}`;
+    const standardUrl = `/${API_URL_ROOT}/${STANDARD_ENDPOINT}/?${queryStr}`;
     return fetch(standardUrl)
         .then(handleHTTPErrors)
         .then(response => response.json());
 
+}
+
+/**
+ * @method
+ * @name getStandardList
+ * @param{Object} - queryParams
+ * @return Promise - returning an array of Databases
+ */
+export function getDatabaseList(queryParams) {
+    const queryStr = `${serialize(queryParams)}`;
+    const standardUrl = `/${API_URL_ROOT}/${DATABASE_ENDPOINT}/?${queryStr}`;
+    return fetch(standardUrl)
+        .then(handleHTTPErrors)
+        .then(response => response.json());
 }

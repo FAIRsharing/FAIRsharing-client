@@ -239,11 +239,27 @@ export class ReactMultiSelectComponent extends React.Component {
  */
  export class ReactSelectAsyncComponent extends React.Component {
 
+     constructor(props) {
+         super(props);
+         this.loadOptions = this.loadOptions.bind(this);
+     }
+
+     loadOptions(str) {
+         const { options, getOptions } = this.props;
+         const optsArray = _.isArray(options) ? options.map(option => {
+             return { value: option.value || option, label: option.label || option};
+         }) : null;
+         if (!str) {
+             return optsArray;
+         }
+         return getOptions(str).then(res => res.concat(optsArray));
+     }
+
      render() {
          const { input: { value, onChange, onBlur }, creatable, getOptions } = this.props;
          const selectProps = {
              value: value,
-             loadOptions: getOptions,
+             loadOptions: this.loadOptions,
              onChange: onChange,
              onBlur: () => onBlur(value)
          }
@@ -269,16 +285,19 @@ export class MultiSelect extends React.Component {
     }
 
     render() {
-        const { field, helpText, label, size, onChange, ...selectProps } = this.props;
+        const { field, helpText, label, size, onChange, async, ...selectProps } = this.props;
+        const ComponentClass = async ? ReactSelectAsyncComponent : ReactMultiSelectComponent;
 
         return(<FormField field={field} helpText={helpText} inputProps={selectProps} label={label} size={size}>
-            <Field component={ReactMultiSelectComponent} {...selectProps} className="form-control" name={field.name} />
+            <Field component={ComponentClass} {...selectProps} className="form-control" name={field.name} />
         </FormField>);
 
     }
 
 }
 
+/**
+ *
 /**
  *
  *
