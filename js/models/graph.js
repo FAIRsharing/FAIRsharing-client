@@ -1,7 +1,7 @@
 import cytoscape from 'cytoscape';
 import cyCola from 'cytoscape-cola';
 import cola from 'cola';
-import sigma from 'sigma';
+// import sigma from 'sigma';
 import _ from 'lodash';
 import { GRAPH_LAYOUTS, BIOSHARING_COLLECTION, DEPTH_LEVELS, ENTITIES_COLOR_MAP as NODES_COLOR_MAP,
     RELATIONS_COLOR_MAP as EDGES_COLOR_MAP, TAG_ENTITIES as TAG_NODES
@@ -34,10 +34,7 @@ export class AbstractGraphStrategy {
 
 const basicLayoutProps= {
     fit: true,
-    animate: true,
-    // tentative optimisation parameters
-    hideEdgesOnViewPort: true,
-    pixelRatio: 1
+    animate: true
 };
 
 export const concentricLayoutProps = {
@@ -199,6 +196,15 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
     /**
      * @method
+     * @name destroy
+     * @description destroys the current graph instance
+     */
+    destroy() {
+        this._cy && this._cy.destroy();
+    }
+
+    /**
+     * @method
      * @name makeLayout
      * @description generates a new layout, given the params provided
      * @param{Object} params, containing any of the params allowed in the Cytoscape layouts
@@ -354,7 +360,6 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         const elements = this._prepareElements(nodes, edges);
         const isHeadless = rootEl ? false : true;
 
-        console.time('cytoscapeRendering');
         this._cy = cytoscape({
             container: rootEl,
 
@@ -384,6 +389,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                 },
                 'font-size': scaleText,
                 'text-valign': 'center',
+                /*
                 'text-outline-width': function(ele) {
                     // return ele.data('path_length') < 2 ? 2 : 1;
                     return 0;
@@ -401,6 +407,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                     return ele.data('path_length') < 2 ? 'DimGrey' : 'LightGrey';
                     // return 'Grey';
                 },
+                */
                 'text-halign': 'right'
             })
 
@@ -415,7 +422,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                     return ele.data('_color') || 'grey';
                 },
                 'target-arrow-color': '#ccc',
-                'target-arrow-shape': 'triangle'
+                'target-arrow-shape': 'none'
             }),
 
             // zooming options
@@ -424,15 +431,17 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             maxZoom: 40,
 
             // rendering options
-            headless: isHeadless
+            headless: isHeadless,
+
+            // tentative optimisation parameters
+            hideEdgesOnViewport: true,
+            textureOnViewport: true,
+            pixelRatio: 1
 
         });
-        console.timeEnd('cytoscapeRendering');
 
-        console.time('cytoscapeLayoutStart');
         this._cyLayout = this._cy.makeLayout(this.layout);
         this._cyLayout.start();
-        console.timeEnd('cytoscapeLayoutStart');
         this._registerNodeEvents();
 
     }
@@ -478,24 +487,11 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             this.openDetailsPanel(node.data('application_id'));
         });
 
-        /*
-        container.addEventListener('wheel', event => {
-            if (event.wheelDelta === 0) {
-                return;
-            }
-            const width = container.offsetWidth, height = container.offsetHeight;
-            const zoomingFactor = event.wheelDelta > 0 ? 1.1 : 1/1.1;
-            cy.zoom({
-                level: zoomingFactor * cy.zoom(),
-                renderedPosition: { x: width/2, y: height/2}
-            });
-            return false;
-        }); */
     }
 
 }
 
-
+/*
 class SigmaStrategy extends AbstractGraphStrategy {
 
     constructor() {
@@ -544,7 +540,7 @@ class SigmaStrategy extends AbstractGraphStrategy {
         return s;
     }
 
-}
+} */
 
 /**
 * @class
@@ -617,6 +613,22 @@ export default class GraphHandler {
         return this._nodes;
     }
 
+    set nodes(nodes) {
+        if (nodes.constructor === Array) {
+            this._nodes = nodes;
+        }
+    }
+
+    get edges() {
+        return this._edges;
+    }
+
+    set edges(edges) {
+        if (edges.constructor === Array) {
+            this._edges = edges;
+        }
+    }
+
     get tags() {
         return this._tags;
     }
@@ -627,6 +639,10 @@ export default class GraphHandler {
 
     makeLayout(params) {
         return this._strategy.makeLayout(params);
+    }
+
+    destroy() {
+        return this._strategy.destroy();
     }
 
     /**

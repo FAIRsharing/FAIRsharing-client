@@ -25,9 +25,13 @@ import * as actions from '../../actions/graph-actions';
 // cyCola(cytoscape, cola);
 const modalStyles = {overlay: {zIndex: 10}};
 
-const GraphContainer = React.createClass({
+class GraphContainer extends React.Component {
 
-    propTypes: {
+    constructor(props) {
+        super(props);
+    }
+
+    static propTypes = {
         graph: React.PropTypes.shape({
             nodes: React.PropTypes.array.isRequired,
             edges: React.PropTypes.array.isRequired
@@ -50,12 +54,12 @@ const GraphContainer = React.createClass({
         visibilityCheckboxChange: React.PropTypes.func.isRequired,
         depthCheckboxChange: React.PropTypes.func.isRequired,
         tagsVisibilityCheckboxChange:React.PropTypes.func.isRequired
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         const graphId = this.props.params.graphId;
         graphApi.getGraph(graphId);
-    },
+    }
 
     /*
     shouldComponentUpdate(nextProps, nextState) {
@@ -69,7 +73,7 @@ const GraphContainer = React.createClass({
     },
     */
 
-    render: function() {
+    render() {
         if (this.props.error) {
             return (
                 <div className="graph-error">
@@ -116,7 +120,7 @@ const GraphContainer = React.createClass({
         );
     }
 
-});
+}
 
 const mapStateToProps = function(store) {
     const modal = store.graphState.modal;
