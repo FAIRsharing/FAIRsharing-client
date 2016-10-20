@@ -89,6 +89,7 @@ const Graph = React.createClass({
     },
 
     componentDidUpdate: function() {
+        console.log('Graph.componentDidUpdate: invoked!');
         let graphDOMNode = this.refs.graph;
         this.props.handler.render(graphDOMNode, this.props.layout);
     },

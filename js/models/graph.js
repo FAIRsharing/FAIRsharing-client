@@ -34,7 +34,10 @@ export class AbstractGraphStrategy {
 
 const basicLayoutProps= {
     fit: true,
-    animate: true
+    animate: true,
+    // tentative optimisation parameters
+    hideEdgesOnViewPort: true,
+    pixelRatio: 1
 };
 
 export const concentricLayoutProps = {
@@ -246,7 +249,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     */
     _prepareElements(nodes, edges) {
 
-        const out_nodes = [], out_edges = [], node_ids = [];
+        const out_nodes = [], out_edges = [], node_ids = [], nodesDepthMap = new Map();
         const rootNode = _.find(nodes, {'path_length': 0});
 
         for (const node of nodes) {
@@ -268,21 +271,21 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             });
 
             node_ids.push(node.properties.application_id);
+            nodesDepthMap.set(node.properties.application_id, node.path_length);
 
         }
+
         const filtered_node_ids = nodes.map(el => el.properties && el.properties.application_id);
-
         const filtered_edges = edges.filter(el => filtered_node_ids.indexOf(el.source) > -1 && filtered_node_ids.indexOf(el.target) > -1);
+        let sourceDepth, targetDepth, edgeColor, minPathLength, maxPathLength;
 
-        let source, target, edgeColor, minPathLength, maxPathLength;
         for (const edge of filtered_edges) {
-
-            source = _.find(nodes, {properties: {application_id: edge.source}});
-            target = _.find(nodes, {properties: {application_id: edge.target}});
-            edgeColor = (target.path_length < EDGE_SHADOW_DEPTH && source.path_length < EDGE_SHADOW_DEPTH) ?
+            sourceDepth = nodesDepthMap.get(edge.source);
+            targetDepth = nodesDepthMap.get(edge.target);
+            edgeColor = (targetDepth < EDGE_SHADOW_DEPTH && sourceDepth < EDGE_SHADOW_DEPTH) ?
                 EDGES_COLOR_MAP.get(edge.relationship) : EDGES_COLOR_MAP.get(undefined);
-            minPathLength = Math.min(source.path_length, target.path_length);
-            maxPathLength = Math.max(source.path_length, target.path_length);
+            minPathLength = Math.min(sourceDepth, targetDepth);
+            maxPathLength = Math.max(sourceDepth, targetDepth);
             out_edges.push({
                 group: 'edges',
                 data: {
@@ -293,7 +296,6 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                 }
             });
         }
-
 
         return _.sortBy(out_nodes, node => -node.path_length).concat(_.sortBy(out_edges, 'ranking'));
 
@@ -352,6 +354,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         const elements = this._prepareElements(nodes, edges);
         const isHeadless = rootEl ? false : true;
 
+        console.time('cytoscapeRendering');
         this._cy = cytoscape({
             container: rootEl,
 
@@ -424,9 +427,12 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             headless: isHeadless
 
         });
+        console.timeEnd('cytoscapeRendering');
 
+        console.time('cytoscapeLayoutStart');
         this._cyLayout = this._cy.makeLayout(this.layout);
         this._cyLayout.start();
+        console.timeEnd('cytoscapeLayoutStart');
         this._registerNodeEvents();
 
     }
