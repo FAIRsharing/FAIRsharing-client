@@ -80,7 +80,12 @@ const Graph = React.createClass({
     },
 
     shouldComponentUpdate: function(nextProps) {
-        return nextProps.reload;
+        if (nextProps.reload) {
+            const { handler } = this.props;
+            handler && handler.destroy();
+            return true;
+        }
+        return false;
     },
 
     componentDidMount: function() {
@@ -89,7 +94,6 @@ const Graph = React.createClass({
     },
 
     componentDidUpdate: function() {
-        console.log('Graph.componentDidUpdate: invoked!');
         let graphDOMNode = this.refs.graph;
         this.props.handler.render(graphDOMNode, this.props.layout);
     },

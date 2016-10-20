@@ -4,7 +4,8 @@ $modal-dialog-subtitle-color: #337ab7;
 $tag-select-label-color: #337ab7;
 $graph-background-color: #fcffff;
 $graph-border-color: #d0ffff;
-
+$graph-header-background-color: #249acc;
+$graph-header-color: #fcffff;
 $layout-form-margin: 2px;
 
 .layout-form {
@@ -13,6 +14,24 @@ $layout-form-margin: 2px;
 
 .layout-selector-div {
     margin: $layout-form-margin;
+}
+
+.graph-container {
+
+}
+
+.graph-container .graph-head {
+    border-radius: 2px;
+    background-color: $graph-header-background-color;
+    color: $graph-header-color;
+}
+
+.graph-container .graph-head h3 {
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .graph-error {

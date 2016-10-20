@@ -74,7 +74,9 @@ class GraphContainer extends React.Component {
     */
 
     render() {
-        if (this.props.error) {
+        const { graph, layout, params: { graphId }, reload, error, isFetching, modal } = this.props;
+        const collectionName = graph && graph.nodes && graph.nodes[0] && graph.nodes[0].properties.name;
+        if (error) {
             return (
                 <div className="graph-error">
                     {'An unexpected error occurred while retrieving the graph. Sorry for the inconvenience.' }
@@ -85,34 +87,39 @@ class GraphContainer extends React.Component {
             openDetailsPanel: this.props.openDetailsPanel,
             closeDetailsPanel: this.props.closeDetailsPanel
         };
-        this.handler = new GraphHandler(this.props.graph, this.props.layout, dispatchMethods);
+        const headerType = !collectionName ? '' : graph.nodes[0].properties.recommendation ? 'Recommendations >' : 'Collections >';
+
+        this.handler = new GraphHandler(graph, layout, dispatchMethods);
         return (
             <div className="graph-container">
+                <div className="graph-head">
+                    <h3>{`${headerType} ${collectionName || ''}`}</h3>
+                </div>
                 <div className="graph-handler row">
-                    <Modal id="isFetchingModal" isOpen={this.props.isFetching} className="is-fetching-modal" style={modalStyles}>
+                    <Modal id="isFetchingModal" isOpen={isFetching} className="is-fetching-modal" style={modalStyles}>
                         <div className="jumbotron jumbotron-icon centred-cnt">
                             <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
                         </div>
                     </Modal>
-                    <ModalDialog isOpen={this.props.modal.isOpen} data={this.props.modal.node}
+                    <ModalDialog isOpen={modal.isOpen} data={modal.node}
                         allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
                     <div className="col-sm-3 col-xs-6 graph-layout-form-div">
-                        <LayoutForm layoutName={this.props.layout.name} handleLayoutChange={this.props.handleLayoutChange }
-                            visibility={this.props.layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
+                        <LayoutForm layoutName={layout.name} handleLayoutChange={this.props.handleLayoutChange }
+                            visibility={layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
                             // tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
-                            depth={this.props.layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
-                            isTagsPanelVisible={this.props.layout.isTagsPanelVisible}
+                            depth={layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
+                            isTagsPanelVisible={layout.isTagsPanelVisible}
                             tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
                         />
-                        <StatsBox handler={this.handler} reload={this.props.reload}/>
+                        <StatsBox handler={this.handler} reload={reload}/>
                     </div>
                     <div className="col-sm-9 col-xs-12">
-                        <Graph handler={this.handler} layout={this.props.layout} reload={this.props.reload} />
+                        <Graph handler={this.handler} layout={layout} reload={reload} />
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-xs-12">
-                        <TagsForm isTagsPanelVisible={this.props.layout.isTagsPanelVisible} tags={this.props.layout.tags}
+                        <TagsForm isTagsPanelVisible={layout.isTagsPanelVisible} tags={layout.tags}
                             tagsSelectChange={this.props.tagsSelectChange}  />
                     </div>
                 </div>
