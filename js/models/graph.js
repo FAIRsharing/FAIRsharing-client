@@ -13,6 +13,28 @@ cyCola(cytoscape, cola);
 const NODE_SHADOW_DEPTH = Number.POSITIVE_INFINITY;
 const EDGE_SHADOW_DEPTH = 2;
 
+/**
+ * @description scales the node size based on the pathLength (at the moment is disabled)
+ */
+function scaleNodeOnPathLength(pathLength) {
+    const scaleFactor = pathLength === 0 ? 1 : pathLength;
+    return 32/Math.pow(scaleFactor+1, 1);
+}
+
+/**
+ * @description scales the label size based on the pathLength (at the moment is disabled)
+ */
+function scaleTextOnPathLength(pathLength) {
+    // const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
+    const scaleFactor = 1;
+    return 20/Math.pow(scaleFactor+1, 1);
+}
+
+/**
+ * @class
+ * @abstract
+ * @name AbstractGraphStrategy
+ */
 export class AbstractGraphStrategy {
 
     constructor() {
@@ -167,6 +189,18 @@ export const nodeFilters = {
 * @description strategy class to format and render graphs with the cytoscape.js library
 */
 export class CytoscapeStrategy extends AbstractGraphStrategy {
+
+    static nodeSizeMap = new Map([
+        [0, scaleNodeOnPathLength(0)],
+        [1, scaleNodeOnPathLength(1)],
+        [2, scaleNodeOnPathLength(2)]
+    ])
+
+    static textSizeMap = new Map([
+        [0, scaleTextOnPathLength(0)],
+        [1, scaleTextOnPathLength(1)],
+        [2, scaleTextOnPathLength(2)]
+    ])
 
     /**
      * @constructor
@@ -344,15 +378,14 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
      */
     render({ nodes = [], edges = []} = {}, layout = {}, rootEl) {
 
+        const { nodeSizeMap, textSizeMap } = this.constructor;
+
         function scaleNodes(ele) {
-            const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
-            return 32/Math.pow(scaleFactor+1, 1);
+            return nodeSizeMap.get(ele.data('path_length'));
         }
 
         function scaleText(ele) {
-            // const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
-            const scaleFactor = 1;
-            return 20/Math.pow(scaleFactor+1, 1);
+            return textSizeMap.get(ele.data('path_length'));
         }
 
         this.layout = layout.name;

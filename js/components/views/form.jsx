@@ -58,6 +58,8 @@ function shouldFormFieldUpdate(nextProps) {
 /**
  * @class
  * @name Help
+ * @description a help component containing a brief description of what is this component for:
+ *              The info appears in a tooltip
  */
 export class Help extends React.Component {
 
@@ -75,7 +77,9 @@ export class Help extends React.Component {
 }
 
 /**
- * A form field in Bootstrap 3
+ * @class
+ * @name FormField
+ * @description A form field in Bootstrap 3
  */
 export class FormField extends React.Component {
 
@@ -225,7 +229,7 @@ export class ReactMultiSelectComponent extends React.Component {
             options: optsArray,
             onChange: onChange,
             onBlur: () => onBlur(value)
-        }
+        };
         return creatable ? (<ReactSelect.Creatable multi {...selectProps} />)
             : (<ReactSelect multi {...selectProps} />);
     }
@@ -237,35 +241,35 @@ export class ReactMultiSelectComponent extends React.Component {
  * @name ReactSelectAsyncComponent
  * @description a wrapper component for the async react-select to be used within redux-form
  */
- export class ReactSelectAsyncComponent extends React.Component {
+export class ReactSelectAsyncComponent extends React.Component {
 
-     constructor(props) {
-         super(props);
-         this.loadOptions = this.loadOptions.bind(this);
-     }
+    constructor(props) {
+        super(props);
+        this.loadOptions = this.loadOptions.bind(this);
+    }
 
-     loadOptions(str) {
-         const { options, getOptions } = this.props;
-         const optsArray = _.isArray(options) ? options.map(option => {
-             return { value: option.value || option, label: option.label || option};
-         }) : null;
-         if (!str) {
-             return optsArray;
-         }
-         return getOptions(str).then(res => res.concat(optsArray));
-     }
+    loadOptions(str) {
+        const { options, getOptions } = this.props;
+        const optsArray = _.isArray(options) ? options.map(option => {
+            return { value: option.value || option, label: option.label || option};
+        }) : null;
+        if (!str) {
+            return optsArray;
+        }
+        return getOptions(str).then(res => res.concat(optsArray));
+    }
 
-     render() {
-         const { input: { value, onChange, onBlur }, creatable, getOptions } = this.props;
-         const selectProps = {
-             value: value,
-             loadOptions: this.loadOptions,
-             onChange: onChange,
-             onBlur: () => onBlur(value)
-         }
-         return creatable ? <ReactSelect.CreatableAsync multi {...selectProps} />
+    render() {
+        const { input: { value, onChange, onBlur }, creatable, getOptions } = this.props;
+        const selectProps = {
+            value: value,
+            loadOptions: this.loadOptions,
+            onChange: onChange,
+            onBlur: () => onBlur(value)
+        };
+        return creatable ? <ReactSelect.CreatableAsync multi {...selectProps} />
             : <ReactSelect.Async multi {...selectProps} />;
-     }
+    }
 
  }
 

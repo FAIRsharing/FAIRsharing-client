@@ -6,7 +6,7 @@ import 'font-awesome/scss/font-awesome.scss';
 import React from 'react';
 import LayoutForm from '../views/layout-form';
 import StatsBox from '../views/stats-box';
-import Graph from '../views/graph';
+import Graph, { Legend } from '../views/graph';
 import ModalDialog from '../views/modal-dialog';
 import TagsForm from '../views/tags-form';
 import Modal from 'react-modal';
@@ -112,6 +112,7 @@ class GraphContainer extends React.Component {
                             tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
                         />
                         <StatsBox handler={this.handler} reload={reload}/>
+                        <Legend title='Links Legend'/>
                     </div>
                     <div className="col-sm-9 col-xs-12">
                         <Graph handler={this.handler} layout={layout} reload={reload} />

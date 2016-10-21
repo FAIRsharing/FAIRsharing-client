@@ -7,6 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Slider from 'rc-slider';
 import GraphHandler from '../../models/graph';
+import { RELATIONS_COLOR_MAP } from '../../utils/api-constants';
 // import spread from 'cytoscape-spread';
 
 const handleStyle = {
@@ -167,5 +168,41 @@ const Graph = React.createClass({
 
 });
 
+export class Legend extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidUpdate() {
+        const { graphLegend } = this.refs, context = graphLegend.getContext('2d'), legendMap = RELATIONS_COLOR_MAP;
+        let x = 10, y = 25;
+        const xStep = 60, yStep = 20, textOffset = 10;
+        context.fontSize = '14px';
+        context.textAlign = 'center';
+        context.fillText(this.props.title, graphLegend.width/2 - textOffset, y);
+        context.textAlign = 'left';
+        context.fontSize = '11px';
+        for ( const [label, color] of legendMap.entries()) {
+            y += yStep;
+            if (!label) {
+                continue;
+            }
+            context.beginPath();
+            context.moveTo(x, y);
+            context.lineTo(x + xStep, y);
+            context.lineWidth = 3;
+            context.strokeStyle = color;
+            context.stroke();
+            context.fillText(label, x + xStep + textOffset, y);
+        }
+    }
+
+    render() {
+        return (<div id="graphLegendCnt" className='graph-legend'>
+            <canvas id='graph-legend' ref='graphLegend' ></canvas>
+        </div>);
+    }
+}
 
 export default Graph;

@@ -109,6 +109,13 @@ $layout-form-margin: 2px;
     color: $modal-dialog-subtitle-color
 }
 
+.graph-legend {
+    margin-top: 10px;
+    border-radius: 1px;
+    padding: 5px;
+    height: 240px;
+}
+
 .graph {
     border: 3px solid $graph-border-color;
     background-color: $graph-background-color;
