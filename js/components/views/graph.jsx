@@ -5,6 +5,7 @@ import 'rc-slider/assets/index.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Col } from 'react-bootstrap';
 import Slider from 'rc-slider';
 import GraphHandler from '../../models/graph';
 import { RELATIONS_COLOR_MAP } from '../../utils/api-constants';
@@ -96,6 +97,7 @@ const Graph = React.createClass({
 
     componentDidUpdate: function() {
         let graphDOMNode = this.refs.graph;
+        // TODO add a spin (waiting) icon here?
         this.props.handler.render(graphDOMNode, this.props.layout);
     },
 
@@ -168,26 +170,37 @@ const Graph = React.createClass({
 
 });
 
+/**
+ * @class
+ * @name Legennd
+ * @description a Legend box (fully contained in a canvas)
+ */
 export class Legend extends React.Component {
 
     constructor(props) {
         super(props);
     }
 
+    /**
+     * @description draw the legend canvas
+     */
     componentDidUpdate() {
         const { graphLegend } = this.refs, context = graphLegend.getContext('2d'), legendMap = RELATIONS_COLOR_MAP;
         let x = 10, y = 25;
         const xStep = 60, yStep = 20, textOffset = 10;
-        context.fontSize = '14px';
+        context.font = '16px Sans-Serif';
+        context.fillStyle = '#27aae1';
         context.textAlign = 'center';
         context.fillText(this.props.title, graphLegend.width/2 - textOffset, y);
         context.textAlign = 'left';
-        context.fontSize = '11px';
+        context.textBaseline = 'middle';
+        context.font = '11px Sans-Serif';
+        context.fillStyle = 'grey';
         for ( const [label, color] of legendMap.entries()) {
-            y += yStep;
             if (!label) {
                 continue;
             }
+            y += yStep;
             context.beginPath();
             context.moveTo(x, y);
             context.lineTo(x + xStep, y);
@@ -199,9 +212,11 @@ export class Legend extends React.Component {
     }
 
     render() {
-        return (<div id="graphLegendCnt" className='graph-legend'>
-            <canvas id='graph-legend' ref='graphLegend' ></canvas>
-        </div>);
+        return (<Col xs={12} id="graphLegendCnt" >
+            <div className="graph-legend">
+                <canvas id='graph-legend' ref='graphLegend' ></canvas>
+            </div>
+        </Col>);
     }
 }
 

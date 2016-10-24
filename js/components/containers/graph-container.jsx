@@ -11,6 +11,7 @@ import ModalDialog from '../views/modal-dialog';
 import TagsForm from '../views/tags-form';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
+import { Row, Col } from 'react-bootstrap';
 import * as graphApi from '../../api/graph-api';
 // import cytoscape from 'cytoscape';
 // import cyCola from 'cytoscape-cola';
@@ -91,11 +92,11 @@ class GraphContainer extends React.Component {
 
         this.handler = new GraphHandler(graph, layout, dispatchMethods);
         return (
-            <div className="graph-container">
+            <div className="graph-container container-fluid">
                 <div className="graph-head">
                     <h3>{`${headerType} ${collectionName || ''}`}</h3>
                 </div>
-                <div className="graph-handler row">
+                <Row className="graph-handler">
                     <Modal id="isFetchingModal" isOpen={isFetching} className="is-fetching-modal" style={modalStyles}>
                         <div className="jumbotron jumbotron-icon centred-cnt">
                             <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
@@ -103,27 +104,29 @@ class GraphContainer extends React.Component {
                     </Modal>
                     <ModalDialog isOpen={modal.isOpen} data={modal.node}
                         allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
-                    <div className="col-sm-3 col-xs-6 graph-layout-form-div">
-                        <LayoutForm layoutName={layout.name} handleLayoutChange={this.props.handleLayoutChange }
-                            visibility={layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
-                            // tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
-                            depth={layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
-                            isTagsPanelVisible={layout.isTagsPanelVisible}
-                            tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
-                        />
-                        <StatsBox handler={this.handler} reload={reload}/>
-                        <Legend title='Links Legend'/>
-                    </div>
-                    <div className="col-sm-9 col-xs-12">
+                    <Col sm={3} xs={6} className="graph-layout-form-div">
+                        <Row>
+                            <LayoutForm layoutName={layout.name} handleLayoutChange={this.props.handleLayoutChange }
+                                visibility={layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
+                                // tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
+                                depth={layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
+                                isTagsPanelVisible={layout.isTagsPanelVisible}
+                                tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
+                                />
+                                <StatsBox handler={this.handler} reload={reload}/>
+                                <Legend title='Links Legend'/>
+                        </Row>
+                    </Col>
+                    <Col sm={9} xs={12} >
                         <Graph handler={this.handler} layout={layout} reload={reload} />
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-xs-12">
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
                         <TagsForm isTagsPanelVisible={layout.isTagsPanelVisible} tags={layout.tags}
                             tagsSelectChange={this.props.tagsSelectChange}  />
-                    </div>
-                </div>
+                    </Col>
+                </Row>
             </div>
         );
     }

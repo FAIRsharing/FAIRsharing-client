@@ -5,7 +5,8 @@ import 'react-select/scss/default.scss';
 import '../../../styles/main.scss';
 
 import React from 'react';
-import Select from 'react-select';
+// import Select from 'react-select';
+import { Col } from 'react-bootstrap';
 import { GRAPH_LAYOUTS, TAG_TYPES, ENTITY_LABELS_PLURAL} from '../../utils/api-constants';
 import _ from 'lodash';
 
@@ -120,24 +121,26 @@ const LayoutForm = React.createClass({
             margin: '2px'
         }; */
 
-        return <form className="form layout-form">
-            <div className="">
-                <div className="form-group layout-selector-div">
-                    <label htmlFor="layoutSelector" className="col-xs-4">Layout </label>
-                    <div className="col-xs-8">
-                        <select id="layoutSelector" className="form-control" onChange={this.props.handleLayoutChange} value={this.props.layoutName}>
-                            {optList}
-                        </select>
+        return <Col xs={12}>
+            <form className="form layout-form">
+                <div className="">
+                    <div className="form-group layout-selector-div">
+                        <label htmlFor="layoutSelector" className="col-xs-4">Layout </label>
+                        <div className="col-xs-8">
+                            <select id="layoutSelector" className="form-control" onChange={this.props.handleLayoutChange} value={this.props.layoutName}>
+                                {optList}
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="">{tagsVisibilityCheckbox}</div>
-            <div className=""><div style={{ marginTop: 6}}><b>Inner</b></div></div>
-            <div className="">{innerCheckboxes}</div>
-            <div className="">{outerCheckbox}</div>
-            <div className="">{outerCheckboxes}</div>
-            {/* <div ref="tagsSelectsDiv" className="">{tagSelectsList}</div> */}
-        </form>;
+                <div className="">{tagsVisibilityCheckbox}</div>
+                <div className=""><div style={{ marginTop: 6}}><b>Inner</b></div></div>
+                <div className="">{innerCheckboxes}</div>
+                <div className="">{outerCheckbox}</div>
+                <div className="">{outerCheckboxes}</div>
+                {/* <div ref="tagsSelectsDiv" className="">{tagSelectsList}</div> */}
+            </form>
+        </Col>;
 
     }
 

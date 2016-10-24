@@ -1,5 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
+import { Col } from 'react-bootstrap';
 // import chart from 'src/chart.js';
 import { BIOSHARING_ENTITIES, ENTITIES_COLOR_MAP, ENTITY_LABELS_PLURAL } from '../../utils/api-constants';
 
@@ -134,14 +135,14 @@ const StatsBox = React.createClass({
         }
 
         return(
-            <div className="stats-box">
+            <Col xs={12} className="stats-box">
                 {/* <div id="doughnutsLegendCnt" ref="doughnutsLegendCnt">
                     {statsLegend}
                 </div> */}
                 <div id="doughnutsCnt">
                     {plots}
                 </div>
-            </div>
+            </Col>
             );
     }
 
