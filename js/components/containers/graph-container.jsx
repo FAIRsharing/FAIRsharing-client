@@ -17,7 +17,7 @@ import * as graphApi from '../../api/graph-api';
 // import cyCola from 'cytoscape-cola';
 // import cola from 'cola';
 // import sigma from 'sigma';
-import { find, isArray, difference, map } from 'lodash';
+import { find, isArray, difference, map, uniq } from 'lodash';
 import GraphHandler from '../../models/graph';
 import { ALLOWED_FIELDS } from '../../utils/api-constants';
 import * as actions from '../../actions/graph-actions';
@@ -114,7 +114,7 @@ class GraphContainer extends React.Component {
                                 tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
                                 />
                                 <StatsBox handler={this.handler} reload={reload}/>
-                                <Legend title='Links Legend'/>
+                                <Legend title='Links Legend' items={uniq(map(this.handler.edges, 'relationship'))} />
                         </Row>
                     </Col>
                     <Col sm={9} xs={12} >
