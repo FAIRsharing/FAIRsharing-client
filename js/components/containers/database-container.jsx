@@ -1,6 +1,6 @@
 import '../../../styles/biosharing-entities.scss';
 
-import _ from 'lodash';
+import { omit } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Col, Row } from 'react-bootstrap';
@@ -131,38 +131,38 @@ class DatabaseEditFormComponent extends React.Component {
                 </Row>
                 <div>
                     <Row>
-                        <TextInput field={_.omit(fields.name, ['helpText', 'label'])} helpText={fields.name.helpText} label={fields.name.label} />
-                        <TextInput field={_.omit(fields.shortname, ['helpText', 'label'])} helpText={fields.shortname.helpText} label={fields.shortname.label} />
+                        <TextInput field={omit(fields.name, ['helpText', 'label'])} helpText={fields.name.helpText} label={fields.name.label} />
+                        <TextInput field={omit(fields.shortname, ['helpText', 'label'])} helpText={fields.shortname.helpText} label={fields.shortname.label} />
                     </Row>
                     <Row>
-                        <Select field={_.omit(fields.status, ['helpText', 'label', 'options'])}
+                        <Select field={omit(fields.status, ['helpText', 'label', 'options'])}
                             helpText={fields.status.helpText} label={fields.status.label} options={fields.status.options}/>
-                        <TextInput field={_.omit(fields.homepage, ['helpText', 'label'])} helpText={fields.homepage.helpText} label={fields.homepage.label} />
+                        <TextInput field={omit(fields.homepage, ['helpText', 'label'])} helpText={fields.homepage.helpText} label={fields.homepage.label} />
                     </Row>
                     <Row>
-                        <Textarea field={_.omit(fields.description, ['helpText', 'label', 'size'])} helpText={fields.description.helpText} label={fields.description.label} size={fields.description.size}  />
+                        <Textarea field={omit(fields.description, ['helpText', 'label', 'size'])} helpText={fields.description.helpText} label={fields.description.label} size={fields.description.size}  />
                     </Row>
                     <Row>
-                        <TextInput field={_.omit(fields.yearOfCreation, ['helpText', 'label'])} helpText={fields.yearOfCreation.helpText} label={fields.yearOfCreation.label} />
-                        <TextInput field={_.omit(fields.miriam_url, ['helpText', 'label'])} helpText={fields.miriam_url.helpText} label={fields.miriam_url.label} />
+                        <TextInput field={omit(fields.yearOfCreation, ['helpText', 'label'])} helpText={fields.yearOfCreation.helpText} label={fields.yearOfCreation.label} />
+                        <TextInput field={omit(fields.miriam_url, ['helpText', 'label'])} helpText={fields.miriam_url.helpText} label={fields.miriam_url.label} />
                     </Row>
                     <Row>
-                        <TextInput field={_.omit(fields.contact, ['helpText', 'label'])} helpText={fields.contact.helpText} label={fields.contact.label} />
-                        <TextInput field={_.omit(fields.contactEmail, ['helpText', 'label'])} helpText={fields.contactEmail.helpText} label={fields.contactEmail.label} />
+                        <TextInput field={omit(fields.contact, ['helpText', 'label'])} helpText={fields.contact.helpText} label={fields.contact.label} />
+                        <TextInput field={omit(fields.contactEmail, ['helpText', 'label'])} helpText={fields.contactEmail.helpText} label={fields.contactEmail.label} />
                     </Row>
                     <Row>
-                        <TextInput field={_.omit(fields.contactORCID, ['helpText', 'label'])} helpText={fields.contactORCID.helpText} label={fields.contactORCID.label} />
+                        <TextInput field={omit(fields.contactORCID, ['helpText', 'label'])} helpText={fields.contactORCID.helpText} label={fields.contactORCID.label} />
                     </Row>
                     <Row>
-                        <MultiSelect field={_.omit(fields.countries, ['helpText', 'label', 'size'])} helpText={fields.countries.helpText}
+                        <MultiSelect field={omit(fields.countries, ['helpText', 'label', 'size'])} helpText={fields.countries.helpText}
                             label={fields.countries.label} size={fields.countries.size} options={tags.countries}/>
                     </Row>
                     <Row>
-                        <MultiSelect field={_.omit(fields.taxonomies, ['helpText', 'label', 'size'])} helpText={fields.taxonomies.helpText}
+                        <MultiSelect field={omit(fields.taxonomies, ['helpText', 'label', 'size'])} helpText={fields.taxonomies.helpText}
                             label={fields.taxonomies.label} size={fields.taxonomies.size} options={tags.taxonomies} creatable />
                     </Row>
                     <Row>
-                        <MultiSelect field={_.omit(fields.domains, ['helpText', 'label', 'size'])} helpText={fields.domains.helpText}
+                        <MultiSelect field={omit(fields.domains, ['helpText', 'label', 'size'])} helpText={fields.domains.helpText}
                             label={fields.domains.label} size={fields.domains.size} options={tags.domains} creatable />
                     </Row>
                 </div>
@@ -184,11 +184,11 @@ class DatabaseEditFormComponent extends React.Component {
                 </Row>
                 <div>
                     <Row>
-                        <MultiSelect async field={_.omit(fields.implementedStandards, ['helpText', 'label', 'size'])} helpText={fields.implementedStandards.helpText}
+                        <MultiSelect async field={omit(fields.implementedStandards, ['helpText', 'label', 'size'])} helpText={fields.implementedStandards.helpText}
                             label={fields.implementedStandards.label} size={fields.implementedStandards.size} getOptions={getStandardOptions} />
                     </Row>
                     <Row>
-                        <MultiSelect async field={_.omit(fields.relatedDatabases, ['helpText', 'label', 'size'])} helpText={fields.relatedDatabases.helpText}
+                        <MultiSelect async field={omit(fields.relatedDatabases, ['helpText', 'label', 'size'])} helpText={fields.relatedDatabases.helpText}
                             label={fields.relatedDatabases.label} size={fields.relatedDatabases.size} getOptions={getDatabaseOptions} />
                     </Row>
                 </div>

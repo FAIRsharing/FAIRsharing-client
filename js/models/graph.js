@@ -2,7 +2,7 @@ import cytoscape from 'cytoscape';
 import cyCola from 'cytoscape-cola';
 import cola from 'cola';
 // import sigma from 'sigma';
-import _ from 'lodash';
+import { map, intersection, union, partition, clone, sortBy, groupBy, find, isEmpty, zipObject } from 'lodash';
 import { GRAPH_LAYOUTS, BIOSHARING_COLLECTION, DEPTH_LEVELS, ENTITIES_COLOR_MAP as NODES_COLOR_MAP,
     RELATIONS_COLOR_MAP as EDGES_COLOR_MAP, TAG_ENTITIES as TAG_NODES
 } from '../utils/api-constants';
@@ -150,7 +150,7 @@ export const nodeFilters = {
      * @returns {Boolean}
      */
     filterByLabel: function(node) {
-        return _.intersection(node.labels, this.blacklistedLabels[node.path_length]).length === 0;
+        return intersection(node.labels, this.blacklistedLabels[node.path_length]).length === 0;
     },
 
     filterByTags: function(node) {
@@ -162,8 +162,8 @@ export const nodeFilters = {
         let flag = true;
         for (const tagType of Object.keys(this.tags)) {
             // if there is some filtering on tags perform it, otherwise skip it
-            if (!_.isEmpty(this.tags[tagType].unselected)) {
-                flag = flag &&  _.intersection(node.properties[tagType], this.tags[tagType].selected).length > 0;
+            if (!isEmpty(this.tags[tagType].unselected)) {
+                flag = flag &&  intersection(node.properties[tagType], this.tags[tagType].selected).length > 0;
             }
         }
         return flag;
@@ -290,7 +290,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     _prepareElements(nodes, edges) {
 
         const out_nodes = [], out_edges = [], node_ids = [], nodesDepthMap = new Map();
-        const rootNode = _.find(nodes, {'path_length': 0});
+        const rootNode = find(nodes, {'path_length': 0});
 
         for (const node of nodes) {
 
@@ -337,7 +337,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             });
         }
 
-        return _.sortBy(out_nodes, node => -node.path_length).concat(_.sortBy(out_edges, 'ranking'));
+        return sortBy(out_nodes, node => -node.path_length).concat(sortBy(out_edges, 'ranking'));
 
     }
 
@@ -598,7 +598,7 @@ export default class GraphHandler {
         this._strategy = new CytoscapeStrategy(dispatchFnc, this._layoutName);
 
         // initialize an array of empty objects for each depth level of the graph
-        this._blacklistedLabels = _.zipObject(DEPTH_LEVELS, _.map(DEPTH_LEVELS, () => []));
+        this._blacklistedLabels = zipObject(DEPTH_LEVELS, map(DEPTH_LEVELS, () => []));
 
         for (const entityType of Object.keys(this._visibilityMap)) {
             for (const depthLevel of DEPTH_LEVELS) {
@@ -687,16 +687,16 @@ export default class GraphHandler {
     computeStats() {
         // console.log(TAG_NODES);
         // console.log(BIOSHARING_COLLECTION);
-        if (_.isEmpty(this._nodes)) {
+        if (isEmpty(this._nodes)) {
             return {};
         }
-        const blacklistedNodes = _.clone(TAG_NODES);
+        const blacklistedNodes = clone(TAG_NODES);
         blacklistedNodes.push(BIOSHARING_COLLECTION);
-        const innerVsOuterNodes = _.partition(this._nodes, node => node.path_length <= 1);
+        const innerVsOuterNodes = partition(this._nodes, node => node.path_length <= 1);
 
         let countByEntityArray = [];
         for (const partition of innerVsOuterNodes) {
-            const byEntity = _.groupBy(partition, node => {
+            const byEntity = groupBy(partition, node => {
                 return node.labels && node.labels[0];
             });
             const countByEntity = {};
@@ -719,14 +719,14 @@ export default class GraphHandler {
             }
         } */
 
-        return _.isEmpty(countByEntityArray[1]) ? {
+        return isEmpty(countByEntityArray[1]) ? {
             'Count': countByEntityArray[0]
         } : {
             'Count - Inner': countByEntityArray[0],
             'Count - Outer': countByEntityArray[1],
             'Count - Total': countByEntityArray.reduce((prevObj, currObj) => {
                 const nextObj = {};
-                for (const property of _.union(Object.keys(prevObj), Object.keys(currObj))) {
+                for (const property of union(Object.keys(prevObj), Object.keys(currObj))) {
                     const curr = currObj[property] || 0;
                     const prev = prevObj[property] || 0;
                     nextObj[property] = curr + prev;

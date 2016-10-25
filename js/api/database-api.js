@@ -1,8 +1,7 @@
-import _ from 'lodash';
 import store from '../store';
 import { handleHTTPErrors, serialize } from '../utils/helper-funcs';
-import { sendRemoteRequest, getRemoteError } from '../actions/main-actions';
-import { getDatabaseSuccess, getTagsSuccess } from '../actions/database-actions';
+import { sendRemoteRequest } from '../actions/main-actions';
+// import { getDatabaseSuccess, getTagsSuccess } from '../actions/database-actions';
 import { API_URL_ROOT, DATABASE_ENDPOINT, STANDARD_ENDPOINT, TAGS_ENDPOINT } from '../utils/api-constants';
 
 export function getDatabase(biodbcoreId) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import _ from 'lodash';
+import { values, find } from 'lodash';
 import { Col } from 'react-bootstrap';
 // import chart from 'src/chart.js';
 import { BIOSHARING_ENTITIES, ENTITIES_COLOR_MAP, ENTITY_LABELS_PLURAL } from '../../utils/api-constants';
@@ -10,8 +10,8 @@ import { Doughnut as DoughnutChart } from 'react-chartjs';
 
 
 function compareEntityTypeByRank(firstType, secondType) {
-    const entitiesArr = _.values(BIOSHARING_ENTITIES);
-    return _.find(entitiesArr, ['value', secondType]).rank - _.find(entitiesArr, ['value', firstType]).rank ;
+    const entitiesArr = values(BIOSHARING_ENTITIES);
+    return find(entitiesArr, ['value', secondType]).rank - find(entitiesArr, ['value', firstType]).rank ;
 }
 
 /**

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { omit } from 'lodash';
 import { GRAPH_RELATIONS } from './api-constants';
 
 /*
@@ -23,7 +23,7 @@ function pushItem(item, itemType, depth, nodes, edges) {
  */
 export function relational2graph(collection) {
     const nodes = [], edges = [];
-    nodes.push({properties: _.omit(collection,
+    nodes.push({properties: omit(collection,
         ['standards', 'policies', 'databases', 'created_by', 'lastEditor'])});
 
     // missing label
@@ -66,7 +66,7 @@ export function relational2graph(collection) {
 
         }
         for (const relatedDatabases of database.related_databases) {
-            
+
         }
 
     }

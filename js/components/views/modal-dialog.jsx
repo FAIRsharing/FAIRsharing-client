@@ -64,7 +64,9 @@ const ModalDialog = React.createClass({
             <Modal isOpen={this.props.isOpen} onRequestClose={this.close} onAfterOpen={this.afterOpenModal}
                 className="graph-dialog" style={{overlay: {zIndex: 5}}} >
                 <h1>
-                    <a ref="entityLink" href={`/${attrs.application_id}`} target="_blank">{attrs.shortName || attrs.name}</a>
+                    <a ref="entityLink" href={`/${attrs.application_id}`} target="_blank" rel="noopener noreferrer">
+                        {attrs.shortName || attrs.name}
+                    </a>
                 </h1>
                 <h2>{label}</h2>
                 <ul className="list-group">{attrList}</ul>

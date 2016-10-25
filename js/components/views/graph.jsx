@@ -186,21 +186,23 @@ export class Legend extends React.Component {
      */
     componentDidUpdate() {
         const { graphLegend } = this.refs, context = graphLegend.getContext('2d'), legendMap = RELATIONS_COLOR_MAP;
+        context.clearRect(0, 0, graphLegend.width, graphLegend.height);
         let x = 10, y = 25;
         const xStep = 60, yStep = 20, textOffset = 10;
         context.font = '16px Sans-Serif';
         context.fillStyle = '#27aae1';
         context.textAlign = 'center';
-        context.fillText(this.props.title, graphLegend.width/2 - textOffset, y);
+        context.textBaseline = 'alphabetic';
+        context.fillText(this.props.title, graphLegend.width/2, y);
         context.textAlign = 'left';
         context.textBaseline = 'middle';
         context.font = '11px Sans-Serif';
         context.fillStyle = 'grey';
+        y += yStep;
         for ( const [label, color] of legendMap.entries()) {
             if (!label) {
                 continue;
             }
-            y += yStep;
             context.beginPath();
             context.moveTo(x, y);
             context.lineTo(x + xStep, y);
@@ -208,6 +210,7 @@ export class Legend extends React.Component {
             context.strokeStyle = color;
             context.stroke();
             context.fillText(label, x + xStep + textOffset, y);
+            y += yStep;
         }
     }
 

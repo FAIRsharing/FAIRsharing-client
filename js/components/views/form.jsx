@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import _ from 'lodash';
+import { isArray } from 'lodash';
 import React, { PropTypes } from 'react';
 import { Col, Row, OverlayTrigger, Glyphicon, Tooltip } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
@@ -221,7 +221,7 @@ export class ReactMultiSelectComponent extends React.Component {
 
     render() {
         const { input: { value, onChange, onBlur }, options, creatable } = this.props;
-        const optsArray = _.isArray(options) ? options.map(option => {
+        const optsArray = isArray(options) ? options.map(option => {
             return { value: option.value || option, label: option.label || option};
         }) : null;
         const selectProps = {
@@ -250,7 +250,7 @@ export class ReactSelectAsyncComponent extends React.Component {
 
     loadOptions(str) {
         const { options, getOptions } = this.props;
-        const optsArray = _.isArray(options) ? options.map(option => {
+        const optsArray = isArray(options) ? options.map(option => {
             return { value: option.value || option, label: option.label || option};
         }) : null;
         if (!str) {

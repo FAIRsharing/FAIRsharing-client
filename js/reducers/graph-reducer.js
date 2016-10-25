@@ -1,12 +1,12 @@
 import * as types from '../actions/action-types';
 import { GRAPH_LAYOUTS, BIOSHARING_ENTITIES, TAG_TYPES, DEPTH_LEVELS } from '../utils/api-constants';
-import _ from 'lodash';
+import { values, map, zipObject, union } from 'lodash';
 
 const visibilityObj = {};
-_.values(BIOSHARING_ENTITIES).forEach(entity => visibilityObj[entity.value] = _.zipObject(DEPTH_LEVELS, _.map(DEPTH_LEVELS, () => true)));
+values(BIOSHARING_ENTITIES).forEach(entity => visibilityObj[entity.value] = zipObject(DEPTH_LEVELS, map(DEPTH_LEVELS, () => true)));
 
 const tagSelectorObj = {};
-_.values(TAG_TYPES).forEach(tagType => tagSelectorObj[tagType.value] = tagType.initialState);
+values(TAG_TYPES).forEach(tagType => tagSelectorObj[tagType.value] = tagType.initialState);
 
 const initialState = {
     graph: {
@@ -38,9 +38,9 @@ const initialState = {
 */
 function getUniqueTags(nodes) {
     const tagMap = new Map();
-    for (const tagType of _.map(_.values(TAG_TYPES), 'value')) {
+    for (const tagType of map(values(TAG_TYPES), 'value')) {
         const tags = nodes.map(node => node.properties[tagType]);
-        tagMap.set(tagType, _.union(...tags));
+        tagMap.set(tagType, union(...tags));
     }
     return tagMap;
 }

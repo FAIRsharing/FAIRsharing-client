@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
+import { values, union } from 'lodash';
 import Select from 'react-select';
 import { TAG_TYPES } from '../../utils/api-constants';
 
-const TAGS_SELECTS = _.values(TAG_TYPES);
+const TAGS_SELECTS = values(TAG_TYPES);
 
 const TagsSelect = React.createClass({
 
@@ -15,7 +15,7 @@ const TagsSelect = React.createClass({
     render: function () {
 
         const tags = this.props.tags;
-        const options = _.union(tags.selected, tags.unselected).map(opt => {
+        const options = union(tags.selected, tags.unselected).map(opt => {
             return {value: opt, label: opt};
         });
 

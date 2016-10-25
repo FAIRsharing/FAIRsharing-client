@@ -17,7 +17,7 @@ import * as graphApi from '../../api/graph-api';
 // import cyCola from 'cytoscape-cola';
 // import cola from 'cola';
 // import sigma from 'sigma';
-import _ from 'lodash';
+import { find, isArray, difference, map } from 'lodash';
 import GraphHandler from '../../models/graph';
 import { ALLOWED_FIELDS } from '../../utils/api-constants';
 import * as actions from '../../actions/graph-actions';
@@ -135,7 +135,7 @@ class GraphContainer extends React.Component {
 
 const mapStateToProps = function(store) {
     const modal = store.graphState.modal;
-    const modalNode = modal && modal.isOpen ? _.find(store.graphState.graph.nodes, node => node.properties.application_id === modal.node) : null;
+    const modalNode = modal && modal.isOpen ? find(store.graphState.graph.nodes, node => node.properties.application_id === modal.node) : null;
     return {
         graph: store.graphState.graph,
         isFetching: store.graphState.isFetching,
@@ -187,12 +187,12 @@ const mapDispatchToProps = function(dispatch) {
                 let selected, unselected;
                 //use the clear option to reset the selector, i.e. selecting all options
                 if (!newValue) {
-                    selected = _.map(this.options, 'value');
+                    selected = map(this.options, 'value');
                     unselected = [];
                 }
                 else {
-                    selected = _.isArray(newValue) ? _.map(newValue, 'value') : [newValue.value];
-                    unselected = _.difference(_.map(this.options, 'value'), selected);
+                    selected = isArray(newValue) ? map(newValue, 'value') : [newValue.value];
+                    unselected = difference(map(this.options, 'value'), selected);
                 }
                 dispatch(actions.tagsSelectChange({
                     name: name,

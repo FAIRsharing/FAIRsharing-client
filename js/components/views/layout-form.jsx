@@ -8,10 +8,10 @@ import React from 'react';
 // import Select from 'react-select';
 import { Col } from 'react-bootstrap';
 import { GRAPH_LAYOUTS, TAG_TYPES, ENTITY_LABELS_PLURAL} from '../../utils/api-constants';
-import _ from 'lodash';
+import { values } from 'lodash';
 
 //const CHECKBOXES = _.values(BIOSHARING_ENTITIES);
-const TAGS_SELECTS = _.values(TAG_TYPES);
+const TAGS_SELECTS = values(TAG_TYPES);
 
 const Checkbox = React.createClass({
 
