@@ -44,22 +44,66 @@ CustomHandle.propTypes = {
  * @class
  * @name ZoomHandle
  */
-const ZoomHandle = props => {
-    const zoomingFactor = Math.trunc(100 * Math.pow(2, props.value));
-    const style = Object.assign({left: props.offset + '%'}, handleStyle);
-    if (zoomingFactor >= 1000) {
-        style.fontSize = '12px';
-        style.width = '50px';
-    }
-    return (
-        <div style={style}>{`${zoomingFactor} %`}</div>
-    );
-};
+export class ZoomHandle extends React.Component {
 
-ZoomHandle.propTypes = {
-    value: React.PropTypes.any,
-    offset: React.PropTypes.number
-};
+    static propTypes = {
+        value: React.PropTypes.any,
+        offset: React.PropTypes.number
+    }
+
+    render() {
+        const { value, offset } = this.props;
+        const zoomingFactor = Math.trunc(100 * Math.pow(2, value));
+        const style = Object.assign({left: offset + '%'}, handleStyle);
+        if (zoomingFactor >= 1000) {
+            style.fontSize = '12px';
+            style.width = '50px';
+        }
+        return (
+            <div style={style}>{`${zoomingFactor} %`}</div>
+        );
+    }
+
+}
+
+/**
+ * @class
+ * @name ZoomSlider
+ */
+export class ZoomSlider extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.onChange = this.onChange.bind(this);
+        this.state = {
+            value: 0,
+            min: -3,
+            max: 5
+        };
+    }
+
+    onChange(zoomExp) {
+        const { handler } = this.props;
+        const zoomLevel = Math.pow(2, zoomExp);
+        handler.zoom(zoomLevel);
+        this.setState({
+            value: zoomExp
+        });
+    }
+
+    render() {
+        const {value, min, max} = this.state;
+        return (<div key={'div-zoom'}>
+            <label htmlFor={'slider-zoom'} className="col-md-1 col-xs-2">Zoom</label>
+            <div className="col-xs-6">
+                <Slider id={'slider-zoom'} key="zoom" ref="zoom"
+                        value={value} min={min} max={max} step={0.1}
+                        handle={<ZoomHandle />} onChange={this.onChange} />
+            </div>
+        </div>);
+    }
+
+}
 
 /**
  * @class
@@ -96,9 +140,14 @@ const Graph = React.createClass({
     },
 
     componentDidUpdate: function() {
-        let graphDOMNode = this.refs.graph;
+        let graphDOMNode = this.refs.graph, { handler, layout } = this.props;
         // TODO add a spin (waiting) icon here?
-        this.props.handler.render(graphDOMNode, this.props.layout);
+        handler.render(graphDOMNode, layout);
+        const zoomExp = handler.zoom();
+        //const zoomExp = Math.log(zoom)/Math.LN2;
+        this.refs.zoomSlider.setState({
+            zoom: zoomExp
+        });
     },
 
     render: function() {
@@ -124,6 +173,8 @@ const Graph = React.createClass({
         }
         sliderForm = <form className="form">
             <div className="row graph-sliders-div">
+                <ZoomSlider ref='zoomSlider' handler={handler} />
+                { /*
                 <div key={'div-zoom'}>
                     <label htmlFor={'slider-zoom'} className="col-md-1 col-xs-2">Zoom</label>
                     <div className="col-xs-6">
@@ -132,6 +183,7 @@ const Graph = React.createClass({
                                 handle={<ZoomHandle />} onChange={this._zoomOnChange()} />
                     </div>
                 </div>
+                */ }
             </div>
             <div className="row graph-sliders-div">
                 {sliders}

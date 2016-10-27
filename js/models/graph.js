@@ -486,8 +486,11 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
      * @param{Number}
      */
     zoom(zoomFactor) {
-        const cy = this._cy, container = cy.container();
-        const width = container.offsetWidth, height = container.offsetHeight;
+        const cy = this._cy;
+        if (!zoomFactor) {
+            return cy && cy.zoom();
+        }
+        const container = cy.container(), width = container.offsetWidth, height = container.offsetHeight;
         cy.zoom({
             level: zoomFactor,
             renderedPosition: { x: width/2, y: height/2}
@@ -765,7 +768,7 @@ export default class GraphHandler {
     }
 
     zoom(level) {
-        this._strategy.zoom(level);
+        return this._strategy.zoom(level);
     }
 
 }
