@@ -124,6 +124,12 @@ const StatsBox = React.createClass({
                     onComplete: function() {
                         addLabels(this);
                     }
+                },
+                legend: {
+                    // TODO add event here?
+                    onClick: function() {
+                        return false;
+                    }
                 }
             };
 
