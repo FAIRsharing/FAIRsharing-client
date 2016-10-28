@@ -143,11 +143,13 @@ const Graph = React.createClass({
         let graphDOMNode = this.refs.graph, { handler, layout } = this.props;
         // TODO add a spin (waiting) icon here?
         handler.render(graphDOMNode, layout);
-        const zoomExp = handler.zoom();
-        //const zoomExp = Math.log(zoom)/Math.LN2;
+        const zoomLevel = 1;
+        handler.zoom(zoomLevel);
+        const zoomExp = Math.log(zoomLevel)/Math.LN2;
         this.refs.zoomSlider.setState({
-            zoom: zoomExp
+            value: zoomExp
         });
+
     },
 
     render: function() {

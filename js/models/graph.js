@@ -55,7 +55,7 @@ export class AbstractGraphStrategy {
  */
 
 const basicLayoutProps= {
-    fit: true,
+    fit: false,
     animate: true
 };
 
@@ -495,6 +495,8 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             level: zoomFactor,
             renderedPosition: { x: width/2, y: height/2}
         });
+        const zoomLevel = cy.zoom();
+        console.log(zoomLevel, zoomFactor, zoomLevel === zoomFactor);
     }
 
     /**
