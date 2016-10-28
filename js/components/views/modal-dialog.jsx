@@ -48,7 +48,7 @@ const ModalDialog = React.createClass({
         for (const field of this.props.allowedFields) {
             if (attrKeys.indexOf(field) > -1) {
                 const value = _.isArray(attrs[field]) ? attrs[field].join(', ') : attrs[field];
-                attrList.push(<li field={field} className="list-group-item"><b>{_.startCase(field)}:</b> {value}</li>);
+                attrList.push(<li key={field} className="list-group-item"><b>{_.startCase(field)}:</b> {value}</li>);
             }
         }
         /*
