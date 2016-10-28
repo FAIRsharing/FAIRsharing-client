@@ -458,6 +458,9 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                 'target-arrow-shape': 'none'
             }),
 
+            // pan options
+            pan: { x: 0, y: 0 },
+
             // zooming options
             userZoomingEnabled: false,
             minZoom: 0.25,
@@ -481,6 +484,24 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
 
     /**
      * @method
+     * @name center
+     * @description centres the graph in the viewport invoking the opportune cytoscape.js method
+     */
+    center() {
+        this._cy && this._cy.center();
+    }
+
+    /**
+     * @method
+     * @name fit
+     * @description fits the graph in the viewport invoking the opportune cytoscape.js method
+     */
+    fit() {
+        this._cy && this._cy.fit();
+    }
+
+    /**
+     * @method
      * @name zoom
      * @description performs the zoom of the graph
      * @param{Number}
@@ -495,8 +516,6 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             level: zoomFactor,
             renderedPosition: { x: width/2, y: height/2}
         });
-        const zoomLevel = cy.zoom();
-        console.log(zoomLevel, zoomFactor, zoomLevel === zoomFactor);
     }
 
     /**
@@ -771,6 +790,14 @@ export default class GraphHandler {
 
     zoom(level) {
         return this._strategy.zoom(level);
+    }
+
+    center() {
+        this._strategy.center();
+    }
+
+    fit() {
+        this._strategy.fit();
     }
 
 }

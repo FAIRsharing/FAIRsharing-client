@@ -5,7 +5,7 @@ import 'rc-slider/assets/index.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import Slider from 'rc-slider';
 import GraphHandler from '../../models/graph';
 import { RELATIONS_COLOR_MAP } from '../../utils/api-constants';
@@ -111,9 +111,15 @@ export class ZoomSlider extends React.Component {
  * @prop{components.containers.GraphHandler} handler
  * @prop{Object} layout
  */
-const Graph = React.createClass({
+class Graph extends React.Component {
 
-    propTypes: {
+    constructor(props) {
+        super(props);
+        this._layoutParamOnChange = this._layoutParamOnChange.bind(this);
+        this.fitGraph = this.fitGraph.bind(this);
+    }
+
+    static propTypes = {
         handler: React.PropTypes.instanceOf(GraphHandler),
         layout: React.PropTypes.shape({
             name: React.PropTypes.string,
@@ -123,36 +129,34 @@ const Graph = React.createClass({
             isTagsPanelVisible: React.PropTypes.bool
         }).isRequired,
         reload: React.PropTypes.bool
-    },
+    }
 
-    shouldComponentUpdate: function(nextProps) {
+    shouldComponentUpdate(nextProps) {
         if (nextProps.reload) {
             const { handler } = this.props;
             handler && handler.destroy();
             return true;
         }
         return false;
-    },
+    }
 
-    componentDidMount: function() {
+    componentDidMount() {
         let graphDOMNode = this.refs.graph;
         this.props.handler.render(graphDOMNode, this.props.layout);
-    },
+    }
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         let graphDOMNode = this.refs.graph, { handler, layout } = this.props;
         // TODO add a spin (waiting) icon here?
         handler.render(graphDOMNode, layout);
-        const zoomLevel = 1;
-        handler.zoom(zoomLevel);
+        const zoomLevel = handler.zoom();
         const zoomExp = Math.log(zoomLevel)/Math.LN2;
         this.refs.zoomSlider.setState({
             value: zoomExp
         });
+    }
 
-    },
-
-    render: function() {
+    render() {
 
         const sliders = [], handler = this.props.handler, tunableParams = handler.getTunableParams();
         let sliderForm = null;
@@ -173,38 +177,38 @@ const Graph = React.createClass({
                 </div>
             );
         }
+
         sliderForm = <form className="form">
-            <div className="row graph-sliders-div">
-                <ZoomSlider ref='zoomSlider' handler={handler} />
-                { /*
-                <div key={'div-zoom'}>
-                    <label htmlFor={'slider-zoom'} className="col-md-1 col-xs-2">Zoom</label>
-                    <div className="col-xs-6">
-                        <Slider id={'slider-zoom'} key="zoom" ref="zoom"
-                                defaultValue={0} min={-3} max={5} step={0.1}
-                                handle={<ZoomHandle />} onChange={this._zoomOnChange()} />
-                    </div>
-                </div>
-                */ }
-            </div>
-            <div className="row graph-sliders-div">
+            <Row className="graph-sliders-div">
+                <Col sm={6} xs={8}>
+                    <ZoomSlider ref='zoomSlider' handler={handler} />
+                </Col>
+                <Col sm={2} xs={4}>
+                    <Button bsStyle="primary" ref='fitGraph' onClick={this.fitGraph} >Fit & Centre Graph</Button>
+                </Col>
+            </Row>
+            <Row className="graph-sliders-div">
                 {sliders}
-            </div>
+            </Row>
         </form>;
-        //}
 
         return (
             <div id="graphCnt" className="graph-div">
                 {sliderForm}
-                <div className="row">
+                <Row>
                     <div id="graph" ref="graph" className="graph"
                         style={{'height': '100%', 'width': '100%'}} >
                     </div>
-                </div>
+                </Row>
             </div>
         );
-    },
+    }
 
+    /**
+     * @method
+     * @name _layoutParamOnChange
+     * @description event handler for layout change
+     */
     _layoutParamOnChange(paramName) {
         const handler = this.props.handler;
         return function(paramValue) {
@@ -212,17 +216,24 @@ const Graph = React.createClass({
             params[paramName] = paramValue;
             handler.makeLayout(params);
         };
-    },
-
-    _zoomOnChange() {
-        const handler = this.props.handler;
-        return function(zoomExp) {
-            const zoomLevel = Math.pow(2, zoomExp);
-            handler.zoom(zoomLevel);
-        };
     }
 
-});
+    /**
+     * @method
+     * @name fitGraph
+     * @description fits and centres the Graph
+     */
+    fitGraph() {
+        const { handler } = this.props;
+        handler.fit();
+        const zoomLevel = handler.zoom();
+        this.refs.zoomSlider.setState({
+            value: Math.log(zoomLevel)/Math.LN2
+        });
+
+    }
+
+}
 
 /**
  * @class
