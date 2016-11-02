@@ -4,6 +4,7 @@ import { omit } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Col, Row } from 'react-bootstrap';
+import ReactSelect from 'react-select';
 import FontAwesome from 'react-fontawesome';
 import { reduxForm } from 'redux-form';
 import { TextInput, Textarea, Select, MultiSelect } from '../views/form';
@@ -20,7 +21,7 @@ const fields = {
     description: { name: 'description', label: 'Description', placeholder: '', helpText: 'Free text summary of the resource and its purpose.', size: 12 },
     homepage: { name: 'homepage', label: 'Homepage', placeholder: '', helpText: 'The homepage of the resource itself. If there is no official homepage, a related URL may be used. For policies, the resource homepage can be the policy document itself. URLs for related content such as organizations can be described in the Associated Organizations section.'},
     yearOfCreation: { name: 'yearOfCreation', label: 'Year of Creation', helpText: 'The year in which the resource was originally created.'},
-    miriam_url: {name: 'miriam_url', label: 'MIRIAM URL', placeholder: '', helpText: 'Please add the MIRIAM URL (https://www.ebi.ac.uk/miriam/main/collections or http://identifiers.org) here. This is required for looking up the record there.'},
+    miriamUrl: {name: 'miriam_url', label: 'MIRIAM URL', placeholder: '', helpText: 'Please add the MIRIAM URL (https://www.ebi.ac.uk/miriam/main/collections or http://identifiers.org) here. This is required for looking up the record there.'},
     contact: {name: 'contact', label: 'Contact Name', placeholder: '', helpText: 'A person responsible for the maintenance of the resource. Alternatively a group contact (e.g. a particular helpdesk or department) may be given.'},
     contactEmail: {name: 'contactEmail', label: 'Contact Email', placeholder: '', helpText: 'The contact email address for the contact. This may be an individual or a group address (e.g. Helpdesk).'},
     contactORCID: {name: 'contactORCID', label: 'Contact\'s ORCID', placeholder: '', helpText: 'If the designated contact is an individual, their ORCID ID can be entered here.'},
@@ -39,13 +40,13 @@ const fields = {
         helpText: 'The biological domains covered by this resource. As you type, you will be presented with a list of matching values in a scrollable drop-down menu. If you do not find an appropriate term,  you may enter your own.',
         size: 12
     },
-    implementedStandards: {
-        name: 'implementedStandards', label: 'Implemented Standards', placeholder: '',
+    standardsImplemented: {
+        name: 'standardsImplemented', label: 'Standards Implemented', placeholder: '', entityId: 'bsg_id',
         helpText: 'Create links to the records for data standards that are implemented by this resource. Please begin typing the appropriate bsg- identifier, or name of the standard, and the matching BioSharing records will appear in a scrollable drop-down menu as you type.',
         size: 12
     },
     relatedDatabases: {
-        name: 'relatedDatabases', label: 'Related Databases', placeholder: '',
+        name: 'related_databases', label: 'Related Databases', placeholder: '', entityId: 'biodbcore_id',
         helpText: 'Create links to database records associated with this resource. Please begin by typing the appropriate full name or BioDBcore- identifier, and the matching BioSharing records will appear in a scrollable drop-down menu as you type.',
         size: 12
     }
@@ -62,8 +63,8 @@ function getStandardOptions(str) {
         pattern: str,
         fields: 'bsg_id,name' // return only ID and name
     })
-    .then( results => {
-        return results.map(elem => {
+    .then(json => {
+        return json.results.map(elem => {
             return {
                 value: elem.bsg_id,
                 label: `${elem.bsg_id}: ${elem.name}`
@@ -83,8 +84,8 @@ function getDatabaseOptions(str) {
         pattern: str,
         fields: 'bsg_id,name' // return only ID and name
     })
-    .then( results => {
-        return results.map(elem => {
+    .then(json => {
+        return json.results.map(elem => {
             return {
                 value: elem.biodbcore_id,
                 label: `${elem.biodbcore_id}: ${elem.name}`
@@ -100,6 +101,12 @@ function getDatabaseOptions(str) {
  */
  //TODO handle internationalisation issues
 class DatabaseEditFormComponent extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this._makeGeneralInformationBox = this._makeGeneralInformationBox.bind(this);
+        this._makeAssociatedRecordsBox = this._makeAssociatedRecordsBox.bind(this);
+    }
 
     componentDidMount() {
         const biodbcoreId = this.props.params.biodbcoreId, { storeDatabase, storeTags, handleError } = this.props;
@@ -144,7 +151,7 @@ class DatabaseEditFormComponent extends React.Component {
                     </Row>
                     <Row>
                         <TextInput field={omit(fields.yearOfCreation, ['helpText', 'label'])} helpText={fields.yearOfCreation.helpText} label={fields.yearOfCreation.label} />
-                        <TextInput field={omit(fields.miriam_url, ['helpText', 'label'])} helpText={fields.miriam_url.helpText} label={fields.miriam_url.label} />
+                        <TextInput field={omit(fields.miriamUrl, ['helpText', 'label'])} helpText={fields.miriamUrl.helpText} label={fields.miriamUrl.label} />
                     </Row>
                     <Row>
                         <TextInput field={omit(fields.contact, ['helpText', 'label'])} helpText={fields.contact.helpText} label={fields.contact.label} />
@@ -184,8 +191,8 @@ class DatabaseEditFormComponent extends React.Component {
                 </Row>
                 <div>
                     <Row>
-                        <MultiSelect async field={omit(fields.implementedStandards, ['helpText', 'label', 'size'])} helpText={fields.implementedStandards.helpText}
-                            label={fields.implementedStandards.label} size={fields.implementedStandards.size} getOptions={getStandardOptions} />
+                        <MultiSelect async field={omit(fields.standardsImplemented, ['helpText', 'label', 'size'])} helpText={fields.standardsImplemented.helpText}
+                            label={fields.standardsImplemented.label} size={fields.standardsImplemented.size} getOptions={getStandardOptions} />
                     </Row>
                     <Row>
                         <MultiSelect async field={omit(fields.relatedDatabases, ['helpText', 'label', 'size'])} helpText={fields.relatedDatabases.helpText}

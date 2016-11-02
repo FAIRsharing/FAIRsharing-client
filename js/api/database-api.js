@@ -5,7 +5,7 @@ import { sendRemoteRequest } from '../actions/main-actions';
 import { API_URL_ROOT, DATABASE_ENDPOINT, STANDARD_ENDPOINT, TAGS_ENDPOINT } from '../utils/api-constants';
 
 export function getDatabase(biodbcoreId) {
-    const databaseUrl = `/${API_URL_ROOT}/${DATABASE_ENDPOINT}/${biodbcoreId}`;
+    const databaseUrl = `/${API_URL_ROOT}/${DATABASE_ENDPOINT}/${biodbcoreId}/`;
     store.dispatch(sendRemoteRequest());
     return fetch(databaseUrl)
         .then(handleHTTPErrors)

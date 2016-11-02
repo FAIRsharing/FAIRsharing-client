@@ -1,3 +1,4 @@
+import 'react-select/scss/default.scss';
 import classnames from 'classnames';
 import { isArray } from 'lodash';
 import React, { PropTypes } from 'react';
@@ -249,20 +250,32 @@ export class ReactSelectAsyncComponent extends React.Component {
     }
 
     loadOptions(str) {
-        const { options, getOptions } = this.props;
+        const { options, getOptions, entityId } = this.props;
         const optsArray = isArray(options) ? options.map(option => {
-            return { value: option.value || option, label: option.label || option};
+            return {
+                value: option.value || option[entityId] || option,
+                label: option.label || option.name || option
+            };
         }) : null;
         if (!str) {
             return optsArray;
         }
-        return getOptions(str).then(res => res.concat(optsArray));
+        return getOptions(str).then(retrievedOpts => {
+            const res = retrievedOpts.concat(optsArray);
+            return res;
+        });
     }
 
     render() {
-        const { input: { value, onChange, onBlur }, creatable, getOptions } = this.props;
+        const { input: { value, onChange, onBlur }, creatable, getOptions, entityId } = this.props;
+        const formattedValue = isArray(value) ? value.map(elem => {
+            return {
+                value: elem[entityId] || elem,
+                label: elem.name || elem
+            };
+        }) : null;
         const selectProps = {
-            value: value,
+            value: formattedValue,
             loadOptions: this.loadOptions,
             onChange: onChange,
             onBlur: () => onBlur(value)
