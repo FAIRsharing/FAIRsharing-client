@@ -244,40 +244,58 @@ export class ReactMultiSelectComponent extends React.Component {
  */
 export class ReactSelectAsyncComponent extends React.Component {
 
+    static propTypes = {
+        input: PropTypes.shape({
+            value: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
+            onChange: PropTypes.func,
+            onBlur: PropTypes.func
+        }).isRequired,
+        getOptions: PropTypes.func.isRequired,
+        entityId: PropTypes.string.isRequired,
+        options: PropTypes.array,
+        creatable: PropTypes.bool
+    }
+
     constructor(props) {
         super(props);
         this.loadOptions = this.loadOptions.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     loadOptions(str) {
-        const { options, getOptions, entityId } = this.props;
-        const optsArray = isArray(options) ? options.map(option => {
+        const { getOptions } = this.props;
+        return Promise.resolve(str).then(pattern => {
+            if (pattern && pattern.length >= 3) {
+                return getOptions(str);
+            }
+            return [];
+        })
+        .then(fetchedOpts => {
             return {
-                value: option.value || option[entityId] || option,
-                label: option.label || option.name || option
+                options: fetchedOpts
             };
-        }) : null;
-        if (!str) {
-            return optsArray;
-        }
-        return getOptions(str).then(retrievedOpts => {
-            const res = retrievedOpts.concat(optsArray);
-            return res;
         });
     }
 
+    onChange(selected) {
+        if (this.props.input.onChange) {
+            // this.props.input.onChange(selected.map(el => el.value));
+            this.props.input.onChange(selected);
+        }
+    }
+
     render() {
-        const { input: { value, onChange, onBlur }, creatable, getOptions, entityId } = this.props;
+        const { input: { value, onBlur }, creatable, entityId } = this.props;
         const formattedValue = isArray(value) ? value.map(elem => {
             return {
-                value: elem[entityId] || elem,
-                label: elem.name || elem
+                value: elem[entityId] || elem.value || elem,
+                label: elem.name || elem.label || elem
             };
         }) : null;
         const selectProps = {
             value: formattedValue,
             loadOptions: this.loadOptions,
-            onChange: onChange,
+            onChange: this.onChange,
             onBlur: () => onBlur(value)
         };
         return creatable ? <ReactSelect.CreatableAsync multi {...selectProps} />
@@ -298,12 +316,17 @@ export class MultiSelect extends React.Component {
     }
 
     static propTypes = {
-        field: PropTypes.object.isRequired
+        field: PropTypes.object.isRequired,
+        isAsync: PropTypes.bool,
+        label: PropTypes.string,
+        size: PropTypes.oneOf([6, 12]),
+        onChange: PropTypes.func,
+        helpText: PropTypes.string
     }
 
     render() {
-        const { field, helpText, label, size, onChange, async, ...selectProps } = this.props;
-        const ComponentClass = async ? ReactSelectAsyncComponent : ReactMultiSelectComponent;
+        const { field, helpText, label, size, onChange, isAsync, ...selectProps } = this.props;
+        const ComponentClass = isAsync ? ReactSelectAsyncComponent : ReactMultiSelectComponent;
 
         return(<FormField field={field} helpText={helpText} inputProps={selectProps} label={label} size={size}>
             <Field component={ComponentClass} {...selectProps} className="form-control" name={field.name} />
@@ -312,20 +335,3 @@ export class MultiSelect extends React.Component {
     }
 
 }
-
-/**
- *
-/**
- *
- *
- export class Autocomplete extends React.Component {
-
-     onSuggestionsFetchRequested = ({ value }) => {
-
-     }
-
-     render() {
-
-     }
-
- } */

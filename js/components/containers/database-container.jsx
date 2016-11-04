@@ -191,12 +191,14 @@ class DatabaseEditFormComponent extends React.Component {
                 </Row>
                 <div>
                     <Row>
-                        <MultiSelect async field={omit(fields.standardsImplemented, ['helpText', 'label', 'size'])} helpText={fields.standardsImplemented.helpText}
-                            label={fields.standardsImplemented.label} size={fields.standardsImplemented.size} getOptions={getStandardOptions} />
+                        <MultiSelect isAsync field={omit(fields.standardsImplemented, ['helpText', 'label', 'size', 'entityId'])} helpText={fields.standardsImplemented.helpText}
+                            label={fields.standardsImplemented.label} size={fields.standardsImplemented.size} getOptions={getStandardOptions}
+                            entityId={fields.standardsImplemented.entityId} />
                     </Row>
                     <Row>
-                        <MultiSelect async field={omit(fields.relatedDatabases, ['helpText', 'label', 'size'])} helpText={fields.relatedDatabases.helpText}
-                            label={fields.relatedDatabases.label} size={fields.relatedDatabases.size} getOptions={getDatabaseOptions} />
+                        <MultiSelect isAsync field={omit(fields.relatedDatabases, ['helpText', 'label', 'size', 'entityId'])} helpText={fields.relatedDatabases.helpText}
+                            label={fields.relatedDatabases.label} size={fields.relatedDatabases.size} getOptions={getDatabaseOptions}
+                            entityId={fields.relatedDatabases.entityId} />
                     </Row>
                 </div>
             </div>
