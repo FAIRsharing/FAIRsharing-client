@@ -94,7 +94,7 @@ class GraphContainer extends React.Component {
         return (
             <div className="graph-container container-fluid">
                 <div className="graph-head">
-                    <h3>{`${headerType} ${collectionName || ''}`}</h3>
+                    <h3>{`Graph Viewer (BETA): ${headerType} ${collectionName || ''}`}</h3>
                 </div>
                 <Row className="graph-handler">
                     <Modal id="isFetchingModal" isOpen={isFetching} className="is-fetching-modal" style={modalStyles}>
