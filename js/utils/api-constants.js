@@ -73,7 +73,11 @@ export const ENTITIES_COLOR_MAP = new Map([
     ['BioDBCore', '#e67300'], //orange/ocre
     ['Standard', '#d4d413'],  // azure
     ['Taxonomy', '#9acd32'], // YellowGreen
-    ['Domain', '#ff8c00']   // DarkOrange
+    ['Domain', '#ff8c00'],   // DarkOrange
+    // the following are just sub-types of Standard so they share the same color of it
+    ['terminology artifact', '#d4d413'],
+    ['model/format', '#d4d413'],
+    ['reporting guideline', '#d4d413']
 ]);
 
 export const RELATIONS_COLOR_MAP = new Map([
@@ -83,6 +87,16 @@ export const RELATIONS_COLOR_MAP = new Map([
     ['COLLECTS', '#0099cc'], //blue
     ['IMPLEMENTS', '#99CCFF'],
     ['RELATED TO', 'Chartreuse']
+]);
+
+export const ENTITY_SHAPE_MAP = new Map([
+    [undefined, 'ellipse'],
+    ['BioDBCore', 'ellipse'],
+    ['Policy', 'ellipse'],
+    ['BiosharingCollection', 'ellipse'],
+    ['terminology artifact', 'triangle'],
+    ['model/format', 'diamond'],
+    ['reporting guideline', 'hexagon']
 ]);
 
 export const ENTITY_LABELS_SINGULAR = {

@@ -73,3 +73,29 @@ export function serialize(obj, prefix) {
     }
     return str.join('&');
 }
+
+/**
+ * @method
+ * @name polygon
+ * @description draws a regular polygon on a HTML5 canvas
+ * @param{CanvasRenderingContext2D} context
+ * @param{Number} x - horizontal coordinate from left
+ * @param{Number} y - vertical coordinate from top
+ * @param{Integer} sides - number of sides: default to 3
+ * @param{Number} startAngle - default to 0
+ * @param{boolean} anticlockwise - default to false
+ */
+export function polygon(ctx, x, y, radius, sides = 3, startAngle = 0, anticlockwise = false) {
+    if (sides < 3) return;
+    let a = (Math.PI * 2)/sides;
+    a = anticlockwise ? -a : a;
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(startAngle);
+    ctx.moveTo(radius,0);
+    for (let i = 1; i < sides; i++) {
+        ctx.lineTo(radius * Math.cos(a*i), radius * Math.sin(a*i));
+    }
+    ctx.closePath();
+    ctx.restore();
+}

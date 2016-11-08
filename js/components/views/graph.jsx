@@ -8,7 +8,9 @@ import ReactDOM from 'react-dom';
 import { Row, Col, Button } from 'react-bootstrap';
 import Slider from 'rc-slider';
 import GraphHandler from '../../models/graph';
-import { RELATIONS_COLOR_MAP } from '../../utils/api-constants';
+import { ENTITY_SHAPE_MAP, ENTITIES_COLOR_MAP, RELATIONS_COLOR_MAP,
+    ENTITY_LABELS_SINGULAR } from '../../utils/api-constants';
+import { polygon } from '../../utils/helper-funcs';
 // import spread from 'cytoscape-spread';
 
 const handleStyle = {
@@ -250,10 +252,12 @@ export class Legend extends React.Component {
      * @description draw the legend canvas
      */
     componentDidUpdate() {
-        const { items } = this.props, { graphLegend } = this.refs, context = graphLegend.getContext('2d'), legendMap = RELATIONS_COLOR_MAP;
-        let x = 10, y = 25;
-        const xStep = 60, yStep = 20, textOffset = 10;
-        graphLegend.height = y + (items.length + 1) * yStep; // a bit heuristic
+        const { items } = this.props, { graphLegend } = this.refs, context = graphLegend.getContext('2d'),
+            nodesShapeMap = ENTITY_SHAPE_MAP, nodesColorMap = ENTITIES_COLOR_MAP, linksMap = RELATIONS_COLOR_MAP,
+            radius = 10; //radius of the circumscribed circumference
+        const x = 10, xStep = 60, textOffset = 10;
+        let y = 25, yStep = 40;
+        graphLegend.height = y + (items.length + 1 + 6) * yStep; // a bit heuristic
         context.clearRect(0, 0, graphLegend.width, graphLegend.height);
         context.font = '16px Sans-Serif';
         context.fillStyle = '#27aae1';
@@ -265,7 +269,39 @@ export class Legend extends React.Component {
         context.font = '11px Sans-Serif';
         context.fillStyle = 'grey';
         y += yStep;
-        for ( const [label, color] of legendMap.entries()) {
+        for (const [entityType, shape] of nodesShapeMap.entries()) {
+            if (!entityType) continue;
+
+            context.beginPath();
+            switch (shape) {
+                case 'triangle':
+                    polygon(context, x + xStep/2, y, radius, 3, -Math.PI/2);
+                    break;
+
+                case 'diamond':
+                    polygon(context, x + xStep/2, y, radius, 4);
+                    break;
+
+                case 'hexagon':
+                    polygon(context, x + xStep/2, y, radius, 6);
+                    break;
+
+                default: //defaults to 'ellipse'
+                    context.arc(x + xStep/2, y, radius, 0, 2*Math.PI, false);
+            }
+            const color = nodesColorMap.get(entityType);
+            context.fillStyle = color;
+            context.fill();
+            context.lineWidth = 3;
+            context.strokeStyle = color;
+            context.stroke();
+            context.fillStyle = 'blue';
+            const label = ENTITY_LABELS_SINGULAR[entityType] || entityType;
+            context.fillText(label.toUpperCase(), x + xStep + textOffset, y);
+            y += yStep;
+        }
+
+        for( const [label, color] of linksMap.entries()) {
             if (!label || items.indexOf(label) < 0) {
                 continue;
             }

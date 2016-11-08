@@ -3,7 +3,8 @@ import cyCola from 'cytoscape-cola';
 import cola from 'cola';
 // import sigma from 'sigma';
 import { map, intersection, union, partition, clone, sortBy, groupBy, find, isEmpty, zipObject } from 'lodash';
-import { GRAPH_LAYOUTS, BIOSHARING_COLLECTION, DEPTH_LEVELS, ENTITIES_COLOR_MAP as NODES_COLOR_MAP,
+import { BIOSHARING_ENTITIES, GRAPH_LAYOUTS, BIOSHARING_COLLECTION, DEPTH_LEVELS,
+    ENTITIES_COLOR_MAP as NODES_COLOR_MAP, ENTITY_SHAPE_MAP as NODES_SHAPE_MAP,
     RELATIONS_COLOR_MAP as EDGES_COLOR_MAP, TAG_ENTITIES as TAG_NODES
 } from '../utils/api-constants';
 
@@ -202,6 +203,8 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         [2, scaleTextOnPathLength(2)]
     ])
 
+    static nodesShapeMap = NODES_SHAPE_MAP
+
     /**
      * @constructor
      * @param{function} openDetailsPanel
@@ -289,7 +292,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     */
     _prepareElements(nodes, edges) {
 
-        const out_nodes = [], out_edges = [], node_ids = [], nodesDepthMap = new Map();
+        const out_nodes = [], out_edges = [], node_ids = [], nodesDepthMap = new Map(), { nodesShapeMap } = this.constructor;
         const rootNode = find(nodes, {'path_length': 0});
 
         for (const node of nodes) {
@@ -298,13 +301,15 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                 continue;
             }
 
+            const nodeLabel = node.labels && node.labels[0];
             out_nodes.push({
                 group: 'nodes',
                 data: {
                     ...node.properties,
                     id: node.properties && node.properties.application_id,
-                    label: node.labels && node.labels[0],
-                    _color: node.path_length < NODE_SHADOW_DEPTH ? NODES_COLOR_MAP.get(node.labels && node.labels[0]) : NODES_COLOR_MAP.get(undefined),
+                    label: nodeLabel,
+                    _color: node.path_length < NODE_SHADOW_DEPTH ? NODES_COLOR_MAP.get(nodeLabel) : NODES_COLOR_MAP.get(undefined),
+                    shape: nodeLabel === BIOSHARING_ENTITIES.STANDARD.value ? nodesShapeMap.get(node.properties.type) : nodesShapeMap.get(nodeLabel),
                     parent: rootNode && node.path_length < NODE_SHADOW_DEPTH ? rootNode.properties.id : null,
                     path_length: node.path_length
                 }
@@ -403,6 +408,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             style: cytoscape.stylesheet()
             .selector('node')
             .style({
+                'shape': 'data(shape)',
                 'height': scaleNodes,
                 'width': scaleNodes,
                 // colour of the node body
