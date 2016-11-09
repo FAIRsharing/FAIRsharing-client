@@ -88,13 +88,17 @@ class GraphContainer extends React.Component {
             openDetailsPanel: this.props.openDetailsPanel,
             closeDetailsPanel: this.props.closeDetailsPanel
         };
-        const headerType = !collectionName ? '' : graph.nodes[0].properties.recommendation ? 'Recommendations >' : 'Collections >';
+        const headerType = !collectionName ? '' : graph.nodes[0].properties.recommendation ? 'Recommendations' : 'Collections';
+        const headerLink = !collectionName ? '' : graph.nodes[0].properties.recommendation ? '/recommendations' : '/collections';
 
         this.handler = new GraphHandler(graph, layout, dispatchMethods);
         return (
             <div className="graph-container container-fluid">
                 <div className="graph-head">
-                    <h3>{`Graph Viewer (BETA): ${headerType} ${collectionName || ''}`}</h3>
+                    <h3>{'Graph Viewer (BETA): '}
+                        <a href={headerLink}>{`${headerType} `}</a>
+                        {`> ${collectionName || ''}`}
+                    </h3>
                 </div>
                 <Row className="graph-handler">
                     <Modal id="isFetchingModal" isOpen={isFetching} className="is-fetching-modal" style={modalStyles}>
@@ -114,7 +118,7 @@ class GraphContainer extends React.Component {
                                 tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
                                 />
                                 <StatsBox handler={this.handler} reload={reload}/>
-                                <Legend title='Links Legend' items={uniq(map(this.handler.edges, 'relationship'))} />
+                                <Legend title='Legend' items={uniq(map(this.handler.edges, 'relationship'))} />
                         </Row>
                     </Col>
                     <Col sm={9} xs={12} >
