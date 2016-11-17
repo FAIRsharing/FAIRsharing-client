@@ -99,3 +99,20 @@ export function polygon(ctx, x, y, radius, sides = 3, startAngle = 0, anticlockw
     ctx.closePath();
     ctx.restore();
 }
+
+/**
+ * @method
+ * @name isElementInViewport
+ * @param{HTMLElement} el
+ * @return{boolean} 
+ * @description returns true if element is in viewport
+ */
+export function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+}
