@@ -1,0 +1,59 @@
+{
+    "data": [
+        {
+            "time": {
+                "display": "1066",
+                "datetime": null
+            },
+            "text": "Harold Godwinson becomes the last Anglo-Saxon king after the death of King Edward. King Harald of Norway invades England and captures York, but is then defeated and killed in the battle of Stamford Bridge. King Harold is defeated by Duke William at the battle of Hastings."
+        },
+        {
+            "time": {
+                "display": "1042",
+                "datetime": null
+            },
+            "text": "Ethelred’s other son, Edward the Confessor, is invited to return from Normandy as king.",
+            "images": [
+                {
+                    "src": "/static/img/about/biosharing_img.png",
+                    "width": 300,
+                    "height": 180
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "871",
+                "datetime": null
+            },
+            "text": "King Ethelred, the West Saxon king, and his brother Alfred, defeat the Viking army at the Battle of Ashdown (in Berkshire)."
+        },
+        {
+            "time": {
+                "display": "866",
+                "datetime": null
+            },
+            "text": "York is captured by a Viking army."
+        },
+        {
+            "time": {
+                "display": "795",
+                "datetime": null
+            },
+            "text": "Irish annals record a Viking raid on Rathlin Island, off Ireland’s north-east coast."
+        },
+        {
+            "time": {
+                "display": "793",
+                "datetime": null
+            },
+            "text": "Vikings sack the monastery at Lindisfarne in Northumbria.",
+            "links": [
+                {
+                    "href": "http://www.english-heritage.org.uk/learn/story-of-england/dark-ages/viking-raid/",
+                    "label": "Viking Raid Info"
+                }
+            ]
+        }
+    ]
+}
