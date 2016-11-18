@@ -47,7 +47,7 @@ class TimelineContainer extends React.Component {
         let counter = 0;
 
         for (const event of timeline.data) {
-            const {time, text = '', images = [], links = []} = event, imgs = [], as = [];
+            const {time, title, text = '', images = [], links = []} = event, imgs = [], as = [];
 
             // Add images
             for (const image of images) {
@@ -64,6 +64,7 @@ class TimelineContainer extends React.Component {
             eventList.push(<li key={`time-el-${counter}`} ref={counter}>
                 <div>
                     <time datetime={time.datetime}>{time.display}</time>
+                    <b>{`${title} - `}</b>
                     {text}
                     {as}
                     {imgs}

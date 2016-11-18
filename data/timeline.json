@@ -2,20 +2,35 @@
     "data": [
         {
             "time": {
-                "display": "1066",
+                "display": "2016",
                 "datetime": null
             },
-            "text": "Harold Godwinson becomes the last Anglo-Saxon king after the death of King Edward. King Harald of Norway invades England and captures York, but is then defeated and killed in the battle of Stamford Bridge. King Harold is defeated by Duke William at the battle of Hastings."
+            "title": "Publication - Review: Interoperability standards - Digital objects in their own right",
+            "text": "commissioned by the Wellcome Trust focusing on interoperability standards for digital research outputs.",
+            "links": [
+                {
+                    "href": "https://figshare.com/articles/Review_Interoperability_standards/4055496/1",
+                    "label": "Available on FigShare"
+                }
+            ],
+            "images": []
         },
         {
             "time": {
-                "display": "1042",
+                "display": "2016",
                 "datetime": null
             },
-            "text": "Ethelred’s other son, Edward the Confessor, is invited to return from Normandy as king.",
+            "title": "Outreach",
+            "text": "BioSharing is presented as an invited talk at the ELIXIR-Italy, CHARME, and NETTAB joint meeting (Rome, Italy).",
+            "links": [
+                {
+                    "href": "http://www.slideshare.net/PeterMcQuilton/biosharing-mapping-the-landscape-of-standards-databases-and-data-policies-in-the-life-biomedical-and-environmental-sciences",
+                    "label": "Slides available here"
+                }
+            ],
             "images": [
                 {
-                    "src": "/static/img/about/biosharing_img.png",
+                    "src": "",
                     "width": 300,
                     "height": 180
                 }
@@ -23,35 +38,57 @@
         },
         {
             "time": {
-                "display": "871",
+                "display": "2016",
                 "datetime": null
             },
-            "text": "King Ethelred, the West Saxon king, and his brother Alfred, defeat the Viking army at the Battle of Ashdown (in Berkshire)."
-        },
-        {
-            "time": {
-                "display": "866",
-                "datetime": null
-            },
-            "text": "York is captured by a Viking army."
-        },
-        {
-            "time": {
-                "display": "795",
-                "datetime": null
-            },
-            "text": "Irish annals record a Viking raid on Rathlin Island, off Ireland’s north-east coast."
-        },
-        {
-            "time": {
-                "display": "793",
-                "datetime": null
-            },
-            "text": "Vikings sack the monastery at Lindisfarne in Northumbria.",
+            "title": "Outreach",
+            "text": "BioSharing is presented in various sessions at International Data week, which combined SciDataCon and the RDA 8th Plenary. More information and links to the slides is available on our RDA WG page.",
             "links": [
                 {
-                    "href": "http://www.english-heritage.org.uk/learn/story-of-england/dark-ages/viking-raid/",
-                    "label": "Viking Raid Info"
+                    "href": "https://www.rd-alliance.org/group/biosharing-registry-connecting-data-policies-standards-databases-life-sciences.html",
+                    "label": "RDA WG link"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2016",
+                "datetime": null
+            },
+            "title": "Outreach",
+            "text": "BioSharing is presented as an invited talk in the ELIXIR track at ECCB 2016 (The Hague, The Netherlands).",
+            "links": [
+                {
+                    "href": "https://f1000research.com/slides/5-2276",
+                    "label": "Slides available here"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2016",
+                "datetime": null
+            },
+            "title": "BioSharing Educational launched",
+            "text": "To aid and increase user knowledge of data standards in the life sciences and how the BioSharing portal can be used to map the landscape of data standards, the databases that create or implement them, and the data policies that endorse them, we have created >40 Frequently Asked Questions. This is the first step in our new educational section.",
+            "links": [
+                {
+                    "href": "https://biosharing.org/educational/",
+                    "label": "Educational Page"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2016",
+                "datetime": null
+            },
+            "title": "BioSharing is the ELIXIR Registry of Standards",
+            "text": "BioSharing becomes the ELIXIR Registry of Standards and operates as part of the ELIXIR Interoperability Platform",
+            "links": [
+                {
+                    "href": "https://www.elixir-europe.org/excelerate",
+                    "label": "Link"
                 }
             ]
         }
