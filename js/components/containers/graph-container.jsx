@@ -26,6 +26,13 @@ import * as actions from '../../actions/graph-actions';
 // cyCola(cytoscape, cola);
 const modalStyles = {overlay: {zIndex: 10}};
 
+/**
+ * @class
+ * @extends React.Component
+ * @description container class for the Graph visualizer
+ * @prop{Object} graph - containing an array of nodes and an array of edges
+ * @prop{Object} layout - describes the layout used to display the graph, and which parts of the graph are actually shown (to be refactored?)
+ */
 class GraphContainer extends React.Component {
 
     constructor(props) {
@@ -62,18 +69,10 @@ class GraphContainer extends React.Component {
         graphApi.getGraph(graphId);
     }
 
-    /*
-    shouldComponentUpdate(nextProps, nextState) {
-    for (const key in nextProps.layout.visibility) {
-    const nextValue = nextProps.layout.visibility[key];
-    if (nextValue !== this.props.layout.visibility[key]) {
-    this.handler.toggleElementsByLabel(key, nextValue);
-    }
-    }
-    return nextProps.reload;
-    },
-    */
-
+    /**
+     * @method
+     * @description standard React.Component method. It is executed anytime the state of the application (as stored in Redux) is modified by an action.
+     */
     render() {
         const { graph, layout, params: { graphId }, reload, error, isFetching, modal } = this.props;
         const collectionName = graph && graph.nodes && graph.nodes[0] && graph.nodes[0].properties.name;
@@ -92,6 +91,7 @@ class GraphContainer extends React.Component {
         const headerLink = !collectionName ? '' : graph.nodes[0].properties.recommendation ? '/recommendations' : '/collections';
 
         this.handler = new GraphHandler(graph, layout, dispatchMethods);
+
         return (
             <div className="graph-container container-fluid">
                 <div className="graph-head">
@@ -137,6 +137,14 @@ class GraphContainer extends React.Component {
 
 }
 
+/**
+ * @method
+ * @name mapStateToProps
+ * @description maps certain parts of the state (as stored in Redux) to properties of the GraphContainer class.
+ *              Everytime the state is altered the properties are overwritten
+ * @param{Object} store - the Redux store
+ * @return{Object} all the mapped properties
+ */
 const mapStateToProps = function(store) {
     const modal = store.graphState.modal;
     const modalNode = modal && modal.isOpen ? find(store.graphState.graph.nodes, node => node.properties.application_id === modal.node) : null;
@@ -170,6 +178,13 @@ const mapDispatchToProps = function(dispatch) {
             dispatch(actions.layoutSelectChange({name: ev.target.value}));
         },
 
+        /**
+         * @method
+         * @name visibilityCheckboxChange
+         * @description handles the change in state of a visibility checkbox triggering the action that updates the store
+         *              for the corresponding entityType (e.g. database, standard...), depth level (inner or outer), and the value
+         *              of the checkbox itself (CHECKED/UNCHECKED)
+         */
         visibilityCheckboxChange: ev => {
             dispatch(actions.visibilityCheckboxChange({
                 entityType: ev.target.dataset.entityType,
@@ -178,15 +193,33 @@ const mapDispatchToProps = function(dispatch) {
             }));
         },
 
-        depthCheckboxChange: (ev) => {
+        /**
+         * @method
+         * @name depthCheckboxChange
+         * @description handles the change in state of the depth checkbox. If checked also the outer level of the graph should be visible, otherwise
+         *              only the inner layer is shown
+         */
+        depthCheckboxChange: ev => {
             dispatch(actions.depthCheckboxChange(ev.target.checked));
         },
 
+        /**
+         * @method
+         * @name tagsVisibilityCheckboxChange
+         * @description handles the change in state of checkbox toggling the Tags Select boxes.
+         *              If checked the Tags Select boxes will be visible, otherwise are hidden.
+         */
         tagsVisibilityCheckboxChange: ev => {
             dispatch(actions.tagsVisibilityCheckboxChange(ev.target.checked));
         },
 
-        tagsSelectChange: (name) => {
+        /**
+         * @method
+         * @name tagsVisibilityCheckboxChange
+         * @description handles the change in state of checkbox toggling the Tags Select boxes.
+         *              If checked the Tags Select boxes will be visible, otherwise are hidden.
+         */
+        tagsSelectChange: name => {
             return function(newValue) {
                 let selected, unselected;
                 //use the clear option to reset the selector, i.e. selecting all options
@@ -208,7 +241,7 @@ const mapDispatchToProps = function(dispatch) {
             };
         },
 
-        openDetailsPanel: (data) => {
+        openDetailsPanel: data => {
             dispatch(actions.openDetailsPanel(data));
         },
 
