@@ -165,7 +165,8 @@ const mapStateToProps = function(store) {
 * @method
 * @name mapDispatchToProps
 * @param dispatch
-* @returns {{handleLayoutChange: (function()), visibilityCheckboxChange: (function())}}
+* @description maps a number of functions used to dispatch actions for the Reduce to the props of the GraphContainer class
+* @returns Object {{handleLayoutChange: (function()), visibilityCheckboxChange: (function())}}
 */
 const mapDispatchToProps = function(dispatch) {
 
