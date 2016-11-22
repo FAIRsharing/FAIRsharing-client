@@ -272,13 +272,15 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         const layoutName = this._layout && this._layout.name;
         switch (layoutName) {
 
-        case GRAPH_LAYOUTS.COLA:
-            return [
-                {paramName: 'nodeSpacingValue', min: 1, max: 100},
-                {paramName: 'edgeLength', min: 50, max: 500}
-            ];
-        default:
-            return [];
+            case GRAPH_LAYOUTS.COLA:
+                return [
+                    {paramName: 'nodeSpacingValue', min: 1, max: 100},
+                    {paramName: 'edgeLength', min: 50, max: 500}
+                ];
+
+            default:
+                return [];
+
         }
     }
 
@@ -525,6 +527,9 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
     }
 
     /**
+     * @method
+     * @name _registerNodeEvents
+     * @description registers all the events related to the graph nodes
      * @private
      */
     _registerNodeEvents() {
