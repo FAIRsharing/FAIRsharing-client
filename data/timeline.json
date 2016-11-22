@@ -135,7 +135,7 @@
             ],
             "images": [
                 {
-                    "src": "/static/img/timeline/Elixir-UK.png",
+                    "src": "/static/img/timeline/ELIXIR-UK.png",
                     "alt": "ELIXIR-UK"
                 }
             ]
@@ -259,7 +259,7 @@
             ],
             "images": [
                 {
-                    "src": "/static/img/timeline/Biosharing_registry.png",
+                    "src": "/static/img/timeline/BioSharing_registry.png",
                     "alt": "BioSharing Registry"
                 }
             ]
@@ -293,7 +293,7 @@
             ],
             "images": [
                 {
-                    "src": "/static/img/timeline/mibbiFullLogo.png",
+                    "src": "/static/img/timeline/MIBBIFullLogo.png",
                     "alt": "MIBBI logo"
                 }
             ]
