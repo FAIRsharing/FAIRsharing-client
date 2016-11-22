@@ -13,7 +13,12 @@
                     "label": "Available on FigShare"
                 }
             ],
-            "images": []
+            "images": [
+                {
+                    "src": "/static/img/timeline/interoperability_standards.png",
+                    "alt": "Interoperability Standards"
+                }
+            ]
         },
         {
             "time": {
@@ -30,9 +35,8 @@
             ],
             "images": [
                 {
-                    "src": "",
-                    "width": 300,
-                    "height": 180
+                    "src": "/static/img/timeline/NETTAB.png",
+                    "alt": "NETTAB logo"
                 }
             ]
         },
@@ -48,6 +52,12 @@
                     "href": "https://www.rd-alliance.org/group/biosharing-registry-connecting-data-policies-standards-databases-life-sciences.html",
                     "label": "RDA WG link"
                 }
+            ],
+            "images": [
+                {
+                    "src": "/static/img/timeline/IDW.png",
+                    "alt": "IDW"
+                }
             ]
         },
         {
@@ -61,6 +71,12 @@
                 {
                     "href": "https://f1000research.com/slides/5-2276",
                     "label": "Slides available here"
+                }
+            ],
+            "images": [
+                {
+                    "src": "/static/img/timeline/ECCB.png",
+                    "alt": "ECCB"
                 }
             ]
         },
@@ -76,6 +92,12 @@
                     "href": "https://biosharing.org/educational/",
                     "label": "Educational Page"
                 }
+            ],
+            "images": [
+                {
+                    "src": "/static/img/timeline/BioSharing_Educational.png",
+                    "alt": "BioSharing Educational"
+                }
             ]
         },
         {
@@ -90,7 +112,193 @@
                     "href": "https://www.elixir-europe.org/excelerate",
                     "label": "Link"
                 }
+            ],
+            "images": [
+                {
+                    "src": "/static/img/timeline/ELIXIR.png",
+                    "alt": "ELIXIR"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2016",
+                "datetime": null
+            },
+            "title": "BioSharing is an ELIXIR-UK node resource",
+            "text": "BioSharing joins ELIXIR-UK as an approved resource and ELIXIR-UK provision to the pan-European ELIXIR infrastructure network",
+            "links": [
+                {
+                    "href": "http://elixir-uk.org/interoperability-infrastructure",
+                    "label": "Link"
+                }
+            ],
+            "images": [
+                {
+                    "src": "/static/img/timeline/Elixir-UK.png",
+                    "alt": "ELIXIR-UK"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2016",
+                "datetime": null
+            },
+            "title": "Outreach",
+            "text": "BioSharing is presented as an invited talk at the CHARME kick-off meeting (Warsaw, Poland).",
+            "links": [
+                {
+                    "href": "http://www.slideshare.net/PeterMcQuilton/biosharing-mapping-the-landscape-of-standards-database-and-data-policies-in-the-life-sciences",
+                    "label": "Slides available here"
+                }
+            ],
+            "images": [
+                {
+                    "src": "/static/img/timeline/CHARME.png",
+                    "alt": "CHARME"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2016",
+                "datetime": null
+            },
+            "title": "BioSharing as a Standards Registry survey",
+            "text": "A survey of NIH, ELIXIR, RDA, Force11 and ISB communities, requesting feedback on the features and functionality of our Standards registry.",
+            "links": [
+                {
+                    "href": "https://dx.doi.org/10.6084/m9.figshare.3795810.v2",
+                    "label": "A short summary of the results can be found here"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2016",
+                "datetime": null
+            },
+            "title": "Publication - BioSharing: curated and crowd-sourced metadata standards, databases and data policies in the life sciences",
+            "text": "A paper outlining recent progress and our ever-expanding community is published in the journal Database.",
+            "links": [
+                {
+                    "href": "http://database.oxfordjournals.org/content/2016/baw075.long",
+                    "label": "Link"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2015",
+                "datetime": null
+            },
+            "title": "Outreach",
+            "text": "BioSharing is presented at the Research Data Alliance (RDA) 6th Plenary (Paris, France) - see our RDA WG page for more information and slides.",
+            "links": [
+                {
+                    "href": "https://www.rd-alliance.org/group/biosharing-registry-connecting-data-policies-standards-databases-life-sciences.html",
+                    "label": "Link"
+                }
+            ],
+            "images": [
+                {
+                    "src": "/static/img/timeline/RDA.png",
+                    "alt": "RDA"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2015",
+                "datetime": null
+            },
+            "title": "BioSharing RDA/Force11 joint WG formed",
+            "text": "Our progress, along with links to outputs and presentations along the way, can be followed on the RDA and Force11 websites.",
+            "links": [
+                {
+                    "href": "https://www.rd-alliance.org/group/biosharing-registry-connecting-data-policies-standards-databases-life-sciences.html",
+                    "label": "RDA website"
+                },
+                {
+                    "href": "https://www.force11.org/group/biosharingwg",
+                    "label": "Force11 website"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2015",
+                "datetime": null
+            },
+            "title": "Outreach",
+            "text": "BioSharing is presented at the Research Data Alliance (RDA) 6th Plenary (Paris, France) - see our RDA WG page for more information and slides.",
+            "links": [
+                {
+                    "href": "https://www.rd-alliance.org/group/biosharing-registry-connecting-data-policies-standards-databases-life-sciences.html",
+                    "label": "Link"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2011",
+                "datetime": null
+            },
+            "title": "Publication - The BioDBcore guidelines",
+            "text": "a community-defined, uniform, generic description of the core attributes of biological databases. These were generated in a collaboration between BioSharing and the International Society of Biocuration.",
+            "links": [
+                {
+                    "href": "http://biocuration.org/community/standards-biodbcore/",
+                    "label": "Guidelines"
+                },
+                {
+                    "href": "http://nar.oxfordjournals.org/content/39/suppl_1/D7.long",
+                    "label": "Full paper link"
+                }
+            ],
+            "images": [
+                {
+                    "src": "/static/img/timeline/Biosharing_registry.png",
+                    "alt": "BioSharing Registry"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2009",
+                "datetime": null
+            },
+            "title": "BioSharing blog",
+            "text": "Capturing community thoughts on reporting guidelines, terminologies and model and format standards in the life sciences.",
+            "images": [
+                {
+                    "src": "/static/img/timeline/BioSharingBlog.png",
+                    "alt": "Biosharing blog"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2008",
+                "datetime": null
+            },
+            "title": "MIBBI",
+            "text": "Promoting coherent minimum reporting guidelines for biological and biomedical investigations: the MIBBI project (Minimum Information for Biological and Biomedical Investigations)  was born.",
+            "links": [
+                {
+                    "href": "http://www.nature.com/nbt/journal/v26/n8/full/nbt.1411.html",
+                    "label": "Link"
+                }
+            ],
+            "images": [
+                {
+                    "src": "/static/img/timeline/mibbiFullLogo.png",
+                    "alt": "MIBBI logo"
+                }
             ]
         }
+
+
     ]
 }

@@ -52,6 +52,7 @@ class TimelineContainer extends React.Component {
             // Add images
             for (const image of images) {
                 const src = image.src || image;
+                imgs.push(<br />);
                 imgs.push(<img key={src} src={src} width={image.width} height={image.height} alt={ image.alt || 'Event Image'} />);
             }
 
@@ -63,7 +64,7 @@ class TimelineContainer extends React.Component {
 
             eventList.push(<li key={`time-el-${counter}`} ref={counter}>
                 <div>
-                    <time datetime={time.datetime}>{time.display}</time>
+                    <time dateTime={time.datetime}>{time.display}</time>
                     <b>{`${title} - `}</b>
                     {text}
                     {as}
