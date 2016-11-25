@@ -8,6 +8,21 @@ $timeline-li-width: 6;
 $odd-element-position: 45;
 $timeline-element-width: 500;
 
+/* MIXIN to compute the width of each element on the basis of the number of elements */
+@mixin with-count($n) {
+  @if $n == 1 {
+    &:first-child:nth-last-child(1) {
+      @content;
+    }
+  }
+  @else {
+    &:first-child:nth-last-child(#{$n}),
+    &:first-child:nth-last-child(#{$n}) ~ & {
+      @content;
+    }
+  }
+}
+
 
 .bs-timeline-cnt {
   font: normal 16px/1.5 "Helvetica Neue", sans-serif;
@@ -40,7 +55,7 @@ $timeline-element-width: 500;
 /* TIMELINE
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-.bs-timeline ul li {
+.vertical-timeline ul li {
   list-style-type: none;
   position: relative;
   width: $timeline-li-width + 0px;
@@ -49,7 +64,7 @@ $timeline-element-width: 500;
   background: $timeline-background-color;
 }
 
-.bs-timeline ul li::after {
+.vertical-timeline ul li::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -61,7 +76,7 @@ $timeline-element-width: 500;
   background: inherit;
 }
 
-.bs-timeline ul li div {
+.vertical-timeline ul li div {
   position: relative;
   bottom: 0;
   width: $timeline-element-width;
@@ -69,7 +84,7 @@ $timeline-element-width: 500;
   background: $events-background-color;
 }
 
-.bs-timeline ul li div::before {
+.vertical-timeline ul li div::before {
   content: '';
   position: absolute;
   bottom: 7px;
@@ -79,22 +94,22 @@ $timeline-element-width: 500;
 }
 
 /* odd elements in the timeline */
-.bs-timeline ul li:nth-child(odd) div {
+.vertical-timeline ul li:nth-child(odd) div {
   left: $odd-element-position + 0px;
 }
 
-.bs-timeline ul li:nth-child(odd) div::before {
+.vertical-timeline ul li:nth-child(odd) div::before {
   left: -15px;
   border-width: 8px 16px 8px 0;
   border-color: transparent $events-background-color transparent transparent;
 }
 
 /* even elements in the timeline */
-.bs-timeline ul li:nth-child(even) div {
+.vertical-timeline ul li:nth-child(even) div {
   left: -($timeline-element-width + $odd-element-position - $timeline-li-width + 0px);
 }
 
-.bs-timeline ul li:nth-child(even) div::before {
+.vertical-timeline ul li:nth-child(even) div::before {
   right: -15px;
   border-width: 8px 0 8px 16px;
   border-color: transparent transparent transparent $events-background-color;
@@ -103,21 +118,21 @@ $timeline-element-width: 500;
 /* EFFECTS
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-.bs-timeline ul li::after {
+.vertical-timeline ul li::after {
   transition: background .5s ease-in-out;
 }
 
-.bs-timeline ul li.in-view::after {
+.vertical-timeline ul li.in-view::after {
   background: $events-background-color;
 }
 
-.bs-timeline ul li div {
+.vertical-timeline ul li div {
   visibility: hidden;
   opacity: 0;
   transition: all .5s ease-in-out;
 }
 
-.bs-timeline ul li div time {
+.vertical-timeline ul li div time {
     display: block;
     font-size: 1.8rem;
     font-weight: bold;
@@ -125,15 +140,15 @@ $timeline-element-width: 500;
     color: $time-color;
 }
 
-.bs-timeline ul li:nth-child(odd) div {
+.vertical-timeline ul li:nth-child(odd) div {
   transform: translate3d(200px, 0, 0);
 }
 
-.bs-timeline ul li:nth-child(even) div {
+.vertical-timeline ul li:nth-child(even) div {
   transform: translate3d(-200px, 0, 0);
 }
 
-.bs-timeline ul li.in-view div {
+.vertical-timeline ul li.in-view div {
   transform: none;
   visibility: visible;
   opacity: 1;
@@ -144,27 +159,113 @@ $timeline-element-width: 500;
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 @media screen and (max-width: 900px) {
-  .bs-timeline ul li div {
+  .vertical-timeline ul li div {
     width: 250px;
   }
-  .bs-timeline ul li:nth-child(even) div {
+  .vertical-timeline ul li:nth-child(even) div {
     left: -289px;
   }
 }
 
 @media screen and (max-width: 600px) {
-  .bs-timeline ul li {
+  .vertical-timeline ul li {
     margin-left: 20px;
   }
-  .bs-timeline ul li div {
+  .vertical-timeline ul li div {
     width: calc(100vw - 91px);
   }
-  .bs-timeline ul li:nth-child(even) div {
+  .vertical-timeline ul li:nth-child(even) div {
     left: $odd-element-position + 0px;
   }
-  .bs-timeline ul li:nth-child(even) div::before {
+  .vertical-timeline ul li:nth-child(even) div::before {
     left: -15px;
     border-width: 8px 16px 8px 0;
     border-color: transparent $events-background-color transparent transparent;
   }
+}
+
+/* HORIZONTAL TIMELINE
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.horizontal-timeline {
+    display: block;
+    margin: auto;
+    width:50%;
+}
+
+.horizontal-timeline .bar {
+    height:4px;
+    background: $timeline-background-color;
+    width:100%;
+    position:relative;
+    top:13px;
+    left:0;
+}
+
+.horizontal-timeline ul {
+    overflow-x: scroll;
+    padding:30px 0 10px 0;
+    position:relative;
+    width: 100%;
+    text-align: center;
+}
+
+.horizontal-timeline ul li {
+    display:inline-block;
+    vertical-align:top;
+    margin: 0 5px 0 5px;
+    /*
+    @include with-count(1) {
+        width: 100%;
+    }
+    @include with-count(2) {
+      width: 50%;
+      border: 1px solid green;
+    }
+    @include with-count(3) {
+      width: 33.3%;
+    }
+    @include with-count(4) {
+      width: 25%;
+    }
+    @include with-count(5) {
+      width: 20%;
+  } */
+}
+
+.horizontal-timeline ul li div {
+    background: $events-background-color;
+    padding:10px;
+    font-size:12px;
+    text-align:center;
+    position:relative;
+    border-top:4px solid $timeline-background-color;
+    border-radius:3px;
+    min-width:80px;
+    max-width:150px;
+}
+
+.horizontal-timeline ul li div::before {
+    content:'';
+    display:block;
+    background: $timeline-background-color;
+    width:5px;
+    height:20px;
+    position:absolute;
+    left:50%;
+    top:-20px;
+    margin-left:-2px;
+}
+
+.horizontal-timeline ul li div::after {
+    content:'';
+    display:block;
+    background: $events-background-color;
+    width:14px;
+    height:14px;
+    border-radius:6px;
+    border:3px solid $timeline-background-color;
+    position:absolute;
+    left:50%;
+    top:-30px;
+    margin-left:-6px;
 }

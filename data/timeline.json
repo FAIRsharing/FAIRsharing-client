@@ -1,5 +1,5 @@
 {
-    "data": [
+    "elements": [
         {
             "time": {
                 "display": "2016",
@@ -127,6 +127,7 @@
             },
             "title": "BioSharing is an ELIXIR-UK node resource",
             "text": "BioSharing joins ELIXIR-UK as an approved resource and ELIXIR-UK provision to the pan-European ELIXIR infrastructure network",
+            "synopsis": true,
             "links": [
                 {
                     "href": "http://elixir-uk.org/interoperability-infrastructure",
@@ -181,6 +182,7 @@
             },
             "title": "Publication - BioSharing: curated and crowd-sourced metadata standards, databases and data policies in the life sciences",
             "text": "A paper outlining recent progress and our ever-expanding community is published in the journal Database.",
+            "synopsis": true,
             "links": [
                 {
                     "href": "http://database.oxfordjournals.org/content/2016/baw075.long",
@@ -247,6 +249,7 @@
             },
             "title": "Publication - The BioDBcore guidelines",
             "text": "a community-defined, uniform, generic description of the core attributes of biological databases. These were generated in a collaboration between BioSharing and the International Society of Biocuration.",
+            "synopsis": true,
             "links": [
                 {
                     "href": "http://biocuration.org/community/standards-biodbcore/",
@@ -271,6 +274,7 @@
             },
             "title": "BioSharing blog",
             "text": "Capturing community thoughts on reporting guidelines, terminologies and model and format standards in the life sciences.",
+            "synopsis": true,
             "images": [
                 {
                     "src": "/static/img/timeline/BioSharingBlog.png",
@@ -285,6 +289,7 @@
             },
             "title": "MIBBI",
             "text": "Promoting coherent minimum reporting guidelines for biological and biomedical investigations: the MIBBI project (Minimum Information for Biological and Biomedical Investigations)  was born.",
+            "synopsis": true,
             "links": [
                 {
                     "href": "http://www.nature.com/nbt/journal/v26/n8/full/nbt.1411.html",
