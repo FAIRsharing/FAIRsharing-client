@@ -7,6 +7,10 @@ $header-color: #fff;
 $timeline-li-width: 6;
 $odd-element-position: 45;
 $timeline-element-width: 500;
+$horizontal-timeline-element-width: 160;
+$horizontal-timeline-element-margin: 5;
+$items-in-horizontal-timeline: 5; // edit this one if a new item is added to the horizontal timeline
+$horizontal-timeline-with: ($horizontal-timeline-element-width + 2*$horizontal-timeline-element-margin) * $items-in-horizontal-timeline;
 
 /* MIXIN to compute the width of each element on the basis of the number of elements */
 @mixin with-count($n) {
@@ -189,7 +193,7 @@ $timeline-element-width: 500;
 .horizontal-timeline {
     display: block;
     margin: auto;
-    width:50%;
+    width: $horizontal-timeline-with + 0px;
 }
 
 .horizontal-timeline .bar {
@@ -202,7 +206,7 @@ $timeline-element-width: 500;
 }
 
 .horizontal-timeline ul {
-    overflow-x: scroll;
+    // overflow-x: scroll;
     padding:30px 0 10px 0;
     position:relative;
     width: 100%;
@@ -212,7 +216,8 @@ $timeline-element-width: 500;
 .horizontal-timeline ul li {
     display:inline-block;
     vertical-align:top;
-    margin: 0 5px 0 5px;
+    margin-left: $horizontal-timeline-element-margin + 0px;
+    margin-right: $horizontal-timeline-element-margin + 0px;
     /*
     @include with-count(1) {
         width: 100%;
@@ -240,8 +245,11 @@ $timeline-element-width: 500;
     position:relative;
     border-top:4px solid $timeline-background-color;
     border-radius:3px;
+    width: $horizontal-timeline-element-width + 0px;
+    /*
     min-width:80px;
     max-width:150px;
+    */
 }
 
 .horizontal-timeline ul li div::before {
