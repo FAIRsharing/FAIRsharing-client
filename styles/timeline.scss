@@ -11,6 +11,11 @@ $horizontal-timeline-element-width: 160;
 $horizontal-timeline-element-margin: 5;
 $items-in-horizontal-timeline: 5; // edit this one if a new item is added to the horizontal timeline
 $horizontal-timeline-with: ($horizontal-timeline-element-width + 2*$horizontal-timeline-element-margin) * $items-in-horizontal-timeline;
+$horizontal-bar-width: ($horizontal-timeline-element-width  + 2*$horizontal-timeline-element-margin) * ($items-in-horizontal-timeline - 1);
+$horizontal-bar-left: $horizontal-timeline-element-width/2 + $horizontal-timeline-element-margin;
+$horizontal-dashed-bar-top: 13;
+$horizontal-dashed-bar-border-top-width: 4;
+$horizontal-bar-top: $horizontal-dashed-bar-top + $horizontal-dashed-bar-border-top-width;
 
 /* MIXIN to compute the width of each element on the basis of the number of elements */
 @mixin with-count($n) {
@@ -199,16 +204,28 @@ $horizontal-timeline-with: ($horizontal-timeline-element-width + 2*$horizontal-t
 .horizontal-timeline .bar {
     height:4px;
     background: $timeline-background-color;
-    width:100%;
-    position:relative;
-    top:13px;
-    left:0;
+    width: $horizontal-bar-width;
+    position: relative;
+    top: $horizontal-bar-top;
+    left: $horizontal-bar-left;
+}
+
+.horizontal-timeline .dashed-bar {
+    border: 0 none;
+    border-top: $horizontal-dashed-bar-border-top-width + 0px dashed $timeline-background-color;
+    background: none;
+    height:0;
+    width: $horizontal-timeline-element-width;
+    margin: 0px 0px 0px 0px;
+    position: relative;
+    top: $horizontal-dashed-bar-top;
+    left: $horizontal-bar-left + $horizontal-bar-width;
 }
 
 .horizontal-timeline ul {
     // overflow-x: scroll;
     padding:30px 0 10px 0;
-    position:relative;
+    position: relative;
     width: 100%;
     text-align: center;
 }
@@ -218,23 +235,6 @@ $horizontal-timeline-with: ($horizontal-timeline-element-width + 2*$horizontal-t
     vertical-align:top;
     margin-left: $horizontal-timeline-element-margin + 0px;
     margin-right: $horizontal-timeline-element-margin + 0px;
-    /*
-    @include with-count(1) {
-        width: 100%;
-    }
-    @include with-count(2) {
-      width: 50%;
-      border: 1px solid green;
-    }
-    @include with-count(3) {
-      width: 33.3%;
-    }
-    @include with-count(4) {
-      width: 25%;
-    }
-    @include with-count(5) {
-      width: 20%;
-  } */
 }
 
 .horizontal-timeline ul li div {

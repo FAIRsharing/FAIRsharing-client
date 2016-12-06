@@ -26,6 +26,7 @@ export class HorizontalTimeline extends React.Component {
         const eventList = this._buildEventList();
         return <section className='horizontal-timeline'>
             <div className='bar' />
+            <hr className='dashed-bar' />
             <ul>
                 {eventList}
             </ul>
