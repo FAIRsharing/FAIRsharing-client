@@ -1,5 +1,5 @@
 /* Mutuated from https://webdesign.tutsplus.com/tutorials/building-a-vertical-timeline-with-css-and-a-touch-of-javascript--cms-26528 */
-
+$bs-header-height: 95;
 $timeline-background-color: #27aae1;
 $events-background-color:  #ccf5ff;
 $time-color: #27aae1;
@@ -7,6 +7,7 @@ $header-color: #fff;
 $timeline-li-width: 6;
 $odd-element-position: 45;
 $timeline-element-width: 500;
+$timeline-padding-top: 50;
 $horizontal-timeline-element-width: 160;
 $horizontal-timeline-element-margin: 5;
 $items-in-horizontal-timeline: 5; // edit this one if a new item is added to the horizontal timeline
@@ -69,7 +70,7 @@ $horizontal-bar-top: $horizontal-dashed-bar-top + $horizontal-dashed-bar-border-
   position: relative;
   width: $timeline-li-width + 0px;
   margin: 0 auto;
-  padding-top: 50px;
+  padding-top: $timeline-padding-top;
   background: $timeline-background-color;
 }
 
@@ -161,6 +162,13 @@ $horizontal-bar-top: $horizontal-dashed-bar-top + $horizontal-dashed-bar-border-
   transform: none;
   visibility: visible;
   opacity: 1;
+}
+
+.vertical-timeline .anchor {
+    display:block;
+    height: $bs-header-height + $timeline-padding-top/2; /* this is the height of your header */
+    margin-top: -$bs-header-height + $timeline-padding-top/2; /* this is again negative value of the height of your header */
+    visibility:hidden;
 }
 
 
@@ -276,4 +284,8 @@ $horizontal-bar-top: $horizontal-dashed-bar-top + $horizontal-dashed-bar-border-
     left:50%;
     top:-30px;
     margin-left:-6px;
+}
+
+.horizontal-timeline ul li div b {
+    color: $timeline-background-color;
 }

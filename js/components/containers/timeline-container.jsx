@@ -6,6 +6,8 @@ import React from 'react';
 import { isElementInViewport } from '../../utils/helper-funcs';
 import timelineData from '../../../data/timeline.json';
 
+const ELEM_DIV_ID_PREFIX = 'time-el-div-';
+
 /**
  * @class
  * @name HorizontalTimeline
@@ -43,13 +45,18 @@ export class HorizontalTimeline extends React.Component {
      */
     _buildEventList() {
         const { events } = this.props, eventList = [];
+        let counter = events.length;
         for (const event of events) {
-            const { time, synopsis, title } = event;
+            counter--;
+            const { time, synopsis } = event;
             if (synopsis) {
                 eventList.push(<li>
                     <div>
-                        <time dateTime={time.datetime}>{time.display}</time>
-                        {` - ${title}`}
+                        <b>
+                            <time dateTime={time.datetime}>{time.display}</time>
+                            {' - '}
+                        </b>
+                        <a href={`#${ELEM_DIV_ID_PREFIX}${counter}`}>{` ${synopsis}`}</a>
                     </div>
                 </li>);
             }
@@ -139,6 +146,7 @@ export class VerticalTimeline extends React.Component {
             }
 
             eventList.push(<li key={`time-el-${counter}`} ref={counter}>
+                <span id={`${ELEM_DIV_ID_PREFIX}${counter}`} className='anchor' />
                 <div>
                     <time dateTime={time.datetime}>{time.display}</time>
                     <b>{`${title} - `}</b>
@@ -173,7 +181,7 @@ class TimelineContainer extends React.Component {
     render() {
         const { timelineElements } = this.props;
         return <div className="bs-timeline-cnt">
-            <HorizontalTimeline events={timelineElements.reverse()} />
+            <HorizontalTimeline events={[].concat(timelineElements).reverse()} />
             <section className="intro">
                 <div className="bs-timeline-header-cnt">
                     <h1>BioSharing Timeline &darr;</h1>

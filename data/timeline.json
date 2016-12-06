@@ -107,15 +107,16 @@
             },
             "title": "BioSharing is the ELIXIR Registry of Standards",
             "text": "BioSharing becomes the ELIXIR Registry of Standards and operates as part of the ELIXIR Interoperability Platform",
+            "synopsis": "BioSharing becomes a formal resource of ELIXIR",
             "links": [
                 {
-                    "href": "https://www.elixir-europe.org/excelerate",
+                    "href": "https://www.elixir-europe.org/platforms/interoperability",
                     "label": "Link"
                 }
             ],
             "images": [
                 {
-                    "src": "/static/img/timeline/ELIXIR.png",
+                    "src": "/static/img/timeline/ELIXIR-Logo.png",
                     "alt": "ELIXIR"
                 }
             ]
@@ -127,7 +128,6 @@
             },
             "title": "BioSharing is an ELIXIR-UK node resource",
             "text": "BioSharing joins ELIXIR-UK as an approved resource and ELIXIR-UK provision to the pan-European ELIXIR infrastructure network",
-            "synopsis": true,
             "links": [
                 {
                     "href": "http://elixir-uk.org/interoperability-infrastructure",
@@ -182,7 +182,7 @@
             },
             "title": "Publication - BioSharing: curated and crowd-sourced metadata standards, databases and data policies in the life sciences",
             "text": "A paper outlining recent progress and our ever-expanding community is published in the journal Database.",
-            "synopsis": true,
+            "synopsis": "",
             "links": [
                 {
                     "href": "http://database.oxfordjournals.org/content/2016/baw075.long",
@@ -217,6 +217,7 @@
             },
             "title": "BioSharing RDA/Force11 joint WG formed",
             "text": "Our progress, along with links to outputs and presentations along the way, can be followed on the RDA and Force11 websites.",
+            "synopsis": "BioSharing WG in Force11 and RDA created",
             "links": [
                 {
                     "href": "https://www.rd-alliance.org/group/biosharing-registry-connecting-data-policies-standards-databases-life-sciences.html",
@@ -249,7 +250,6 @@
             },
             "title": "Publication - The BioDBcore guidelines",
             "text": "a community-defined, uniform, generic description of the core attributes of biological databases. These were generated in a collaboration between BioSharing and the International Society of Biocuration.",
-            "synopsis": true,
             "links": [
                 {
                     "href": "http://biocuration.org/community/standards-biodbcore/",
@@ -259,7 +259,16 @@
                     "href": "http://nar.oxfordjournals.org/content/39/suppl_1/D7.long",
                     "label": "Full paper link"
                 }
-            ],
+            ]
+        },
+        {
+            "time": {
+                "display": "2011",
+                "datetime": null
+            },
+            "title": "BioSharing portal launched",
+            "text": "The BioSharing website is available online.",
+            "synopsis": "BioSharing portal launched",
             "images": [
                 {
                     "src": "/static/img/timeline/BioSharing_registry.png",
@@ -274,7 +283,13 @@
             },
             "title": "BioSharing blog",
             "text": "Capturing community thoughts on reporting guidelines, terminologies and model and format standards in the life sciences.",
-            "synopsis": true,
+            "synopsis": "BioSharing blog launched, associated to paper",
+            "links": [
+                {
+                    "href": "http://science.sciencemag.org/content/326/5950/234.long",
+                    "label": "Full paper"
+                }
+            ],
             "images": [
                 {
                     "src": "/static/img/timeline/BioSharingBlog.png",
@@ -289,7 +304,7 @@
             },
             "title": "MIBBI",
             "text": "Promoting coherent minimum reporting guidelines for biological and biomedical investigations: the MIBBI project (Minimum Information for Biological and Biomedical Investigations)  was born.",
-            "synopsis": true,
+            "synopsis": "MIBBI portal launched, paper published",
             "links": [
                 {
                     "href": "http://www.nature.com/nbt/journal/v26/n8/full/nbt.1411.html",
