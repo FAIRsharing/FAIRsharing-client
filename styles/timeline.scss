@@ -10,7 +10,7 @@ $timeline-element-width: 500;
 $timeline-padding-top: 50;
 $horizontal-timeline-element-width: 160;
 $horizontal-timeline-element-margin: 5;
-$items-in-horizontal-timeline: 5; // edit this one if a new item is added to the horizontal timeline
+$items-in-horizontal-timeline: 6; // edit this one if a new item is added to the horizontal timeline
 $horizontal-timeline-with: ($horizontal-timeline-element-width + 2*$horizontal-timeline-element-margin) * $items-in-horizontal-timeline;
 $horizontal-bar-width: ($horizontal-timeline-element-width  + 2*$horizontal-timeline-element-margin) * ($items-in-horizontal-timeline - 1);
 $horizontal-bar-left: $horizontal-timeline-element-width/2 + $horizontal-timeline-element-margin;
