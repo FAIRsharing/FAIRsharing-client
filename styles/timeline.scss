@@ -44,9 +44,13 @@ $horizontal-bar-top: $horizontal-dashed-bar-top + $horizontal-dashed-bar-border-
 /* INTRO SECTION
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
-.bs-timeline-cnt .intro {
+.bs-timeline-cnt .bs-timeline-header-section {
   background: $timeline-background-color;
   padding: 30px 0;
+}
+
+.bs-timeline-cnt .bs-horizontal-timeline-header-section {
+    color: $timeline-background-color;
 }
 
 .bs-timeline-header-cnt {

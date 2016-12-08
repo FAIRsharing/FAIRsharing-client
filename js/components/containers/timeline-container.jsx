@@ -181,8 +181,13 @@ class TimelineContainer extends React.Component {
     render() {
         const { timelineElements } = this.props;
         return <div className="bs-timeline-cnt">
+            <section className="bs-horizontal-timeline-header-section">
+                <div className="bs-timeline-header-cnt">
+                    <h3>Key Milestones</h3>
+                </div>
+            </section>
             <HorizontalTimeline events={[].concat(timelineElements).reverse()} />
-            <section className="intro">
+            <section className="bs-timeline-header-section">
                 <div className="bs-timeline-header-cnt">
                     <h1>BioSharing Timeline &darr;</h1>
                 </div>
