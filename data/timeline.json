@@ -235,20 +235,6 @@
         },
         {
             "time": {
-                "display": "2015",
-                "datetime": null
-            },
-            "title": "Outreach",
-            "text": "BioSharing is presented at the Research Data Alliance (RDA) 6th Plenary (Paris, France) - see our RDA WG page for more information and slides.",
-            "links": [
-                {
-                    "href": "https://www.rd-alliance.org/group/biosharing-registry-connecting-data-policies-standards-databases-life-sciences.html",
-                    "label": "Link"
-                }
-            ]
-        },
-        {
-            "time": {
                 "display": "2012",
                 "datetime": null
             },
