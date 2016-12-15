@@ -16,7 +16,9 @@
             "images": [
                 {
                     "src": "/static/img/timeline/interoperability_standards.png",
-                    "alt": "Interoperability Standards"
+                    "alt": "Interoperability Standards",
+                    "width": 194,
+                    "height": 276
                 }
             ]
         },
@@ -117,7 +119,9 @@
             "images": [
                 {
                     "src": "/static/img/timeline/ELIXIR-Logo.png",
-                    "alt": "ELIXIR"
+                    "alt": "ELIXIR",
+                    "width": 245,
+                    "height": 166
                 }
             ]
         },
@@ -240,6 +244,24 @@
                 {
                     "href": "https://www.rd-alliance.org/group/biosharing-registry-connecting-data-policies-standards-databases-life-sciences.html",
                     "label": "Link"
+                }
+            ]
+        },
+        {
+            "time": {
+                "display": "2012",
+                "datetime": null
+            },
+            "title": "Outreach",
+            "text": "BioSharing is presented at the ELRIG Drug Discovery meeting in Manchester, UK",
+            "links": [
+                {
+                    "href": "http://www.slideshare.net/agbeltran/agb-drug-discoveryelrig2012",
+                    "label": "Slides available here"
+                },
+                {
+                    "href": "http://elrig.org/",
+                    "label": "ELRIG homepage"
                 }
             ]
         },
