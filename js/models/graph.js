@@ -1,6 +1,6 @@
 import cytoscape from 'cytoscape';
 import cyCola from 'cytoscape-cola';
-import cola from 'cola';
+import cola from 'cytoscape-cola/cola';
 // import sigma from 'sigma';
 import { map, intersection, union, partition, clone, sortBy, groupBy, find, isEmpty, zipObject } from 'lodash';
 import { BIOSHARING_ENTITIES, GRAPH_LAYOUTS, BIOSHARING_COLLECTION, DEPTH_LEVELS,
