@@ -91,7 +91,15 @@ const graphReducer = function (state = initialState, action) {
         } // end CASE
 
         case types.GET_REMOTE_ERROR: {
-            return { ...state, isFetching: false, error: action.error };
+            const { message, stack } = action.error;
+            return {
+                ...state,
+                isFetching: false,
+                error: {
+                    message,
+                    stack
+                }  
+            };
         }
 
         case types.LAYOUT_SELECT_CHANGE:
