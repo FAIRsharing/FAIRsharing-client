@@ -148,3 +148,6 @@ export const RESOURCE_STATUSES = [
         rank: 4
     }
 ];
+
+// meta tag for api key
+export const META_TAG_API_KEY = 'api-key';
