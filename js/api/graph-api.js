@@ -15,7 +15,6 @@ export function getGraph(graphId) {
     const queryParamsObj = {
             maxPathLength: MAX_PATH_LENGTH
         }, apiKey = document.querySelector(`meta[name=${META_TAG_API_KEY}]`).getAttribute('content');
-    console.log(apiKey);
     const headers = new Headers();
     headers.append('Api-Key', apiKey);
     const queryParams = Object.keys(queryParamsObj)
