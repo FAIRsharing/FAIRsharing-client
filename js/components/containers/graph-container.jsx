@@ -74,7 +74,7 @@ class GraphContainer extends React.Component {
      * @description standard React.Component method. It is executed anytime the state of the application (as stored in Redux) is modified by an action.
      */
     render() {
-        const { graph, layout, params: { graphId }, reload, error, isFetching, modal } = this.props;
+        const { graph, layout, reload, error, isFetching, modal } = this.props;
         const collectionName = graph && graph.nodes && graph.nodes[0] && graph.nodes[0].properties.name;
         if (error) {
             return (
