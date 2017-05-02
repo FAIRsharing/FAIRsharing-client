@@ -42,6 +42,7 @@ class CollectionWidgetContainer extends React.Component {
 
     static propTypes = {
         collectionId: React.PropTypes.string.required,
+        apiKey: React.PropTypes.string.required,
         graph: React.PropTypes.shape({
             nodes: React.PropTypes.array.isRequired,
             edges: React.PropTypes.array.isRequired
@@ -67,8 +68,8 @@ class CollectionWidgetContainer extends React.Component {
     }
 
     componentDidMount() {
-        const { collectionId } = this.props;
-        graphApi.getGraph(collectionId);
+        const { collectionId, apiKey } = this.props;
+        graphApi.getGraph(collectionId, apiKey);
     }
 
     /**
