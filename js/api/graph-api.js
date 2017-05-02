@@ -11,10 +11,10 @@ const MAX_PATH_LENGTH = 2;
  * @name getGraph
  * @description Get the given graph
  */
-export function getGraph(graphId) {
+export function getGraph(graphId, key) {
     const queryParamsObj = {
             maxPathLength: MAX_PATH_LENGTH
-        }, apiKey = document.querySelector(`meta[name=${META_TAG_API_KEY}]`).getAttribute('content');
+        }, apiKey = key || document.querySelector(`meta[name=${META_TAG_API_KEY}]`).getAttribute('content');
     const headers = new Headers();
     headers.append('Api-Key', apiKey);
     const queryParams = Object.keys(queryParamsObj)
