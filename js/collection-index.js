@@ -28,7 +28,7 @@ export default {
                      * @name render
                      * @param{Object} args
                      */
-                    render: args => {
+                    render: (args = {}) => {
 
                         ReactDOM.render(
                             <CollectionWidgetContainer collectionId={args.id || config.id || CollConfig.id }
