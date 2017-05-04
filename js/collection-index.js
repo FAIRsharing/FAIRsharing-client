@@ -1,11 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+
+import graphReducer from './reducers/graph-reducer';
 import CollectionWidgetContainer from './components/containers/collection-widget-container';
 
 // import { uniqueId } from 'lodash';
 
 
-let CollConfig = null;
+let CollConfig = {
+    host: 'http://localhost:8000'
+};
 
 export default {
 
@@ -30,10 +36,14 @@ export default {
                      */
                     render: (args = {}) => {
 
+                        const store = createStore(graphReducer),
+                            component = <CollectionWidgetContainer collectionId={args.id || config.id || CollConfig.id }
+                            apiKey={args.apiKey || config.apiKey || CollConfig.apiKey }
+                            host={args.host || config.host || CollConfig.host}
+                        />;
+
                         ReactDOM.render(
-                            <CollectionWidgetContainer collectionId={args.id || config.id || CollConfig.id }
-                                apiKey={args.apiKey || config.apiKey || CollConfig.apiKey }
-                            />,
+                            <Provider store={store}>{component}</Provider>,
                             document.querySelector(config.selector)
                         );
 

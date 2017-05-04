@@ -1,8 +1,11 @@
 /**
 * Created by massi on 25/04/2016.
 */
+import 'bootstrap-loader';
 import '../../../styles/graph.scss';
 import 'font-awesome/scss/font-awesome.scss';
+
+
 import React from 'react';
 import LayoutForm from '../views/layout-form';
 import StatsBox from '../views/stats-box';
@@ -42,6 +45,7 @@ class CollectionWidgetContainer extends React.Component {
 
     static propTypes = {
         collectionId: React.PropTypes.string.required,
+        host: React.PropTypes.string.required,
         apiKey: React.PropTypes.string.required,
         graph: React.PropTypes.shape({
             nodes: React.PropTypes.array.isRequired,
@@ -68,8 +72,8 @@ class CollectionWidgetContainer extends React.Component {
     }
 
     componentDidMount() {
-        const { collectionId, apiKey } = this.props;
-        graphApi.getGraph(collectionId, apiKey);
+        const { collectionId, host, apiKey } = this.props;
+        graphApi.getGraph(collectionId, host, apiKey);
     }
 
     /**
@@ -149,18 +153,18 @@ class CollectionWidgetContainer extends React.Component {
  * @return{Object} all the mapped properties
  */
 const mapStateToProps = function(store) {
-    const modal = store.graphState.modal;
-    const modalNode = modal && modal.isOpen ? find(store.graphState.graph.nodes, node => node.properties.application_id === modal.node) : null;
+    const modal = store.modal;
+    const modalNode = modal && modal.isOpen ? find(store.graph.nodes, node => node.properties.application_id === modal.node) : null;
     return {
-        graph: store.graphState.graph,
-        isFetching: store.graphState.isFetching,
-        layout: store.graphState.layout,
-        reload: store.graphState.reload,
+        graph: store.graph,
+        isFetching: store.isFetching,
+        layout: store.layout,
+        reload: store.reload,
         modal: {
             isOpen: modal.isOpen,
             node: modalNode
         },
-        error: store.graphState.error
+        error: store.error
     };
 };
 
