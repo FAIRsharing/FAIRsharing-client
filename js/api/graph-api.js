@@ -1,4 +1,5 @@
 import store from '../store';
+import storeWidget from '../store-widget';
 import { handleHTTPErrors } from '../utils/helper-funcs';
 import { sendRemoteRequest, getRemoteError } from '../actions/main-actions';
 import { getGraphSuccess } from '../actions/graph-actions';
@@ -11,10 +12,10 @@ const MAX_PATH_LENGTH = 2;
  * @name getGraph
  * @description Get the given graph
  */
-export function getGraph(graphId, key) {
+export function getGraph(graphId) {
     const queryParamsObj = {
             maxPathLength: MAX_PATH_LENGTH
-        }, apiKey = key || document.querySelector(`meta[name=${META_TAG_API_KEY}]`).getAttribute('content');
+        }, apiKey = document.querySelector(`meta[name=${META_TAG_API_KEY}]`).getAttribute('content');
     const headers = new Headers();
     headers.append('Api-Key', apiKey);
     const queryParams = Object.keys(queryParamsObj)
@@ -34,6 +35,37 @@ export function getGraph(graphId, key) {
         })
         .catch(err => {
             store.dispatch(getRemoteError(err));
+        });
+}
+
+/**
+ * @method
+ * @name getGraph
+ * @description Get the given graph
+ */
+export function getGraphWidget(graphId, host = '',  key = '') {
+    const queryParamsObj = {
+            maxPathLength: MAX_PATH_LENGTH
+        }, apiKey = key || document.querySelector(`meta[name=${META_TAG_API_KEY}]`).getAttribute('content');
+    const headers = new Headers();
+    headers.append('Api-Key', apiKey);
+    const queryParams = Object.keys(queryParamsObj)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParamsObj[key])}`)
+        .join('&').replace(/%20/g, '+');
+    const graphUrl = `${host}/${API_URL_ROOT}/${GRAPH_ENDPOINT}/${graphId}/?${queryParams}`;
+    storeWidget.dispatch(sendRemoteRequest());
+    return fetch(graphUrl, {
+        headers
+    })
+        .then(handleHTTPErrors)
+        .then(response => response.json())
+        .then(json => {
+            // console.log(json);
+            storeWidget.dispatch(getGraphSuccess(json));
+            return json;
+        })
+        .catch(err => {
+            storeWidget.dispatch(getRemoteError(err));
         });
 }
 

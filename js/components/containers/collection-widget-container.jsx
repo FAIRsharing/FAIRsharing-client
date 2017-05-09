@@ -15,7 +15,7 @@ import TagsForm from '../views/tags-form';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
-import * as graphApi from '../../api/graph-api';
+import { getGraphWidget } from '../../api/graph-api';
 // import cytoscape from 'cytoscape';
 // import cyCola from 'cytoscape-cola';
 // import cola from 'cola';
@@ -73,7 +73,7 @@ class CollectionWidgetContainer extends React.Component {
 
     componentDidMount() {
         const { collectionId, host, apiKey } = this.props;
-        graphApi.getGraph(collectionId, host, apiKey);
+        getGraphWidget(collectionId, host, apiKey);
     }
 
     /**

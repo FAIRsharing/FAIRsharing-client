@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
-import graphReducer from './reducers/graph-reducer';
+import store from './store-widget';
 import CollectionWidgetContainer from './components/containers/collection-widget-container';
 
 // import { uniqueId } from 'lodash';
@@ -36,8 +35,7 @@ export default {
                      */
                     render: (args = {}) => {
 
-                        const store = createStore(graphReducer),
-                            component = <CollectionWidgetContainer collectionId={args.id || config.id || CollConfig.id }
+                        const component = <CollectionWidgetContainer collectionId={args.id || config.id || CollConfig.id }
                             apiKey={args.apiKey || config.apiKey || CollConfig.apiKey }
                             host={args.host || config.host || CollConfig.host}
                         />;
