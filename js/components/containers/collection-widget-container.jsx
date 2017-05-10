@@ -4,23 +4,26 @@
 import 'bootstrap-loader';
 import '../../../styles/graph.scss';
 import 'font-awesome/scss/font-awesome.scss';
-
+import 'react-tabs/style/react-tabs.scss';
 
 import React from 'react';
+import Modal from 'react-modal';
+import { connect } from 'react-redux';
+import { Row, Col } from 'react-bootstrap';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+
+
+import { getGraphWidget } from '../../api/graph-api';
 import LayoutForm from '../views/layout-form';
 import StatsBox from '../views/stats-box';
 import Graph, { Legend } from '../views/graph';
 import ModalDialog from '../views/modal-dialog';
 import TagsForm from '../views/tags-form';
-import Modal from 'react-modal';
-import { connect } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
-import { getGraphWidget } from '../../api/graph-api';
 // import cytoscape from 'cytoscape';
 // import cyCola from 'cytoscape-cola';
 // import cola from 'cola';
 // import sigma from 'sigma';
-import { find, isArray, difference, map, uniq } from 'lodash';
+import { find, isArray, difference, map, uniq, omit, isEqual } from 'lodash';
 import GraphHandler from '../../models/graph';
 import { ALLOWED_FIELDS } from '../../utils/api-constants';
 import * as actions from '../../actions/graph-actions';
@@ -28,6 +31,107 @@ import * as actions from '../../actions/graph-actions';
 
 // cyCola(cytoscape, cola);
 const modalStyles = {overlay: {zIndex: 10}};
+
+/**
+ * @class
+ * @name GraphMainBox
+ * @extends React.Component
+ * @description container class for the Graph visualizer
+ * @prop{Object} graph - containing an array of nodes and an array of edges
+ * @prop{Object} layout - describes the layout used to display the graph, and which parts of the graph are actually shown (to be refactored?)
+ */
+class GraphMainBox extends React.Component {
+
+    static propTypes = {
+        // collectionId: React.PropTypes.string.required,
+        // host: React.PropTypes.string.required,
+        // apiKey: React.PropTypes.string.required,
+        graph: React.PropTypes.shape({
+            nodes: React.PropTypes.array.isRequired,
+            edges: React.PropTypes.array.isRequired
+        }).isRequired,
+        layout: React.PropTypes.shape({
+            name: React.PropTypes.string,
+            visibility: React.PropTypes.object,
+            depth: React.PropTypes.number,
+            tags: React.PropTypes.object,
+            isTagsPanelVisible: React.PropTypes.bool
+        }).isRequired,
+        isFetching: React.PropTypes.bool,
+        reload: React.PropTypes.bool,
+        modal: React.PropTypes.shape({
+            isOpen: React.PropTypes.bool,
+            node: React.PropTypes.string
+        }),
+        closeDetailsPanel: React.PropTypes.func.isRequired,
+        handleLayoutChange: React.PropTypes.func.isRequired,
+        visibilityCheckboxChange: React.PropTypes.func.isRequired,
+        depthCheckboxChange: React.PropTypes.func.isRequired,
+        tagsVisibilityCheckboxChange:React.PropTypes.func.isRequired
+    }
+
+    shouldComponentUpdate(nextProps) {
+        const hasChanged = isEqual(nextProps, this.props);
+        return !hasChanged;
+    }
+
+    /**
+     * @method
+     * @description standard React.Component method. It is executed anytime the state of the application (as stored in Redux) is modified by an action.
+     */
+    render() {
+        const { graph, layout, reload, modal } = this.props;
+        const collectionName = graph && graph.nodes && graph.nodes[0] && graph.nodes[0].properties.name;
+
+        const dispatchMethods = {
+            openDetailsPanel: this.props.openDetailsPanel,
+            closeDetailsPanel: this.props.closeDetailsPanel
+        };
+        const headerType = !collectionName ? '' : graph.nodes[0].properties.recommendation ? 'Recommendations' : 'Collections';
+        const headerLink = !collectionName ? '' : graph.nodes[0].properties.recommendation ? '/recommendations' : '/collections';
+
+        this.handler = new GraphHandler(graph, layout, dispatchMethods);
+
+        return (
+            <div className="graph-container container-fluid">
+                <div className="graph-head">
+                    <h3>{'Graph Viewer (BETA): '}
+                        <a href={headerLink}>{`${headerType} `}</a>
+                        {`> ${collectionName || ''}`}
+                    </h3>
+                </div>
+                <Row className="graph-handler">
+
+                    <ModalDialog isOpen={modal.isOpen} data={modal.node}
+                        allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
+                    <Col sm={3} xs={6} className="graph-layout-form-div">
+                        <Row>
+                            <LayoutForm layoutName={layout.name} handleLayoutChange={this.props.handleLayoutChange }
+                                visibility={layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
+                                // tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
+                                depth={layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
+                                isTagsPanelVisible={layout.isTagsPanelVisible}
+                                tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
+                                />
+                                <StatsBox handler={this.handler} reload={reload}/>
+                                <Legend title='Legend' items={uniq(map(this.handler.edges, 'relationship'))} />
+                        </Row>
+                    </Col>
+                    <Col sm={9} xs={12} >
+                        <Graph handler={this.handler} layout={layout} reload={reload} />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12}>
+                        <TagsForm isTagsPanelVisible={layout.isTagsPanelVisible} tags={layout.tags}
+                            tagsSelectChange={this.props.tagsSelectChange}  />
+                    </Col>
+                </Row>
+            </div>
+        );
+    }
+
+}
 
 /**
  * @class
@@ -41,6 +145,14 @@ class CollectionWidgetContainer extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            tabIndex: 0
+        };
+    }
+
+    componentDidMount() {
+        const { collectionId, host, apiKey } = this.props;
+        getGraphWidget(collectionId, host, apiKey);
     }
 
     static propTypes = {
@@ -71,18 +183,10 @@ class CollectionWidgetContainer extends React.Component {
         tagsVisibilityCheckboxChange:React.PropTypes.func.isRequired
     }
 
-    componentDidMount() {
-        const { collectionId, host, apiKey } = this.props;
-        getGraphWidget(collectionId, host, apiKey);
-    }
-
-    /**
-     * @method
-     * @description standard React.Component method. It is executed anytime the state of the application (as stored in Redux) is modified by an action.
-     */
     render() {
-        const { graph, layout, reload, error, isFetching, modal } = this.props;
-        const collectionName = graph && graph.nodes && graph.nodes[0] && graph.nodes[0].properties.name;
+
+        const { isFetching, error } = this.props;
+
         if (error) {
             return (
                 <div className="graph-error">
@@ -90,56 +194,28 @@ class CollectionWidgetContainer extends React.Component {
                 </div>
             );
         }
-        const dispatchMethods = {
-            openDetailsPanel: this.props.openDetailsPanel,
-            closeDetailsPanel: this.props.closeDetailsPanel
-        };
-        const headerType = !collectionName ? '' : graph.nodes[0].properties.recommendation ? 'Recommendations' : 'Collections';
-        const headerLink = !collectionName ? '' : graph.nodes[0].properties.recommendation ? '/recommendations' : '/collections';
 
-        this.handler = new GraphHandler(graph, layout, dispatchMethods);
+        return <Tabs selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })} >
 
-        return (
-            <div className="graph-container container-fluid">
-                <div className="graph-head">
-                    <h3>{'Graph Viewer (BETA): '}
-                        <a href={headerLink}>{`${headerType} `}</a>
-                        {`> ${collectionName || ''}`}
-                    </h3>
+            <Modal id="isFetchingModal" isOpen={isFetching} className="is-fetching-modal" style={modalStyles}>
+                <div className="jumbotron jumbotron-icon centred-cnt">
+                    <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
                 </div>
-                <Row className="graph-handler">
-                    <Modal id="isFetchingModal" isOpen={isFetching} className="is-fetching-modal" style={modalStyles}>
-                        <div className="jumbotron jumbotron-icon centred-cnt">
-                            <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
-                        </div>
-                    </Modal>
-                    <ModalDialog isOpen={modal.isOpen} data={modal.node}
-                        allowedFields={ALLOWED_FIELDS} closeDetailsPanel={this.props.closeDetailsPanel} />
-                    <Col sm={3} xs={6} className="graph-layout-form-div">
-                        <Row>
-                            <LayoutForm layoutName={layout.name} handleLayoutChange={this.props.handleLayoutChange }
-                                visibility={layout.visibility} visibilityCheckboxChange={this.props.visibilityCheckboxChange}
-                                // tags={this.props.layout.tags}  tagsSelectChange={this.props.tagsSelectChange}
-                                depth={layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
-                                isTagsPanelVisible={layout.isTagsPanelVisible}
-                                tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
-                                />
-                                <StatsBox handler={this.handler} reload={reload}/>
-                                <Legend title='Legend' items={uniq(map(this.handler.edges, 'relationship'))} />
-                        </Row>
-                    </Col>
-                    <Col sm={9} xs={12} >
-                        <Graph handler={this.handler} layout={layout} reload={reload} />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12}>
-                        <TagsForm isTagsPanelVisible={layout.isTagsPanelVisible} tags={layout.tags}
-                            tagsSelectChange={this.props.tagsSelectChange}  />
-                    </Col>
-                </Row>
-            </div>
-        );
+            </Modal>
+
+            <TabList>
+                <Tab>Table</Tab>
+                <Tab>Graph</Tab>
+            </TabList>
+
+            <TabPanel>
+                <h1>Bao</h1>
+            </TabPanel>
+            <TabPanel>
+                <GraphMainBox {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />
+            </TabPanel>
+        </Tabs>;
+
     }
 
 }
