@@ -5,12 +5,14 @@ import 'bootstrap-loader';
 import '../../../styles/graph.scss';
 import 'font-awesome/scss/font-awesome.scss';
 import 'react-tabs/style/react-tabs.scss';
+import 'react-table/react-table.css';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import ReactTable from 'react-table';
 
 
 import { getGraphWidget } from '../../api/graph-api';
@@ -23,9 +25,9 @@ import TagsForm from '../views/tags-form';
 // import cyCola from 'cytoscape-cola';
 // import cola from 'cola';
 // import sigma from 'sigma';
-import { find, isArray, difference, map, uniq, omit, isEqual } from 'lodash';
-import GraphHandler from '../../models/graph';
-import { ALLOWED_FIELDS } from '../../utils/api-constants';
+import { find, isArray, difference, map, uniq, omit, isEqual, zipObject, cloneDeep } from 'lodash';
+import GraphHandler, { nodeFilters } from '../../models/graph';
+import { ALLOWED_FIELDS, DEPTH_LEVELS } from '../../utils/api-constants';
 import * as actions from '../../actions/graph-actions';
 
 
@@ -135,6 +137,99 @@ class GraphMainBox extends React.Component {
 
 /**
  * @class
+ * @name TableBox
+ * @extends React.Component
+ * @description main component for the table view of the graph data
+ */
+class TableBox extends React.Component {
+
+    static propTypes = {
+        rows: PropTypes.array.isRequired,
+        depth: PropTypes.number,
+        tags: PropTypes.object,
+        visibility: PropTypes.object
+    }
+
+    static columns = [
+        {
+            id: 'name',
+            header: 'Name',
+            accessor: d => {
+                return {
+                    name: d.properties.name,
+                    id: d.properties.application_id
+                };
+            },
+            render: row => <a href={`http://biosharing.org/${row.value.id}/`} target='_blank' rel='noopener noreferrer'>
+                {row.value.name}
+            </a>
+        },
+        {
+            header: 'Abbreviation',
+            accessor: 'properties.shortname'
+        },
+        {
+            header: 'Type',
+            accessor: 'label.[0]'
+        },
+        {
+            header: 'Domains',
+            accessor: 'properties.domains',
+            render: row => <ul>
+                {row.value.map(el => <li>{el}</li>)}
+            </ul>
+
+        },
+        {
+            header: 'Taxonomies',
+            accessor: 'properties.taxonomies',
+            render: row => <ul>
+                {row.value.map(el => <li>{el}</li>)}
+            </ul>
+        },
+        {
+            header: 'Status',
+            accessor: 'properties.status'
+        }
+    ]
+
+    render() {
+        const { rows, tags = {}, visibility = {}, depth = 1 } = this.props, { columns } = this.constructor,
+            collectionName = rows && rows[0] && rows[0].properties.name;
+        let data = cloneDeep(rows);
+
+        // prepare blacklistedLabels: initialize an array of empty objects for each depth level of the graph
+        const blacklistedLabels = zipObject(DEPTH_LEVELS, map(DEPTH_LEVELS, () => []));
+
+        for (const entityType of Object.keys(visibility)) {
+            for (const depthLevel of DEPTH_LEVELS) {
+                if (!visibility[entityType][depthLevel]) {
+                    blacklistedLabels[depthLevel].push(entityType);
+                }
+            }
+        }
+
+        for (const filterFnc of Object.keys(nodeFilters)) {
+            data = data.filter(nodeFilters[filterFnc], {
+                tags: tags,
+                depth: depth,
+                blacklistedLabels: blacklistedLabels
+            });
+        }
+
+
+        return <div>
+            <h2>{collectionName}</h2>
+            <div>
+                <ReactTable data={data} columns={columns} />
+            </div>
+        </div>;
+    }
+
+}
+
+/**
+ * @class
  * @name CollectionWidgetContainer
  * @extends React.Component
  * @description container class for the Graph visualizer
@@ -185,7 +280,7 @@ class CollectionWidgetContainer extends React.Component {
 
     render() {
 
-        const { isFetching, error } = this.props;
+        const { graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} }, isFetching, error } = this.props;
 
         if (error) {
             return (
@@ -209,7 +304,7 @@ class CollectionWidgetContainer extends React.Component {
             </TabList>
 
             <TabPanel>
-                <h1>Bao</h1>
+                <TableBox rows={nodes} tags={tags} visibility={visibility} depth={depth} />
             </TabPanel>
             <TabPanel>
                 <GraphMainBox {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />

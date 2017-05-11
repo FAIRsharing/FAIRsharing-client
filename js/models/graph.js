@@ -151,7 +151,8 @@ export const nodeFilters = {
      * @returns {Boolean}
      */
     filterByLabel: function(node) {
-        return intersection(node.labels, this.blacklistedLabels[node.path_length]).length === 0;
+        const flag = intersection(node.labels, this.blacklistedLabels[node.path_length]).length === 0;
+        return flag;
     },
 
     filterByTags: function(node) {

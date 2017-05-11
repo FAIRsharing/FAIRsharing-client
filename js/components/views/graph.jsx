@@ -199,7 +199,11 @@ class Graph extends React.Component {
                 {sliderForm}
                 <Row>
                     <div id="graph" ref="graph" className="graph"
-                        style={{'height': '100%', 'width': '100%'}} >
+                        style={{
+                            'height': '100%',
+                            'minHeight': '600px', //FIXME set this as a media class!!
+                            'width': '100%'
+                        }} >
                     </div>
                 </Row>
             </div>
