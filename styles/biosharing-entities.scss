@@ -1,3 +1,7 @@
+$bs-bio-tag-domain-color: #27aae1;
+$bs-bio-tag-taxonomy-color: #009444;
+$bs-bio-tag-font-size: .666em;
+
 .bs-entities-error {
     vertical-align: middle;
     text-align: center;
@@ -15,4 +19,42 @@
 
 .bs-form-label {
     margin-right: 2px;
+}
+
+.bs-bio-tags {
+    list-style: none;
+    -webkit-padding-start: 0px;
+    float: left;
+    color: #fff;
+    font-size: 1em;
+}
+
+.bs-bio-tag {
+    display: inline-block;
+    margin: 2px;
+    padding: 4px 6px;
+    font-weight: normal;
+    text-transform: capitalize;
+    color: #fff;
+    border-radius: 3px;
+    font-size: $bs-bio-tag-font-size;
+    float: left;
+}
+
+.bs-bio-tag-domain {
+    background-color: $bs-bio-tag-domain-color;
+}
+
+.bs-bio-tag-taxonomy {
+    background-color: $bs-bio-tag-taxonomy-color;
+}
+
+.bs-bio-tag a {
+    color: inherit;
+    cursor: pointer;
+}
+
+img.bs-bio-status {
+    width: 30px;
+    height: 30px;
 }

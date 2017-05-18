@@ -3,8 +3,8 @@
 */
 import 'rc-slider/assets/index.css';
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { PropTypes } from 'react';
+// import ReactDOM from 'react-dom';
 import { Row, Col, Button } from 'react-bootstrap';
 import Slider from 'rc-slider';
 import GraphHandler from '../../models/graph';
@@ -38,8 +38,8 @@ const CustomHandle = props => {
 };
 
 CustomHandle.propTypes = {
-    value: React.PropTypes.any,
-    offset: React.PropTypes.number
+    value: PropTypes.any,
+    offset: PropTypes.number
 };
 
 /**
@@ -49,8 +49,8 @@ CustomHandle.propTypes = {
 export class ZoomHandle extends React.Component {
 
     static propTypes = {
-        value: React.PropTypes.any,
-        offset: React.PropTypes.number
+        value: PropTypes.any,
+        offset: PropTypes.number
     }
 
     render() {
@@ -122,15 +122,15 @@ class Graph extends React.Component {
     }
 
     static propTypes = {
-        handler: React.PropTypes.instanceOf(GraphHandler),
-        layout: React.PropTypes.shape({
-            name: React.PropTypes.string,
-            visibility: React.PropTypes.object,
-            depth: React.PropTypes.number,
-            tags: React.PropTypes.object,
-            isTagsPanelVisible: React.PropTypes.bool
+        handler: PropTypes.instanceOf(GraphHandler),
+        layout: PropTypes.shape({
+            name: PropTypes.string,
+            visibility: PropTypes.object,
+            depth: PropTypes.number,
+            tags: PropTypes.object,
+            isTagsPanelVisible: PropTypes.bool
         }).isRequired,
-        reload: React.PropTypes.bool
+        reload: PropTypes.bool
     }
 
     shouldComponentUpdate(nextProps) {

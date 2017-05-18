@@ -3,7 +3,7 @@
 */
 import '../../../styles/graph.scss';
 import 'font-awesome/scss/font-awesome.scss';
-import React from 'react';
+import React, { PropTypes } from 'react';
 import LayoutForm from '../views/layout-form';
 import StatsBox from '../views/stats-box';
 import Graph, { Legend } from '../views/graph';
@@ -40,28 +40,29 @@ class GraphContainer extends React.Component {
     }
 
     static propTypes = {
-        graph: React.PropTypes.shape({
-            nodes: React.PropTypes.array.isRequired,
-            edges: React.PropTypes.array.isRequired
+        graph: PropTypes.shape({
+            nodes: PropTypes.array.isRequired,
+            edges: PropTypes.array.isRequired
         }).isRequired,
-        layout: React.PropTypes.shape({
-            name: React.PropTypes.string,
-            visibility: React.PropTypes.object,
-            depth: React.PropTypes.number,
-            tags: React.PropTypes.object,
-            isTagsPanelVisible: React.PropTypes.bool
+        layout: PropTypes.shape({
+            name: PropTypes.string,
+            visibility: PropTypes.object,
+            depth: PropTypes.number,
+            tags: PropTypes.object,
+            isTagsPanelVisible: PropTypes.bool
         }).isRequired,
-        isFetching: React.PropTypes.bool,
-        reload: React.PropTypes.bool,
-        modal: React.PropTypes.shape({
-            isOpen: React.PropTypes.bool,
-            node: React.PropTypes.string
+        isFetching: PropTypes.bool,
+        reload: PropTypes.bool,
+        modal: PropTypes.shape({
+            isOpen: PropTypes.bool,
+            node: PropTypes.string
         }),
-        closeDetailsPanel: React.PropTypes.func.isRequired,
-        handleLayoutChange: React.PropTypes.func.isRequired,
-        visibilityCheckboxChange: React.PropTypes.func.isRequired,
-        depthCheckboxChange: React.PropTypes.func.isRequired,
-        tagsVisibilityCheckboxChange:React.PropTypes.func.isRequired
+        closeDetailsPanel: PropTypes.func.isRequired,
+        handleLayoutChange: PropTypes.func.isRequired,
+        visibilityCheckboxChange: PropTypes.func.isRequired,
+        depthCheckboxChange: PropTypes.func.isRequired,
+        tagsVisibilityCheckboxChange:PropTypes.func.isRequired,
+        tagsSelectChange: PropTypes.func.isRequired
     }
 
     componentDidMount() {

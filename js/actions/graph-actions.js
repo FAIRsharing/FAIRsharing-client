@@ -13,6 +13,12 @@ export function  getGraphSuccess(graph) {
     };
 }
 
+export function resetGraph() {
+    return {
+        type: types.RESET_GRAPH
+    };
+}
+
 /*
 export function getGraphError(error) {
     return {

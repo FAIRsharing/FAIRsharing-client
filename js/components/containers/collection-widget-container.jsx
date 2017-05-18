@@ -3,6 +3,7 @@
 */
 import 'bootstrap-loader';
 import '../../../styles/graph.scss';
+import '../../../styles/biosharing-entities.scss';
 import 'font-awesome/scss/font-awesome.scss';
 import 'react-tabs/style/react-tabs.scss';
 import 'react-table/react-table.css';
@@ -10,9 +11,10 @@ import 'react-table/react-table.css';
 import React, { PropTypes } from 'react';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ReactTable from 'react-table';
+import FontAwesome from 'react-fontawesome';
 
 
 import { getGraphWidget } from '../../api/graph-api';
@@ -21,18 +23,16 @@ import StatsBox from '../views/stats-box';
 import Graph, { Legend } from '../views/graph';
 import ModalDialog from '../views/modal-dialog';
 import TagsForm from '../views/tags-form';
-// import cytoscape from 'cytoscape';
-// import cyCola from 'cytoscape-cola';
-// import cola from 'cola';
-// import sigma from 'sigma';
-import { find, isArray, difference, map, uniq, omit, isEqual, zipObject, cloneDeep } from 'lodash';
+
+import { find, isArray, difference, map, uniq, omit, isEqual, zipObject, cloneDeep, merge } from 'lodash';
 import GraphHandler, { nodeFilters } from '../../models/graph';
 import { ALLOWED_FIELDS, DEPTH_LEVELS } from '../../utils/api-constants';
 import * as actions from '../../actions/graph-actions';
 
 
-// cyCola(cytoscape, cola);
 const modalStyles = {overlay: {zIndex: 10}};
+
+const BIOSHARING_BASE_URL = 'http://localhost:8000';
 
 /**
  * @class
@@ -45,31 +45,32 @@ const modalStyles = {overlay: {zIndex: 10}};
 class GraphMainBox extends React.Component {
 
     static propTypes = {
-        // collectionId: React.PropTypes.string.required,
-        // host: React.PropTypes.string.required,
-        // apiKey: React.PropTypes.string.required,
-        graph: React.PropTypes.shape({
-            nodes: React.PropTypes.array.isRequired,
-            edges: React.PropTypes.array.isRequired
+        // collectionId: PropTypes.string.required,
+        // host: PropTypes.string.required,
+        // apiKey: PropTypes.string.required,
+        graph: PropTypes.shape({
+            nodes: PropTypes.array.isRequired,
+            edges: PropTypes.array.isRequired
         }).isRequired,
-        layout: React.PropTypes.shape({
-            name: React.PropTypes.string,
-            visibility: React.PropTypes.object,
-            depth: React.PropTypes.number,
-            tags: React.PropTypes.object,
-            isTagsPanelVisible: React.PropTypes.bool
+        layout: PropTypes.shape({
+            name: PropTypes.string,
+            visibility: PropTypes.object,
+            depth: PropTypes.number,
+            tags: PropTypes.object,
+            isTagsPanelVisible: PropTypes.bool
         }).isRequired,
-        isFetching: React.PropTypes.bool,
-        reload: React.PropTypes.bool,
-        modal: React.PropTypes.shape({
-            isOpen: React.PropTypes.bool,
-            node: React.PropTypes.string
+        isFetching: PropTypes.bool,
+        reload: PropTypes.bool,
+        modal: PropTypes.shape({
+            isOpen: PropTypes.bool,
+            node: PropTypes.string
         }),
-        closeDetailsPanel: React.PropTypes.func.isRequired,
-        handleLayoutChange: React.PropTypes.func.isRequired,
-        visibilityCheckboxChange: React.PropTypes.func.isRequired,
-        depthCheckboxChange: React.PropTypes.func.isRequired,
-        tagsVisibilityCheckboxChange:React.PropTypes.func.isRequired
+        closeDetailsPanel: PropTypes.func.isRequired,
+        handleLayoutChange: PropTypes.func.isRequired,
+        visibilityCheckboxChange: PropTypes.func.isRequired,
+        depthCheckboxChange: PropTypes.func.isRequired,
+        tagsVisibilityCheckboxChange:PropTypes.func.isRequired,
+        tagsSelectChange: PropTypes.func.isRequired
     }
 
     shouldComponentUpdate(nextProps) {
@@ -97,7 +98,7 @@ class GraphMainBox extends React.Component {
         return (
             <div className="graph-container container-fluid">
                 <div className="graph-head">
-                    <h3>{'Graph Viewer (BETA): '}
+                    <h3>
                         <a href={headerLink}>{`${headerType} `}</a>
                         {`> ${collectionName || ''}`}
                     </h3>
@@ -147,54 +148,34 @@ class TableBox extends React.Component {
         rows: PropTypes.array.isRequired,
         depth: PropTypes.number,
         tags: PropTypes.object,
-        visibility: PropTypes.object
+        visibility: PropTypes.object,
+        tagsChange: PropTypes.func.isRequired,
+        resetGraph: PropTypes.func.isRequired
     }
 
-    static columns = [
-        {
-            id: 'name',
-            header: 'Name',
-            accessor: d => {
-                return {
-                    name: d.properties.name,
-                    id: d.properties.application_id
-                };
-            },
-            render: row => <a href={`http://biosharing.org/${row.value.id}/`} target='_blank' rel='noopener noreferrer'>
-                {row.value.name}
-            </a>
+    static statusMap = {
+        DEP: {
+            imgURL: 'img/status_circles/deprecated.png',
+            imgAlt: 'deprecated'
         },
-        {
-            header: 'Abbreviation',
-            accessor: 'properties.shortname'
-        },
-        {
-            header: 'Type',
-            accessor: 'label.[0]'
-        },
-        {
-            header: 'Domains',
-            accessor: 'properties.domains',
-            render: row => <ul>
-                {row.value.map(el => <li>{el}</li>)}
-            </ul>
 
+        RDY: {
+            imgURL: 'img/status_circles/ready.png',
+            imgAlt: 'ready'
         },
-        {
-            header: 'Taxonomies',
-            accessor: 'properties.taxonomies',
-            render: row => <ul>
-                {row.value.map(el => <li>{el}</li>)}
-            </ul>
+        DEV: {
+            imgURL: 'img/status_circles/development.png',
+            imgAlt: 'development'
         },
-        {
-            header: 'Status',
-            accessor: 'properties.status'
+        UNC: {
+            imgURL: 'img/status_circles/uncertain.png',
+            imgAlt: 'uncertain'
         }
-    ]
+    }
 
     render() {
-        const { rows, tags = {}, visibility = {}, depth = 1 } = this.props, { columns } = this.constructor,
+        const { rows, tags = {}, visibility = {}, depth = 1, tagsChange, resetGraph } = this.props,
+            { statusMap } = this.constructor,
             collectionName = rows && rows[0] && rows[0].properties.name;
         let data = cloneDeep(rows);
 
@@ -217,11 +198,87 @@ class TableBox extends React.Component {
             });
         }
 
+        const columns = [
+            {
+                id: 'name',
+                header: 'Name',
+                accessor: d => {
+                    return {
+                        name: d.properties.name,
+                        id: d.properties.application_id
+                    };
+                },
+                render: props => <a href={`${BIOSHARING_BASE_URL}/${props.value.id}/`} target='_blank' rel='noopener noreferrer'>
+                    {props.value.name}
+                </a>
+            },
+            {
+                header: 'Abbreviation',
+                accessor: 'properties.shortname'
+            },
+            {
+                header: 'Type',
+                accessor: 'label.[0]'
+            },
+            {
+                header: 'Domains',
+                accessor: 'properties.domains',
+                render: props => <ul>
+                    {props.value.map(el => <li className='bs-bio-tag bs-bio-tag-domain'>
+                        {/* <FontAwesome name='tag' className='fa-fw' /> */}
+                        <a onClick={ev => {
+                            const name = ev.target.innerHTML;
+                            const selected = [name], allTags = merge(tags.domains.selected, tags.domains.unselected);
+                            const unselected = difference(allTags, selected);
+                            tagsChange('domains', selected, unselected);
+                        }}>{el}</a>
+                    </li>)}
+                </ul>
+
+            },
+            {
+                header: 'Taxonomies',
+                accessor: 'properties.taxonomies',
+                render: props => <ul className='bs-bio-tags'>
+                    {props.value.map(el => <li className='bs-bio-tag bs-bio-tag-taxonomy'>
+                        {/* <FontAwesome name='tag' className='fa-fw' /> */}
+                        <a onClick={ev => {
+                            const name = ev.target.innerHTML;
+                            const selected = [name], allTags = merge(tags.taxonomies.selected, tags.taxonomies.unselected);
+                            const unselected = difference(allTags, selected);
+                            tagsChange('taxonomies', selected, unselected);
+                        }}>{el}</a>
+                    </li>)}
+                </ul>
+            },
+            {
+                header: 'Status',
+                accessor: 'properties.status',
+                render: props => {
+                    const obj = statusMap[props.value];
+                    if (!obj) return null;
+                    return <img className='bs-bio-status' src={`${BIOSHARING_BASE_URL}/static/${obj.imgURL}`} alt={obj.imgAlt} />;
+                }
+            }
+        ];
+
 
         return <div>
-            <h2>{collectionName}</h2>
+            <div className='graph-header'>
+                <h2>{collectionName}</h2>
+                <div style={{'textAlign': 'right'}}>
+                    <Button bsStyle='warning' onClick={resetGraph}>Reset Table</Button>
+                </div>
+            </div>
             <div>
-                <ReactTable data={data} columns={columns} />
+                <ReactTable className='-striped -highlight' data={data} columns={columns}
+                    getTrProps={() => {
+                        return {
+                            tags: tags
+                        };
+                    }}
+                    defaultPageSize={data.length < 20 ? data.length : 20}
+                />
             </div>
         </div>;
     }
@@ -251,36 +308,39 @@ class CollectionWidgetContainer extends React.Component {
     }
 
     static propTypes = {
-        collectionId: React.PropTypes.string.required,
-        host: React.PropTypes.string.required,
-        apiKey: React.PropTypes.string.required,
-        graph: React.PropTypes.shape({
-            nodes: React.PropTypes.array.isRequired,
-            edges: React.PropTypes.array.isRequired
+        collectionId: PropTypes.string.required,
+        host: PropTypes.string.required,
+        apiKey: PropTypes.string.required,
+        graph: PropTypes.shape({
+            nodes: PropTypes.array.isRequired,
+            edges: PropTypes.array.isRequired
         }).isRequired,
-        layout: React.PropTypes.shape({
-            name: React.PropTypes.string,
-            visibility: React.PropTypes.object,
-            depth: React.PropTypes.number,
-            tags: React.PropTypes.object,
-            isTagsPanelVisible: React.PropTypes.bool
+        layout: PropTypes.shape({
+            name: PropTypes.string,
+            visibility: PropTypes.object,
+            depth: PropTypes.number,
+            tags: PropTypes.object,
+            isTagsPanelVisible: PropTypes.bool
         }).isRequired,
-        isFetching: React.PropTypes.bool,
-        reload: React.PropTypes.bool,
-        modal: React.PropTypes.shape({
-            isOpen: React.PropTypes.bool,
-            node: React.PropTypes.string
+        isFetching: PropTypes.bool,
+        reload: PropTypes.bool,
+        modal: PropTypes.shape({
+            isOpen: PropTypes.bool,
+            node: PropTypes.string
         }),
-        closeDetailsPanel: React.PropTypes.func.isRequired,
-        handleLayoutChange: React.PropTypes.func.isRequired,
-        visibilityCheckboxChange: React.PropTypes.func.isRequired,
-        depthCheckboxChange: React.PropTypes.func.isRequired,
-        tagsVisibilityCheckboxChange:React.PropTypes.func.isRequired
+        closeDetailsPanel: PropTypes.func.isRequired,
+        handleLayoutChange: PropTypes.func.isRequired,
+        visibilityCheckboxChange: PropTypes.func.isRequired,
+        depthCheckboxChange: PropTypes.func.isRequired,
+        tagsVisibilityCheckboxChange:PropTypes.func.isRequired,
+        tagsSelectChange: PropTypes.func.isRequired,
+        tagsChange: PropTypes.func.isRequired,
+        resetGraph: PropTypes.func.isRequired
     }
 
     render() {
 
-        const { graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} }, isFetching, error } = this.props;
+        const { graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} }, isFetching, error, tagsChange, resetGraph } = this.props;
 
         if (error) {
             return (
@@ -304,7 +364,7 @@ class CollectionWidgetContainer extends React.Component {
             </TabList>
 
             <TabPanel>
-                <TableBox rows={nodes} tags={tags} visibility={visibility} depth={depth} />
+                <TableBox rows={nodes} tags={tags} visibility={visibility} depth={depth} tagsChange={tagsChange} resetGraph={resetGraph} />
             </TabPanel>
             <TabPanel>
                 <GraphMainBox {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />
@@ -353,7 +413,7 @@ const mapDispatchToProps = function(dispatch) {
         /**
          * @description sends selected layour to the reducer
          */
-        handleLayoutChange: (ev) => {
+        handleLayoutChange: ev => {
             dispatch(actions.layoutSelectChange({name: ev.target.value}));
         },
 
@@ -394,7 +454,26 @@ const mapDispatchToProps = function(dispatch) {
 
         /**
          * @method
-         * @name tagsVisibilityCheckboxChange
+         * @name tagsChange
+         * @param{String} name
+         * @param{Array} selectedTags
+         * @param{Array} unselectedTags
+         * @description handles the change in state of checkbox toggling the Tags Select boxes.
+         *              If checked the Tags Select boxes will be visible, otherwise are hidden.
+         */
+        tagsChange: (name, selectedTags, unselectedTags) => {
+            dispatch(actions.tagsSelectChange({
+                name: name,
+                value: {
+                    selected: selectedTags,
+                    unselected: unselectedTags
+                }
+            }));
+        },
+
+        /**
+         * @method
+         * @name tagsSelectChange
          * @description handles the change in state of checkbox toggling the Tags Select boxes.
          *              If checked the Tags Select boxes will be visible, otherwise are hidden.
          */
@@ -426,6 +505,10 @@ const mapDispatchToProps = function(dispatch) {
 
         closeDetailsPanel: () => {
             dispatch(actions.closeDetailsPanel());
+        },
+
+        resetGraph: () => {
+            dispatch(actions.resetGraph());
         }
 
     };

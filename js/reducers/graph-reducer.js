@@ -90,6 +90,29 @@ const graphReducer = function (state = initialState, action) {
             };
         } // end CASE
 
+        case types.RESET_GRAPH: {
+            const tagsMap = getUniqueTags(state.graph.nodes);
+            const nextTags = [];
+            for (let [key, value] of tagsMap) {
+                nextTags[key] = {
+                    selected: value,
+                    unselected: []
+                };
+            }
+            return {
+                ...state,
+                isFetching: false,
+                layout: {
+                    ...state.layout,
+                    tags: {
+                        ...state.layout.tags,
+                        ...nextTags
+                    }
+                },
+                reload: true
+            };
+        }
+
         case types.GET_REMOTE_ERROR: {
             const { message, stack } = action.error;
             return {
@@ -98,7 +121,7 @@ const graphReducer = function (state = initialState, action) {
                 error: {
                     message,
                     stack
-                }  
+                }
             };
         }
 
