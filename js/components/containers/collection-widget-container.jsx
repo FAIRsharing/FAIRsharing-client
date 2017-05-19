@@ -11,7 +11,7 @@ import 'react-table/react-table.css';
 import React, { PropTypes } from 'react';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, ButtonToolbar, Button } from 'react-bootstrap';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ReactTable from 'react-table';
 import FontAwesome from 'react-fontawesome';
@@ -84,25 +84,18 @@ class GraphMainBox extends React.Component {
      */
     render() {
         const { graph, layout, reload, modal } = this.props;
-        const collectionName = graph && graph.nodes && graph.nodes[0] && graph.nodes[0].properties.name;
 
         const dispatchMethods = {
             openDetailsPanel: this.props.openDetailsPanel,
             closeDetailsPanel: this.props.closeDetailsPanel
         };
-        const headerType = !collectionName ? '' : graph.nodes[0].properties.recommendation ? 'Recommendations' : 'Collections';
-        const headerLink = !collectionName ? '' : graph.nodes[0].properties.recommendation ? '/recommendations' : '/collections';
+
 
         this.handler = new GraphHandler(graph, layout, dispatchMethods);
 
         return (
             <div className="graph-container container-fluid">
-                <div className="graph-head">
-                    <h3>
-                        <a href={headerLink}>{`${headerType} `}</a>
-                        {`> ${collectionName || ''}`}
-                    </h3>
-                </div>
+
                 <Row className="graph-handler">
 
                     <ModalDialog isOpen={modal.isOpen} data={modal.node}
@@ -175,8 +168,8 @@ class TableBox extends React.Component {
 
     render() {
         const { rows, tags = {}, visibility = {}, depth = 1, tagsChange, resetGraph } = this.props,
-            { statusMap } = this.constructor,
-            collectionName = rows && rows[0] && rows[0].properties.name;
+            { statusMap } = this.constructor;
+            // collectionName = rows && rows[0] && rows[0].properties.name;
         let data = cloneDeep(rows);
 
         // prepare blacklistedLabels: initialize an array of empty objects for each depth level of the graph
@@ -264,19 +257,22 @@ class TableBox extends React.Component {
 
 
         return <div>
-            <div className='graph-header'>
-                <h2>{collectionName}</h2>
-                <div style={{'textAlign': 'right'}}>
+            <div>
+                <ButtonToolbar>
                     <Button bsStyle='warning' onClick={resetGraph}>Reset Table</Button>
-                </div>
+                </ButtonToolbar>
             </div>
             <div>
                 <ReactTable className='-striped -highlight' data={data} columns={columns}
-                    getTrProps={() => {
+                    getTheadProps={() => {
                         return {
-                            tags: tags
+                            style: {
+                                'backgroundColor': 'blue',
+                                'color': '#fff',
+                                'fontWeight': 'bold'
+                            }
                         };
-                    }}
+                    }}                
                     defaultPageSize={data.length < 20 ? data.length : 20}
                 />
             </div>
@@ -341,6 +337,9 @@ class CollectionWidgetContainer extends React.Component {
     render() {
 
         const { graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} }, isFetching, error, tagsChange, resetGraph } = this.props;
+        const collectionName = nodes && nodes[0] && nodes[0].properties.name;
+        const headerType = !collectionName ? '' : nodes[0].properties.recommendation ? 'Recommendations' : 'Collections';
+        const headerLink = !collectionName ? '' : nodes[0].properties.recommendation ? '/recommendations' : '/collections';
 
         if (error) {
             return (
@@ -350,26 +349,34 @@ class CollectionWidgetContainer extends React.Component {
             );
         }
 
-        return <Tabs selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })} >
+        return <div>
+            <div className="bs-head">
+                <h3>
+                    {/* <a href={headerLink}>{`${headerType} `}</a> */}
+                    {`${headerType} > ${collectionName || ''}`}
+                </h3>
+            </div>
+            <Tabs selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })} >
 
-            <Modal id="isFetchingModal" isOpen={isFetching} className="is-fetching-modal" style={modalStyles}>
-                <div className="jumbotron jumbotron-icon centred-cnt">
-                    <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
-                </div>
-            </Modal>
+                <Modal id="isFetchingModal" isOpen={isFetching} className="is-fetching-modal" style={modalStyles}>
+                    <div className="jumbotron jumbotron-icon centred-cnt">
+                        <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
+                    </div>
+                </Modal>
 
-            <TabList>
-                <Tab>Table</Tab>
-                <Tab>Graph</Tab>
-            </TabList>
+                <TabList>
+                    <Tab>Table</Tab>
+                    <Tab>Graph</Tab>
+                </TabList>
 
-            <TabPanel>
-                <TableBox rows={nodes} tags={tags} visibility={visibility} depth={depth} tagsChange={tagsChange} resetGraph={resetGraph} />
-            </TabPanel>
-            <TabPanel>
-                <GraphMainBox {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />
-            </TabPanel>
-        </Tabs>;
+                <TabPanel>
+                    <TableBox rows={nodes} tags={tags} visibility={visibility} depth={depth} tagsChange={tagsChange} resetGraph={resetGraph} />
+                </TabPanel>
+                <TabPanel>
+                    <GraphMainBox {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />
+                </TabPanel>
+            </Tabs>
+        </div>;
 
     }
 

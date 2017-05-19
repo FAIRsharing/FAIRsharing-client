@@ -1,6 +1,8 @@
 $bs-bio-tag-domain-color: #27aae1;
 $bs-bio-tag-taxonomy-color: #009444;
 $bs-bio-tag-font-size: .666em;
+$bs-head-background-color: #249acc;
+$bs-head-color: #fcffff;
 
 .bs-entities-error {
     vertical-align: middle;
@@ -19,6 +21,20 @@ $bs-bio-tag-font-size: .666em;
 
 .bs-form-label {
     margin-right: 2px;
+}
+
+.bs-head {
+    background-color: $bs-head-background-color;
+    color: $bs-head-color;
+    border-radius: 2px;
+}
+
+.bs-head h3 {
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .bs-bio-tags {

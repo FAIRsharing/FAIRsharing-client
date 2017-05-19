@@ -149,7 +149,7 @@ const StatsBox = React.createClass({
                     {plots}
                 </div>
             </Col>
-            );
+        );
     }
 
 });
