@@ -32,8 +32,6 @@ import * as actions from '../../actions/graph-actions';
 
 const modalStyles = {overlay: {zIndex: 10}};
 
-const BIOSHARING_BASE_URL = 'http://localhost:8000';
-
 /**
  * @class
  * @name GraphMainBox
@@ -45,9 +43,9 @@ const BIOSHARING_BASE_URL = 'http://localhost:8000';
 class GraphMainBox extends React.Component {
 
     static propTypes = {
-        // collectionId: PropTypes.string.required,
-        // host: PropTypes.string.required,
-        // apiKey: PropTypes.string.required,
+        // collectionId: PropTypes.string.isRequired,
+        // host: PropTypes.string.isRequired,
+        // apiKey: PropTypes.string.isRequired,
         graph: PropTypes.shape({
             nodes: PropTypes.array.isRequired,
             edges: PropTypes.array.isRequired
@@ -138,12 +136,46 @@ class GraphMainBox extends React.Component {
 class TableBox extends React.Component {
 
     static propTypes = {
+        host: PropTypes.string.isRequired,
         rows: PropTypes.array.isRequired,
         depth: PropTypes.number,
         tags: PropTypes.object,
         visibility: PropTypes.object,
         tagsChange: PropTypes.func.isRequired,
         resetGraph: PropTypes.func.isRequired
+    }
+
+    static repositoryMap = {
+        'BioDBCore': {
+            imgURL: 'img/icons/db-icon.png',
+            imgAlt: 'datatabase',
+            title: 'Database'
+        },
+        'reporting guideline': {
+            imgURL: 'img/icons/reporting_guidelines.png',
+            imgAlt: 'reporting guideline',
+            title: 'Reporting Guideline'
+        },
+        'model/format': {
+            imgURL: 'img/icons/model_and_format.png',
+            imgAlt: 'model/format',
+            title: 'Model/Format'
+        },
+        'terminology artifact': {
+            imgURL: 'img/icons/terminology_artifact.png',
+            imgAlt: 'terminology artifact',
+            title: 'Terminology Artifact'
+        },
+        'Policy': {
+            imgURL: 'img/icons/policy.png',
+            imgAlt: 'policy',
+            title: 'Policy'
+        },
+        'BiosharingCollection': {
+            imgURL: 'img/icons/policy.png',
+            imgAlt: 'BioSharing collection',
+            title: 'Biosharing Collection'
+        }
     }
 
     static statusMap = {
@@ -167,8 +199,8 @@ class TableBox extends React.Component {
     }
 
     render() {
-        const { rows, tags = {}, visibility = {}, depth = 1, tagsChange, resetGraph } = this.props,
-            { statusMap } = this.constructor;
+        const { host, rows, tags = {}, visibility = {}, depth = 1, tagsChange, resetGraph } = this.props,
+            { statusMap, repositoryMap } = this.constructor;
             // collectionName = rows && rows[0] && rows[0].properties.name;
         let data = cloneDeep(rows);
 
@@ -193,6 +225,23 @@ class TableBox extends React.Component {
 
         const columns = [
             {
+                id: 'repository',
+                header: 'Repository',
+                accessor: d => {
+                    return {
+                        type: d.labels && d.labels[0],
+                        subType: d.properties && d.properties.type
+                    };
+                },
+                render: props => {
+                    const { type, subType } = props.value,
+                        repo = type === 'Standard' ? repositoryMap[subType] : repositoryMap[type];
+                    return <img className='bs-bio-repository' src={`${host}/static/${repo.imgURL}`}
+                        alt={repo.imgAlt} title={repo.title}
+                    />;
+                }
+            },
+            {
                 id: 'name',
                 header: 'Name',
                 accessor: d => {
@@ -201,7 +250,7 @@ class TableBox extends React.Component {
                         id: d.properties.application_id
                     };
                 },
-                render: props => <a href={`${BIOSHARING_BASE_URL}/${props.value.id}/`} target='_blank' rel='noopener noreferrer'>
+                render: props => <a href={`${host}/${props.value.id}/`} target='_blank' rel='noopener noreferrer'>
                     {props.value.name}
                 </a>
             },
@@ -210,8 +259,13 @@ class TableBox extends React.Component {
                 accessor: 'properties.shortname'
             },
             {
+                id: 'type',
                 header: 'Type',
-                accessor: 'label.[0]'
+                accessor: d => {
+                    const type = d.labels && d.labels[0], subType = d.properties && d.properties.type;
+                    return subType || type;
+                },
+
             },
             {
                 header: 'Domains',
@@ -250,7 +304,7 @@ class TableBox extends React.Component {
                 render: props => {
                     const obj = statusMap[props.value];
                     if (!obj) return null;
-                    return <img className='bs-bio-status' src={`${BIOSHARING_BASE_URL}/static/${obj.imgURL}`} alt={obj.imgAlt} />;
+                    return <img className='bs-bio-status' src={`${host}/static/${obj.imgURL}`} alt={obj.imgAlt} />;
                 }
             }
         ];
@@ -267,12 +321,13 @@ class TableBox extends React.Component {
                     getTheadProps={() => {
                         return {
                             style: {
-                                'backgroundColor': 'blue',
-                                'color': '#fff',
+                                'backgroundColor': '#e6EEEE',
+                                'color': 'black',
+                                'border': '1px solid #fff',
                                 'fontWeight': 'bold'
                             }
                         };
-                    }}                
+                    }}
                     defaultPageSize={data.length < 20 ? data.length : 20}
                 />
             </div>
@@ -304,9 +359,9 @@ class CollectionWidgetContainer extends React.Component {
     }
 
     static propTypes = {
-        collectionId: PropTypes.string.required,
-        host: PropTypes.string.required,
-        apiKey: PropTypes.string.required,
+        collectionId: PropTypes.string.isRequired,
+        host: PropTypes.string.isRequired,
+        apiKey: PropTypes.string.isRequired,
         graph: PropTypes.shape({
             nodes: PropTypes.array.isRequired,
             edges: PropTypes.array.isRequired
@@ -336,10 +391,10 @@ class CollectionWidgetContainer extends React.Component {
 
     render() {
 
-        const { graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} }, isFetching, error, tagsChange, resetGraph } = this.props;
+        const { host, graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} }, isFetching, error, tagsChange, resetGraph } = this.props;
         const collectionName = nodes && nodes[0] && nodes[0].properties.name;
         const headerType = !collectionName ? '' : nodes[0].properties.recommendation ? 'Recommendations' : 'Collections';
-        const headerLink = !collectionName ? '' : nodes[0].properties.recommendation ? '/recommendations' : '/collections';
+        // const headerLink = !collectionName ? '' : nodes[0].properties.recommendation ? '/recommendations' : '/collections';
 
         if (error) {
             return (
@@ -370,7 +425,7 @@ class CollectionWidgetContainer extends React.Component {
                 </TabList>
 
                 <TabPanel>
-                    <TableBox rows={nodes} tags={tags} visibility={visibility} depth={depth} tagsChange={tagsChange} resetGraph={resetGraph} />
+                    <TableBox host={host} rows={nodes} tags={tags} visibility={visibility} depth={depth} tagsChange={tagsChange} resetGraph={resetGraph} />
                 </TabPanel>
                 <TabPanel>
                     <GraphMainBox {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />

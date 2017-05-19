@@ -135,3 +135,28 @@ $layout-form-margin: 2px;
 .tag-select .tag-select-label {
     color: $tag-select-label-color;
 }
+
+.graph-div {
+    margin-top: 10px;
+}
+
+.graph-div .graph {
+    min-height: 1080px;
+}
+
+@media screen and (max-width: 600px) {
+    .graph-div .graph {
+        min-height: 540px;
+    }
+}
+
+@media screen and (max-width: 900px) {
+
+    .graph-div {
+        margin-top: 20px;
+    }
+
+    .graph-div .graph {
+        min-height: 800px;
+    }
+}

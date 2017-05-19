@@ -201,7 +201,7 @@ class Graph extends React.Component {
                     <div id="graph" ref="graph" className="graph"
                         style={{
                             'height': '100%',
-                            'minHeight': '600px', //FIXME set this as a media class!!
+                            // 'minHeight': '600px', FIXME set this as a media class!!
                             'width': '100%'
                         }} >
                     </div>
