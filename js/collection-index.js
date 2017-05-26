@@ -9,7 +9,7 @@ import CollectionWidgetContainer from './components/containers/collection-widget
 
 
 let CollConfig = {
-    host: 'http://localhost:8000'
+    host: 'https://biosharing.org'
 };
 
 export default {

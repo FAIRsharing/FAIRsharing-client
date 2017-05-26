@@ -174,7 +174,7 @@ class TableBox extends React.Component {
         'BiosharingCollection': {
             imgURL: 'img/icons/policy.png',
             imgAlt: 'BioSharing collection',
-            title: 'Biosharing Collection'
+            title: 'BioSharing Collection'
         }
     }
 
@@ -263,7 +263,7 @@ class TableBox extends React.Component {
                 header: 'Type',
                 accessor: d => {
                     const type = d.labels && d.labels[0], subType = d.properties && d.properties.type;
-                    return subType || type;
+                    return subType || repositoryMap[type].title;
                 },
 
             },
