@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import { Row, Col, ButtonToolbar, Button } from 'react-bootstrap';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ReactTable from 'react-table';
-import FontAwesome from 'react-fontawesome';
+// import FontAwesome from 'react-fontawesome';
 
 
 import { getGraphWidget } from '../../api/graph-api';
@@ -225,8 +225,8 @@ class TableBox extends React.Component {
 
         const columns = [
             {
-                id: 'repository',
-                header: 'Repository',
+                id: 'type',
+                header: 'Type',
                 accessor: d => {
                     return {
                         type: d.labels && d.labels[0],
@@ -258,6 +258,7 @@ class TableBox extends React.Component {
                 header: 'Abbreviation',
                 accessor: 'properties.shortname'
             },
+            /*
             {
                 id: 'type',
                 header: 'Type',
@@ -266,7 +267,7 @@ class TableBox extends React.Component {
                     return subType || repositoryMap[type].title;
                 },
 
-            },
+            }, */
             {
                 header: 'Domains',
                 accessor: 'properties.domains',
@@ -310,8 +311,9 @@ class TableBox extends React.Component {
         ];
 
 
-        return <div>
+        return <div className='bs-table-box'>
             <div>
+                <p className='bs-table-box-count'>{data.length === 1 ? '1 result found.' : `${data.length} results found.`}</p>
                 <ButtonToolbar>
                     <Button bsStyle='warning' onClick={resetGraph}>Reset Table</Button>
                 </ButtonToolbar>
