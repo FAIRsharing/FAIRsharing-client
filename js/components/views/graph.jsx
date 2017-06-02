@@ -250,12 +250,23 @@ export class Legend extends React.Component {
 
     constructor(props) {
         super(props);
+        this.draw = this.draw.bind(this);
+    }
+
+    componentDidMount() {
+        this.draw();
+    }
+
+    componentDidUpdate() {
+        this.draw();
     }
 
     /**
+     * @method
+     * @name draw
      * @description draw the legend canvas
      */
-    componentDidUpdate() {
+    draw() {
         const { items } = this.props, { graphLegend } = this.refs, context = graphLegend.getContext('2d'),
             nodesShapeMap = ENTITY_SHAPE_MAP, nodesColorMap = ENTITIES_COLOR_MAP, linksMap = RELATIONS_COLOR_MAP,
             radius = 10; //radius of the circumscribed circumference
