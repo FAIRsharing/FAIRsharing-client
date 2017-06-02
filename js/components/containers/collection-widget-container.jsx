@@ -226,14 +226,14 @@ class TableBox extends React.Component {
         const columns = [
             {
                 id: 'type',
-                header: 'Type',
+                Header: 'Type',
                 accessor: d => {
                     return {
                         type: d.labels && d.labels[0],
                         subType: d.properties && d.properties.type
                     };
                 },
-                render: props => {
+                Cell: props => {
                     const { type, subType } = props.value,
                         repo = type === 'Standard' ? repositoryMap[subType] : repositoryMap[type];
                     return <img className='bs-bio-repository' src={`${host}/static/${repo.imgURL}`}
@@ -243,19 +243,19 @@ class TableBox extends React.Component {
             },
             {
                 id: 'name',
-                header: 'Name',
+                Header: 'Name',
                 accessor: d => {
                     return {
                         name: d.properties.name,
                         id: d.properties.application_id
                     };
                 },
-                render: props => <a href={`${host}/${props.value.id}/`} target='_blank' rel='noopener noreferrer'>
+                Cell: props => <a href={`${host}/${props.value.id}/`} target='_blank' rel='noopener noreferrer'>
                     {props.value.name}
                 </a>
             },
             {
-                header: 'Abbreviation',
+                Header: 'Abbreviation',
                 accessor: 'properties.shortname'
             },
             /*
@@ -269,9 +269,9 @@ class TableBox extends React.Component {
 
             }, */
             {
-                header: 'Domains',
+                Header: 'Domains',
                 accessor: 'properties.domains',
-                render: props => <ul>
+                Cell: props => <ul>
                     {props.value.map(el => <li className='bs-bio-tag bs-bio-tag-domain'>
                         {/* <FontAwesome name='tag' className='fa-fw' /> */}
                         <a onClick={ev => {
@@ -285,9 +285,9 @@ class TableBox extends React.Component {
 
             },
             {
-                header: 'Taxonomies',
+                Header: 'Taxonomies',
                 accessor: 'properties.taxonomies',
-                render: props => <ul className='bs-bio-tags'>
+                Cell: props => <ul className='bs-bio-tags'>
                     {props.value.map(el => <li className='bs-bio-tag bs-bio-tag-taxonomy'>
                         {/* <FontAwesome name='tag' className='fa-fw' /> */}
                         <a onClick={ev => {
@@ -300,9 +300,9 @@ class TableBox extends React.Component {
                 </ul>
             },
             {
-                header: 'Status',
+                Header: 'Status',
                 accessor: 'properties.status',
-                render: props => {
+                Cell: props => {
                     const obj = statusMap[props.value];
                     if (!obj) return null;
                     return <img className='bs-bio-status' src={`${host}/static/${obj.imgURL}`} alt={obj.imgAlt} />;
@@ -330,7 +330,8 @@ class TableBox extends React.Component {
                             }
                         };
                     }}
-                    defaultPageSize={data.length < 20 ? data.length : 20}
+                    /* defaultPageSize={} */
+                    minRows={data.length < 20 ? data.length : 20}
                 />
             </div>
         </div>;
@@ -399,6 +400,7 @@ class CollectionWidgetContainer extends React.Component {
         // const headerLink = !collectionName ? '' : nodes[0].properties.recommendation ? '/recommendations' : '/collections';
 
         if (error) {
+            console.log(error);
             return (
                 <div className="graph-error">
                     {'An unexpected error occurred while retrieving the graph. Sorry for the inconvenience.' }
