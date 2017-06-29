@@ -2,6 +2,15 @@
     "elements": [
         {
             "time": {
+                "display": "2017",
+                "datetime": null
+            },
+            "title": "The Move to FAIRsharing",
+            "synopsis": "Move to FAIRsharing",
+            "text": "In response to user feedback, and to reflect the broadened scope of FAIRsharing to cover standards, repositories and policies from domains outside of the life sciences, BioSharing has been redesigned into FAIRsharing."
+        },
+        {
+            "time": {
                 "display": "2016",
                 "datetime": null
             },
