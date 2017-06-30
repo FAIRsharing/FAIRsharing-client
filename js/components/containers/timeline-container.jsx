@@ -189,7 +189,7 @@ class TimelineContainer extends React.Component {
             <HorizontalTimeline events={[].concat(timelineElements).reverse()} />
             <section className="bs-timeline-header-section">
                 <div className="bs-timeline-header-cnt">
-                    <h1>BioSharing Timeline &darr;</h1>
+                    <h1>FAIRsharing Timeline &darr;</h1>
                 </div>
             </section>
             <VerticalTimeline events={timelineElements}/>
