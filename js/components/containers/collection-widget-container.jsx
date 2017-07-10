@@ -173,8 +173,8 @@ class TableBox extends React.Component {
         },
         'BiosharingCollection': {
             imgURL: 'img/icons/policy.png',
-            imgAlt: 'BioSharing collection',
-            title: 'BioSharing Collection'
+            imgAlt: 'FAIRsharing collection',
+            title: 'FAIRsharing Collection'
         }
     }
 

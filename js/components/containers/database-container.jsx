@@ -42,12 +42,12 @@ const fields = {
     },
     standardsImplemented: {
         name: 'standardsImplemented', label: 'Standards Implemented', placeholder: '', entityId: 'bsg_id',
-        helpText: 'Create links to the records for data standards that are implemented by this resource. Please begin typing the appropriate bsg- identifier, or name of the standard, and the matching BioSharing records will appear in a scrollable drop-down menu as you type.',
+        helpText: 'Create links to the records for data standards that are implemented by this resource. Please begin typing the appropriate bsg- identifier, or name of the standard, and the matching FAIRsharing records will appear in a scrollable drop-down menu as you type.',
         size: 12
     },
     relatedDatabases: {
         name: 'related_databases', label: 'Related Databases', placeholder: '', entityId: 'biodbcore_id',
-        helpText: 'Create links to database records associated with this resource. Please begin by typing the appropriate full name or BioDBcore- identifier, and the matching BioSharing records will appear in a scrollable drop-down menu as you type.',
+        helpText: 'Create links to database records associated with this resource. Please begin by typing the appropriate full name or BioDBcore- identifier, and the matching FAIRsharing records will appear in a scrollable drop-down menu as you type.',
         size: 12
     }
 };
