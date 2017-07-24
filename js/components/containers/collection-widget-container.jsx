@@ -40,7 +40,7 @@ const modalStyles = {overlay: {zIndex: 10}};
  * @prop{Object} graph - containing an array of nodes and an array of edges
  * @prop{Object} layout - describes the layout used to display the graph, and which parts of the graph are actually shown (to be refactored?)
  */
-class GraphMainBox extends React.Component {
+export class GraphMainBox extends React.Component {
 
     static propTypes = {
         // collectionId: PropTypes.string.isRequired,
@@ -133,7 +133,7 @@ class GraphMainBox extends React.Component {
  * @extends React.Component
  * @description main component for the table view of the graph data
  */
-class TableBox extends React.Component {
+export class TableBox extends React.Component {
 
     static propTypes = {
         host: PropTypes.string.isRequired,
@@ -395,12 +395,13 @@ class CollectionWidgetContainer extends React.Component {
     render() {
 
         const { host, graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} }, isFetching, error, tagsChange, resetGraph } = this.props;
-        const collectionName = nodes && nodes[0] && nodes[0].properties.name;
+        const collectionName = nodes && nodes[0] && nodes[0].properties.name,
+            collectionId = nodes && nodes[0] && nodes[0].properties.bsg_id;
         const headerType = !collectionName ? '' : nodes[0].properties.recommendation ? 'Recommendations' : 'Collections';
         // const headerLink = !collectionName ? '' : nodes[0].properties.recommendation ? '/recommendations' : '/collections';
 
         if (error) {
-            console.log(error);
+            // console.log(error);
             return (
                 <div className="graph-error">
                     {'An unexpected error occurred while retrieving the graph. Sorry for the inconvenience.' }
@@ -408,11 +409,14 @@ class CollectionWidgetContainer extends React.Component {
             );
         }
 
-        return <div>
+        return <div className="bs-container">
             <div className="bs-head">
                 <h3>
                     {/* <a href={headerLink}>{`${headerType} `}</a> */}
-                    {`${headerType} > ${collectionName || ''}`}
+                    {`${headerType} >`}
+                    <a href={`${host}/${collectionId}`} target='_blank' rel='noopener noreferrer' >
+                        {` ${collectionName || ''}`}
+                    </a>
                 </h3>
             </div>
             <Tabs selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })} >
