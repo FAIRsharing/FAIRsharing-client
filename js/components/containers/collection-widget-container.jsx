@@ -411,13 +411,16 @@ class CollectionWidgetContainer extends React.Component {
 
         return <div className="bs-container">
             <div className="bs-head">
-                <h3>
+                <span>
                     {/* <a href={headerLink}>{`${headerType} `}</a> */}
                     {`${headerType} >`}
                     <a href={`${host}/${collectionId}`} target='_blank' rel='noopener noreferrer' >
                         {` ${collectionName || ''}`}
                     </a>
-                </h3>
+                </span>
+                <div className='float-right'>
+                    <img src={`${host}/static/img/home/svg/FAIRsharing-sdp.svg`} height='60' />
+                </div>
             </div>
             <Tabs selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })} >
 

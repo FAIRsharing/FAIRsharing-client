@@ -1,8 +1,10 @@
 $bs-bio-tag-domain-color: #27aae1;
 $bs-bio-tag-taxonomy-color: #009444;
 $bs-bio-tag-font-size: .666em;
-$bs-head-background-color: #249acc;
-$bs-head-color: #fcffff;
+$bs-head-background-color: #eff1f4;
+$bs-head-color: #249acc;
+$bs-container-height: 80;
+$bs-container-padding: 10;
 
 .bs-entities-error {
     vertical-align: middle;
@@ -23,18 +25,31 @@ $bs-head-color: #fcffff;
     margin-right: 2px;
 }
 
-.bs-head {
+.bs-container {
+
+}
+
+.bs-container .bs-head {
     background-color: $bs-head-background-color;
     color: $bs-head-color;
     border-radius: 2px;
-}
-
-.bs-head h3 {
-    padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    height: $bs-container-height + 0px;
+    vertical-align: middle;
+    padding-left: $bs-container-padding + 0px;
+    padding-top: $bs-container-padding + 0px;
+    padding-bottom: $bs-container-padding + 0px;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.bs-container .bs-head span {
+    margin: 0 0;
+    font-size: 24px;
+    line-height: $bs-container-height - 2 * $bs-container-padding + 0px;
+}
+
+.bs-container .bs-head span a {
+    color: inherit;
 }
 
 .bs-bio-tags {
