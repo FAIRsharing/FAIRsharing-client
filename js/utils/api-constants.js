@@ -83,10 +83,11 @@ export const ENTITIES_COLOR_MAP = new Map([
 export const RELATIONS_COLOR_MAP = new Map([
     [undefined, '#d9d9d9'],
     ['CONTAINS', '#00cc66'],
-    ['RECOMMENDS', '#0000ff'], // teal
-    ['COLLECTS', '#00ffff'], //blue
-    ['IMPLEMENTS', '#ff00ff'],
-    ['RELATED TO', '#ff0000']
+    // ['RECOMMENDS', '#0000ff'], // teal
+    ['RECOMMENDS', '#8cd9b3'], // shadow green
+    ['COLLECTS', ' #8cb3d9'], //blue
+    ['IMPLEMENTS', '#ff99ff'], // violet
+    ['RELATED TO', '#ff6666']
 ]);
 
 export const ENTITY_SHAPE_MAP = new Map([

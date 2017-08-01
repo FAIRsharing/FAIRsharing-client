@@ -463,6 +463,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
                 'line-color': function (ele) {
                     return ele.data('_color') || 'grey';
                 },
+                opacity: 0.5,
                 'target-arrow-color': '#ccc',
                 'target-arrow-shape': 'none'
             }),
