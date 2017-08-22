@@ -135,6 +135,11 @@ export class GraphMainBox extends React.Component {
  */
 export class TableBox extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this._getSelectedTags = this._getSelectedTags.bind(this);
+    }
+
     static propTypes = {
         host: PropTypes.string.isRequired,
         rows: PropTypes.array.isRequired,
@@ -198,6 +203,23 @@ export class TableBox extends React.Component {
         }
     }
 
+    _getSelectedTags() {
+        const { tags: { domains = {}, taxonomies = {} } = {} } = this.props, selectedTagsList = [];
+        const selectedDomains = domains.selected;
+        if (selectedDomains.length === 1 && domains.unselected.length > 0) {
+            selectedTagsList.push(<li className='bs-bio-tag bs-bio-tag-domain'>{selectedDomains[0]}</li>);
+        }
+        const selectedTaxonomies = taxonomies.selected;
+        if (selectedTaxonomies.length === 1 && taxonomies.unselected.length > 0) {
+            selectedTagsList.push(<li className='bs-bio-tag bs-bio-tag-taxonomy'>{selectedTaxonomies[0]}</li>);
+        }
+        return selectedTagsList.length ? <div style={{height: '16px', width: '100%'}}>
+            <ul style={{padding: 0}}>
+                {selectedTagsList}
+            </ul>
+        </div> : null;
+    }
+
     render() {
         const { host, rows, tags = {}, visibility = {}, depth = 1, tagsChange, resetGraph } = this.props,
             { statusMap, repositoryMap } = this.constructor;
@@ -227,6 +249,7 @@ export class TableBox extends React.Component {
             {
                 id: 'type',
                 Header: 'Type',
+                width: 80,
                 accessor: d => {
                     return {
                         type: d.labels && d.labels[0],
@@ -242,8 +265,15 @@ export class TableBox extends React.Component {
                 }
             },
             {
+                id: 'shortname',
+                Header: 'Abbreviation',
+                accessor: 'properties.shortname',
+                width: 150
+            },
+            {
                 id: 'name',
-                Header: 'Name',
+                Header: 'Full Name',
+                width: 240,
                 accessor: d => {
                     return {
                         name: d.properties.name,
@@ -253,10 +283,6 @@ export class TableBox extends React.Component {
                 Cell: props => <a href={`${host}/${props.value.id}/`} target='_blank' rel='noopener noreferrer'>
                     {props.value.name}
                 </a>
-            },
-            {
-                Header: 'Abbreviation',
-                accessor: 'properties.shortname'
             },
             /*
             {
@@ -285,7 +311,7 @@ export class TableBox extends React.Component {
 
             },
             {
-                Header: 'Taxonomies',
+                Header: 'Applicable Species',
                 accessor: 'properties.taxonomies',
                 Cell: props => <ul className='bs-bio-tags'>
                     {props.value.map(el => <li className='bs-bio-tag bs-bio-tag-taxonomy'>
@@ -302,6 +328,7 @@ export class TableBox extends React.Component {
             {
                 Header: 'Status',
                 accessor: 'properties.status',
+                width: 80,
                 Cell: props => {
                     const obj = statusMap[props.value];
                     if (!obj) return null;
@@ -309,7 +336,7 @@ export class TableBox extends React.Component {
                 }
             }
         ];
-
+        const selectedTags = this._getSelectedTags();
 
         return <div className='bs-table-box'>
             <div>
@@ -317,9 +344,16 @@ export class TableBox extends React.Component {
                 <ButtonToolbar>
                     <Button bsStyle='warning' onClick={resetGraph}>Reset Table</Button>
                 </ButtonToolbar>
+                {selectedTags}<br />
             </div>
             <div>
                 <ReactTable className='-striped -highlight' data={data} columns={columns}
+                    sorted={[
+                        {
+                            id: 'shortname',
+                            desc: false
+                        }
+                    ]}
                     getTheadProps={() => {
                         return {
                             style: {
@@ -334,6 +368,28 @@ export class TableBox extends React.Component {
                     minRows={data.length < 20 ? data.length : 20}
                 />
             </div>
+        </div>;
+    }
+
+}
+
+class DocumentationContainer extends React.Component {
+
+    render() {
+        return <div>
+            This is the FAIRsharing widget documentation. <br />
+            This widget exposes a FAIRsharing collection or recommendation under two different view: 1) a table view and 2) a graph view <br />
+            The data is the same and filters applied from one view are reflected on the other.
+            <h4>Table View</h4>
+            On this view each record is a row in the table. Records are sorted on their Abbreviation.
+            The status column displays whether the resource is ready (R), under development (DEV), deprecated (D), or unknown (U).
+            Resources can be filtered clicking on the 'domains' and 'applied species' tags. Only one filter per category is applied at the time.
+            <h4>Graph View</h4>
+            The network of relationships among the rousrces in the collection or recommendation is diplayed.
+            If the 'outer' option is selected all the resources non belonging to the collection/recommendation but in some relation with its resources
+            are added to the graph as an outer ring.
+            It is possible to filter out single resource types (Databases, Standards, Policies) from the inner and/our outer ring.
+            The graph can be displayed using a force-field layout (COSE and COLA) or a circular layout. The COSE force-based layout is the default. 
         </div>;
     }
 
@@ -433,6 +489,7 @@ class CollectionWidgetContainer extends React.Component {
                 <TabList>
                     <Tab>Table</Tab>
                     <Tab>Graph</Tab>
+                    <Tab>Documentation</Tab>
                 </TabList>
 
                 <TabPanel>
@@ -440,6 +497,9 @@ class CollectionWidgetContainer extends React.Component {
                 </TabPanel>
                 <TabPanel>
                     <GraphMainBox {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />
+                </TabPanel>
+                <TabPanel>
+                    <DocumentationContainer />
                 </TabPanel>
             </Tabs>
         </div>;
