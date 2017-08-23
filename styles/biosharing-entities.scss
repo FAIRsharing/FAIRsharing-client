@@ -93,3 +93,12 @@ img.bs-bio-status, img.bs-bio-repository {
 .bs-table-box {
     padding: 0 6px;
 }
+
+.bs-widget-documentation h3, .bs-widget-documentation h4, .bs-widget-documentation a {
+    color: $bs-head-color;
+}
+
+.bs-tab-head {
+    color: $bs-head-color;
+    font-size: 20px;
+}

@@ -104,7 +104,7 @@ export function polygon(ctx, x, y, radius, sides = 3, startAngle = 0, anticlockw
  * @method
  * @name isElementInViewport
  * @param{HTMLElement} el
- * @return{boolean} 
+ * @return{boolean}
  * @description returns true if element is in viewport
  */
 export function isElementInViewport(el) {
@@ -115,4 +115,23 @@ export function isElementInViewport(el) {
         rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
         rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
+}
+
+/**
+ * @method
+ * @name sortByProperty
+ */
+export function sortByProperty(propertyName) {
+    return function(a, b) {
+        const propA = a[propertyName].toUpperCase(), propB = b[propertyName].toUpperCase();
+        if (propA < propB) {
+            return -1;
+        }
+        if (propA > propB) {
+            return 1;
+        }
+
+        // names must be equal
+        return 0;
+    };
 }

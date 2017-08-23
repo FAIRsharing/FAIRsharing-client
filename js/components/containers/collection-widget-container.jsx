@@ -11,7 +11,7 @@ import 'react-table/react-table.css';
 import React, { PropTypes } from 'react';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
-import { Row, Col, ButtonToolbar, Button } from 'react-bootstrap';
+import { Row, Col, ButtonToolbar, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import ReactTable from 'react-table';
 // import FontAwesome from 'react-fontawesome';
@@ -186,20 +186,24 @@ export class TableBox extends React.Component {
     static statusMap = {
         DEP: {
             imgURL: 'img/status_circles/deprecated.png',
-            imgAlt: 'deprecated'
+            imgAlt: 'deprecated',
+            tooltipText: 'This denotes the status of the resource. D = Deprecated'
         },
 
         RDY: {
             imgURL: 'img/status_circles/ready.png',
-            imgAlt: 'ready'
+            imgAlt: 'ready',
+            tooltipText: 'This denotes the status of the resource. R = Ready'
         },
         DEV: {
             imgURL: 'img/status_circles/development.png',
-            imgAlt: 'development'
+            imgAlt: 'development',
+            tooltipText: 'This denotes the status of the resource. DEV = In Development'
         },
         UNC: {
             imgURL: 'img/status_circles/uncertain.png',
-            imgAlt: 'uncertain'
+            imgAlt: 'uncertain',
+            tooltipText: 'This denotes the status of the resource. U = Uncertain'
         }
     }
 
@@ -330,9 +334,11 @@ export class TableBox extends React.Component {
                 accessor: 'properties.status',
                 width: 80,
                 Cell: props => {
-                    const obj = statusMap[props.value];
+                    const obj = statusMap[props.value], tooltip = <Tooltip placement='left'>{obj.tooltipText}</Tooltip>;
                     if (!obj) return null;
-                    return <img className='bs-bio-status' src={`${host}/static/${obj.imgURL}`} alt={obj.imgAlt} />;
+                    return <OverlayTrigger placement='left' overlay={tooltip} delayShow={300} delayHide={150}>
+                        <img className='bs-bio-status' src={`${host}/static/${obj.imgURL}`} alt={obj.imgAlt} />
+                    </OverlayTrigger>;
                 }
             }
         ];
@@ -348,7 +354,7 @@ export class TableBox extends React.Component {
             </div>
             <div>
                 <ReactTable className='-striped -highlight' data={data} columns={columns}
-                    sorted={[
+                    defaultSorted={[
                         {
                             id: 'shortname',
                             desc: false
@@ -376,20 +382,29 @@ export class TableBox extends React.Component {
 class DocumentationContainer extends React.Component {
 
     render() {
-        return <div>
-            This is the FAIRsharing widget documentation. <br />
-            This widget exposes a FAIRsharing collection or recommendation under two different view: 1) a table view and 2) a graph view <br />
-            The data is the same and filters applied from one view are reflected on the other.
+        const { host = '' } = this.props;
+        return <div className='bs-widget-documentation'>
+            <h3>FAIRsharing Widget Documentation</h3>
+            This widget exposes a collection or recommendation from <a href={`${host}`} target='_blank' rel='noopener noreferrer'>FAIRsharing</a>.
+            These can be viewed either as a table or a networked graph. Changes applied to one view are reflected on the other.
             <h4>Table View</h4>
-            On this view each record is a row in the table. Records are sorted on their Abbreviation.
-            The status column displays whether the resource is ready (R), under development (DEV), deprecated (D), or unknown (U).
-            Resources can be filtered clicking on the 'domains' and 'applied species' tags. Only one filter per category is applied at the time.
+            Each record is represented by a row in the table. As a default, the records are sorted on their Abbreviation. The order of the resources can be changed
+            by clicking on the column headings.
+            The first column details the type of record - database, standard or policy. The final column (status) displays whether the resource is ready
+            (R - i.e. maintained, ready for use by the community), under development (DEV - the resource is in development and isn't quite ready for use or implementation),
+            deprecated (D - the resource is no longer maintained), or status uncertain (U - where we are unsure as to the status of the resource).
+            Resources can be filtered clicking on the 'domains' and 'applied species' tags. Only one filter per column can be applied at a time.
+            Clicking on the resource name opens the full FAIRsharing resource record in a new window .
             <h4>Graph View</h4>
-            The network of relationships among the rousrces in the collection or recommendation is diplayed.
-            If the 'outer' option is selected all the resources non belonging to the collection/recommendation but in some relation with its resources
-            are added to the graph as an outer ring.
-            It is possible to filter out single resource types (Databases, Standards, Policies) from the inner and/our outer ring.
-            The graph can be displayed using a force-field layout (COSE and COLA) or a circular layout. The COSE force-based layout is the default. 
+            This view displays the network of relationships among the resources in the collection or recommendation.
+            The resources can be moved around the graph to provide the best view of the data.
+            Clicking on a resource brings up some synopsis information, and a link to the full record on FAIRsharing. <br />
+            Clicking on 'Show the tags panel' brings up all the domains and species associated with the resources displayed in the graph.
+            These can be selected or removed to filter the resources visible in the graph. The resource tick boxes can be used to filter out resource types.
+            As a default, only the resources mentioned in a collection or recommendation are displayed. Clicking on the 'outer' option results in all the resources that are
+            related to those in the recommendation, be they standards that are implemented by the databases in the recommendation, or other related databases,
+            being displayed in grey as an outer ring. The graph can be displayed using a force-field (COSE) or circular (COLA) layout. The COSE layout is the default.
+            For more information on the recommendation, or the resources therein, please see the <a href={`${host}`} target='_blank' rel='noopener noreferrer'>FAIRsharing</a> website.
         </div>;
     }
 
@@ -499,7 +514,7 @@ class CollectionWidgetContainer extends React.Component {
                     <GraphMainBox {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />
                 </TabPanel>
                 <TabPanel>
-                    <DocumentationContainer />
+                    <DocumentationContainer host={host} />
                 </TabPanel>
             </Tabs>
         </div>;
