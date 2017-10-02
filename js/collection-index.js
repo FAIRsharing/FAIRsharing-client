@@ -35,9 +35,11 @@ export default {
                      */
                     render: (args = {}) => {
 
-                        const component = <CollectionWidgetContainer collectionId={args.id || config.id || CollConfig.id }
-                            apiKey={args.apiKey || config.apiKey || CollConfig.apiKey }
-                            host={args.host || config.host || CollConfig.host}
+                        const component = <CollectionWidgetContainer collectionId={ args.id || config.id || CollConfig.id }
+                            apiKey={ args.apiKey || config.apiKey || CollConfig.apiKey }
+                            host={ args.host || config.host || CollConfig.host}
+                            tableStyle={ args.tableStyle || config.tableStyle || null }
+                            graphStyle={ args.graphStyle || config.graphStyle || null }
                         />;
 
                         ReactDOM.render(

@@ -9,6 +9,7 @@ import 'react-tabs/style/react-tabs.scss';
 import 'react-table/react-table.css';
 
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import Modal from 'react-modal';
 import { connect } from 'react-redux';
 import { Row, Col, ButtonToolbar, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -81,7 +82,7 @@ export class GraphMainBox extends React.Component {
      * @description standard React.Component method. It is executed anytime the state of the application (as stored in Redux) is modified by an action.
      */
     render() {
-        const { graph, layout, reload, modal } = this.props;
+        const { graph, layout, reload, modal, graphStyle = null } = this.props;
 
         const dispatchMethods = {
             openDetailsPanel: this.props.openDetailsPanel,
@@ -112,7 +113,7 @@ export class GraphMainBox extends React.Component {
                         </Row>
                     </Col>
                     <Col sm={9} xs={12} >
-                        <Graph handler={this.handler} layout={layout} reload={reload} />
+                        <Graph handler={this.handler} layout={layout} reload={reload} graphStyle={graphStyle} />
                     </Col>
                 </Row>
                 <Row>
@@ -142,6 +143,7 @@ export class TableBox extends React.Component {
 
     static propTypes = {
         host: PropTypes.string.isRequired,
+        tableStyle: PropTypes.object,
         rows: PropTypes.array.isRequired,
         depth: PropTypes.number,
         tags: PropTypes.object,
@@ -225,7 +227,7 @@ export class TableBox extends React.Component {
     }
 
     render() {
-        const { host, rows, tags = {}, visibility = {}, depth = 1, tagsChange, resetGraph } = this.props,
+        const { host, rows, tags = {}, visibility = {}, depth = 1, tagsChange, resetGraph, tableStyle = null } = this.props,
             { statusMap, repositoryMap } = this.constructor;
             // collectionName = rows && rows[0] && rows[0].properties.name;
         let data = cloneDeep(rows);
@@ -253,7 +255,7 @@ export class TableBox extends React.Component {
             {
                 id: 'type',
                 Header: 'Type',
-                width: 80,
+                width: 50,
                 accessor: d => {
                     return {
                         type: d.labels && d.labels[0],
@@ -270,14 +272,23 @@ export class TableBox extends React.Component {
             },
             {
                 id: 'shortname',
-                Header: 'Abbreviation',
-                accessor: 'properties.shortname',
-                width: 150
+                Header: 'Resource',
+                // accessor: 'properties.shortname',
+                width: 125,
+                accessor: d => {
+                    return {
+                        shortname: d.properties.shortname,
+                        id: d.properties.application_id
+                    };
+                },
+                Cell: props => <a href={`${host}/${props.value.id}/`} target='_blank' rel='noopener noreferrer'>
+                    {props.value.shortname}
+                </a>
             },
             {
                 id: 'name',
-                Header: 'Full Name',
-                width: 240,
+                Header: 'Record',
+                width: 225,
                 accessor: d => {
                     return {
                         name: d.properties.name,
@@ -332,7 +343,7 @@ export class TableBox extends React.Component {
             {
                 Header: 'Status',
                 accessor: 'properties.status',
-                width: 80,
+                width: 50,
                 Cell: props => {
                     const obj = statusMap[props.value], tooltip = <Tooltip placement='left'>{obj.tooltipText}</Tooltip>;
                     if (!obj) return null;
@@ -370,6 +381,7 @@ export class TableBox extends React.Component {
                             }
                         };
                     }}
+                    style={tableStyle}
                     /* defaultPageSize={} */
                     minRows={data.length < 20 ? data.length : 20}
                 />
@@ -436,6 +448,7 @@ class CollectionWidgetContainer extends React.Component {
         collectionId: PropTypes.string.isRequired,
         host: PropTypes.string.isRequired,
         apiKey: PropTypes.string.isRequired,
+        tableStyle: PropTypes.object,
         graph: PropTypes.shape({
             nodes: PropTypes.array.isRequired,
             edges: PropTypes.array.isRequired
@@ -465,11 +478,17 @@ class CollectionWidgetContainer extends React.Component {
 
     render() {
 
-        const { host, graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} }, isFetching, error, tagsChange, resetGraph } = this.props;
+        const { host, graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} }, isFetching, error, tagsChange, resetGraph, tableStyle } = this.props;
         const collectionName = nodes && nodes[0] && nodes[0].properties.name,
             collectionId = nodes && nodes[0] && nodes[0].properties.bsg_id;
         const headerType = !collectionName ? '' : nodes[0].properties.recommendation ? 'Recommendations' : 'Collections';
         // const headerLink = !collectionName ? '' : nodes[0].properties.recommendation ? '/recommendations' : '/collections';
+
+        if (isFetching) {
+            return <div className="jumbotron jumbotron-icon centred-cnt">
+                <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
+            </div>;
+        }
 
         if (error) {
             // console.log(error);
@@ -495,11 +514,13 @@ class CollectionWidgetContainer extends React.Component {
             </div>
             <Tabs selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })} >
 
-                <Modal id="isFetchingModal" isOpen={isFetching} className="is-fetching-modal" style={modalStyles}>
+                {/*
+                <Modal id="isFetchingModal" isOpen={isFetching} className="is-fetching-modal" style={modalStyles} parentSelector={() =>  ReactDOM.findDOMNode(this)}>
                     <div className="jumbotron jumbotron-icon centred-cnt">
                         <i className="fa fa-spinner fa-spin fa-6 centred-elem" aria-hidden={true}></i>
                     </div>
                 </Modal>
+                */}
 
                 <TabList>
                     <Tab>Table</Tab>
@@ -508,7 +529,7 @@ class CollectionWidgetContainer extends React.Component {
                 </TabList>
 
                 <TabPanel>
-                    <TableBox host={host} rows={nodes} tags={tags} visibility={visibility} depth={depth} tagsChange={tagsChange} resetGraph={resetGraph} />
+                    <TableBox host={host} tableStyle={tableStyle} rows={nodes} tags={tags} visibility={visibility} depth={depth} tagsChange={tagsChange} resetGraph={resetGraph} />
                 </TabPanel>
                 <TabPanel>
                     <GraphMainBox {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />

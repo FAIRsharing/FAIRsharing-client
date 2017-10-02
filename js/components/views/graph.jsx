@@ -130,7 +130,8 @@ class Graph extends React.Component {
             tags: PropTypes.object,
             isTagsPanelVisible: PropTypes.bool
         }).isRequired,
-        reload: PropTypes.bool
+        reload: PropTypes.bool,
+        graphStyle: PropTypes.object
     }
 
     shouldComponentUpdate(nextProps) {
@@ -160,7 +161,7 @@ class Graph extends React.Component {
 
     render() {
 
-        const sliders = [], handler = this.props.handler, tunableParams = handler.getTunableParams();
+        const sliders = [], { handler, graphStyle = {} } = this.props, tunableParams = handler.getTunableParams();
         let sliderForm = null;
 
         // if (tunableParams.length > 0) {
@@ -200,8 +201,8 @@ class Graph extends React.Component {
                 <Row>
                     <div id="graph" ref="graph" className="graph"
                         style={{
+                            ...graphStyle,
                             'height': '100%',
-                            // 'minHeight': '600px', FIXME set this as a media class!!
                             'width': '100%'
                         }} >
                     </div>
