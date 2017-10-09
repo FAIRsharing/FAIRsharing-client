@@ -278,10 +278,11 @@ export class TableBox extends React.Component {
                 accessor: d => {
                     return {
                         shortname: d.properties.shortname,
-                        id: d.properties.application_id
+                        id: d.properties.application_id,
+                        url: d.properties.homepage
                     };
                 },
-                Cell: props => <a href={`${host}/${props.value.id}/`} target='_blank' rel='noopener noreferrer'>
+                Cell: props => <a href={`${props.value.url}/`} target='_blank' rel='noopener noreferrer'>
                     {props.value.shortname}
                 </a>
             },
