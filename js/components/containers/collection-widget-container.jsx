@@ -274,7 +274,7 @@ export class TableBox extends React.Component {
                 id: 'shortname',
                 Header: 'Resource',
                 // accessor: 'properties.shortname',
-                width: 125,
+                width: 115,
                 accessor: d => {
                     return {
                         shortname: d.properties.shortname,
@@ -282,7 +282,7 @@ export class TableBox extends React.Component {
                         url: d.properties.homepage
                     };
                 },
-                Cell: props => <a href={`${props.value.url}/`} target='_blank' rel='noopener noreferrer'>
+                Cell: props => <a href={`${props.value.url}`} target='_blank' rel='noopener noreferrer'>
                     {props.value.shortname}
                 </a>
             },
@@ -344,7 +344,7 @@ export class TableBox extends React.Component {
             {
                 Header: 'Status',
                 accessor: 'properties.status',
-                width: 50,
+                width: 60,
                 Cell: props => {
                     const obj = statusMap[props.value], tooltip = <Tooltip placement='left'>{obj.tooltipText}</Tooltip>;
                     if (!obj) return null;
