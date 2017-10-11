@@ -27,11 +27,23 @@ import TagsForm from '../views/tags-form';
 
 import { find, isArray, difference, map, uniq, omit, isEqual, zipObject, cloneDeep, merge } from 'lodash';
 import GraphHandler, { nodeFilters } from '../../models/graph';
-import { ALLOWED_FIELDS, DEPTH_LEVELS } from '../../utils/api-constants';
+import { ALLOWED_FIELDS, DEPTH_LEVELS, BIOSHARING_COLLECTION } from '../../utils/api-constants';
 import * as actions from '../../actions/graph-actions';
 
 
-const modalStyles = {overlay: {zIndex: 10}};
+// const modalStyles = {overlay: {zIndex: 10}};
+
+function sortByProperty(objA, objB, propertyKey) {
+    const a = objA.hasOwnProperty(propertyKey) && typeof objA[propertyKey] === 'string' ? objA[propertyKey].trim().toUpperCase() : '',
+        b = objB.hasOwnProperty(propertyKey) && typeof objB[propertyKey] === 'string' ? objB[propertyKey].trim().toUpperCase() : '';
+    if (a > b) {
+        return 1;
+    }
+    if (a < b) {
+        return -1;
+    }
+    return 0;
+}
 
 /**
  * @class
@@ -251,6 +263,9 @@ export class TableBox extends React.Component {
             });
         }
 
+        // filter out all the collections
+        data = data.filter(datum => datum.labels.indexOf(BIOSHARING_COLLECTION) <= -1);
+
         const columns = [
             {
                 id: 'type',
@@ -284,7 +299,17 @@ export class TableBox extends React.Component {
                 },
                 Cell: props => <a href={`${props.value.url}`} target='_blank' rel='noopener noreferrer'>
                     {props.value.shortname}
-                </a>
+                </a>,
+                sortMethod: (a, b) => sortByProperty(a, b, 'shortname')
+                /* {
+                    if (a.shortname > b.shortname) {
+                        return 1;
+                    }
+                    if (a.shortname < b.shortname) {
+                        return -1;
+                    }
+                    return 0;
+                } */
             },
             {
                 id: 'name',
@@ -298,7 +323,8 @@ export class TableBox extends React.Component {
                 },
                 Cell: props => <a href={`${host}/${props.value.id}/`} target='_blank' rel='noopener noreferrer'>
                     {props.value.name}
-                </a>
+                </a>,
+                sortMethod: (a, b) => sortByProperty(a, b, 'name')
             },
             /*
             {
