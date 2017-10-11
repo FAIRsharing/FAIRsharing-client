@@ -106,7 +106,9 @@ export class GraphMainBox extends React.Component {
 
         return (
             <div className="graph-container container-fluid">
-
+                <Row>
+                    <p>The graph is interactive and can be refined via the tags and legend panel on the left hand side.</p>
+                </Row>
                 <Row className="graph-handler">
 
                     <ModalDialog isOpen={modal.isOpen} data={modal.node}
@@ -383,6 +385,9 @@ export class TableBox extends React.Component {
         const selectedTags = this._getSelectedTags();
 
         return <div className='bs-table-box'>
+            <div>
+                <p>Results can be refined by selecting a domain or species tag.</p>
+            </div>
             <div>
                 <p className='bs-table-box-count'>{data.length === 1 ? '1 result found.' : `${data.length} results found.`}</p>
                 <ButtonToolbar>
