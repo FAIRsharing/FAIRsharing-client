@@ -552,7 +552,7 @@ class CollectionWidgetContainer extends React.Component {
                 </TabList>
 
                 <TabPanel>
-                    <TableBox host={host} tableStyle={tableStyle} rows={nodes} tags={tags} visibility={visibility} depth={depth} tagsChange={tagsChange} resetGraph={resetGraph} />
+                    <TableBox host={host} tableStyle={tableStyle} rows={nodes} tags={tags} visibility={visibility} /* depth={depth} */ tagsChange={tagsChange} resetGraph={resetGraph} />
                 </TabPanel>
                 <TabPanel>
                     <GraphMainBox {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />
