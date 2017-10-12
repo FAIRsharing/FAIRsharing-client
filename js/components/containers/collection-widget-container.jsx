@@ -248,16 +248,23 @@ export class TableBox extends React.Component {
             }
         }
 
-        for (const filterFnc of Object.keys(nodeFilters)) {
-            data = data.filter(nodeFilters[filterFnc], {
-                tags: tags,
+        // filter out all the collections
+        data = data.filter(datum => datum.labels.indexOf(BIOSHARING_COLLECTION) <= -1);
+
+        const reducedNodeFilters = omit(nodeFilters, ['filterByTags']);
+        for (const filterFnc of Object.keys(reducedNodeFilters)) {
+            data = data.filter(reducedNodeFilters[filterFnc], {
+                // tags: tags,
                 depth: depth,
                 blacklistedLabels: blacklistedLabels
             });
         }
 
-        // filter out all the collections
-        data = data.filter(datum => datum.labels.indexOf(BIOSHARING_COLLECTION) <= -1);
+        const lenWithTagsUnfiltered = data.length;
+
+        data = data.filter(nodeFilters.filterByTags, {
+            tags: tags
+        });
 
         const columns = [
             {
@@ -380,7 +387,7 @@ export class TableBox extends React.Component {
                 <p>Results can be refined by selecting a domain or species tag.</p>
             </div>
             <div>
-                <p className='bs-table-box-count'>{data.length === 1 ? '1 result found.' : `${data.length} results found.`}</p>
+                <p className='bs-table-box-count'>{data.length === lenWithTagsUnfiltered ? `${data.length} results found.` : `${data.length} out of ${lenWithTagsUnfiltered} results found`}</p>
                 <ButtonToolbar>
                     <Button bsStyle='warning' onClick={resetGraph}>Reset Table</Button>
                 </ButtonToolbar>
