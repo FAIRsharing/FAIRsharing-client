@@ -436,7 +436,8 @@ class DocumentationContainer extends React.Component {
             (R - i.e. maintained, ready for use by the community), under development (DEV - the resource is in development and isn't quite ready for use or implementation),
             deprecated (D - the resource is no longer maintained), or status uncertain (U - where we are unsure as to the status of the resource).
             Resources can be filtered clicking on the 'domains' and 'applied species' tags. Only one filter per column can be applied at a time.
-            Clicking on the resource name opens the full FAIRsharing resource record in a new window .
+            Clicking on the resource name opens the full FAIRsharing resource record in a new window. <br />
+            NOTE: The table view only shows the resources in the collection/recommendation itself, rather than including those that can be seen when the 'outer' button is selected on the graph view.
             <h4>Graph View</h4>
             This view displays the network of relationships among the resources in the collection or recommendation.
             The resources can be moved around the graph to provide the best view of the data.
