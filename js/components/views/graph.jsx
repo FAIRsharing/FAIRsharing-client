@@ -95,7 +95,7 @@ export class ZoomSlider extends React.Component {
 
     render() {
         const {value, min, max} = this.state;
-        return (<div key={'div-zoom'}>
+        return (<div key={'div-zoom'} className='row'>
             <label htmlFor={'slider-zoom'} className="col-md-1 col-xs-2">Zoom</label>
             <div className="col-xs-6">
                 <Slider id={'slider-zoom'} key="zoom" ref="zoom"

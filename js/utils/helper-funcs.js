@@ -135,3 +135,27 @@ export function sortByProperty(propertyName) {
         return 0;
     };
 }
+
+/**
+ * @method
+ * @name sortByPropertyAlt
+ * @description if a propety is provided the sorting is done through that property, otherwise through the stringified value of the objetcs themselves
+ */
+export function sortByPropertyAlt(objA, objB, propertyKey) {
+    let a, b;
+    if (propertyKey) {
+        a = objA.hasOwnProperty(propertyKey) && typeof objA[propertyKey] === 'string' ? objA[propertyKey].trim().toUpperCase() : '';
+        b = objB.hasOwnProperty(propertyKey) && typeof objB[propertyKey] === 'string' ? objB[propertyKey].trim().toUpperCase() : '';
+    }
+    else {
+        a = typeof objA === 'string' ? objA.trim().toUpperCase() : objA.toString().toUpperCase();
+        b = typeof objB === 'string' ? objB.trim().toUpperCase() : objB.toString().toUpperCase();
+    }
+    if (a > b) {
+        return 1;
+    }
+    if (a < b) {
+        return -1;
+    }
+    return 0;
+}

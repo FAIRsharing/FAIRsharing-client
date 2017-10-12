@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { values, union } from 'lodash';
 import Select from 'react-select';
 import { TAG_TYPES } from '../../utils/api-constants';
+import { sortByPropertyAlt as sortByProperty } from '../../utils/helper-funcs';
 
 const TAGS_SELECTS = values(TAG_TYPES);
 
@@ -17,12 +18,12 @@ const TagsSelect = React.createClass({
         const tags = this.props.tags;
         const options = union(tags.selected, tags.unselected).map(opt => {
             return {value: opt, label: opt};
-        });
+        }).sort((a, b) => sortByProperty(a, b, 'label'));
 
         return (
             <div className="tag-select">
                 <h4 className="tag-select-label">{this.props.label}</h4>
-                <Select ref="select" multi={true} options={options} value={tags.selected}
+                <Select ref="select" multi={true} options={options} value={tags.selected.sort((a, b) => sortByProperty(a, b))}
                     onChange={this.props.onChange(this.props.tagType)} onValueClick={this.onValueClick}
                     clearAllText='Reset' backspaceToRemoveMessage=''  />
             </div>

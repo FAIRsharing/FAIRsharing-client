@@ -28,22 +28,13 @@ import TagsForm from '../views/tags-form';
 import { find, isArray, difference, map, uniq, omit, isEqual, zipObject, cloneDeep, merge } from 'lodash';
 import GraphHandler, { nodeFilters } from '../../models/graph';
 import { ALLOWED_FIELDS, DEPTH_LEVELS, BIOSHARING_COLLECTION } from '../../utils/api-constants';
+import { sortByPropertyAlt as sortByProperty } from '../../utils/helper-funcs';
 import * as actions from '../../actions/graph-actions';
 
 
 // const modalStyles = {overlay: {zIndex: 10}};
 
-function sortByProperty(objA, objB, propertyKey) {
-    const a = objA.hasOwnProperty(propertyKey) && typeof objA[propertyKey] === 'string' ? objA[propertyKey].trim().toUpperCase() : '',
-        b = objB.hasOwnProperty(propertyKey) && typeof objB[propertyKey] === 'string' ? objB[propertyKey].trim().toUpperCase() : '';
-    if (a > b) {
-        return 1;
-    }
-    if (a < b) {
-        return -1;
-    }
-    return 0;
-}
+
 
 /**
  * @class
