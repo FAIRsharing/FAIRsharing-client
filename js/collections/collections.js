@@ -8,8 +8,6 @@ import axios from 'axios';
 import * as d3 from 'd3';
 import * as venn from 'venn.js';
 
-export default { };
-
 const recordComparison = new Vue({
     delimiters: ['[[', ']]'],
     el: '#comparison-area',
@@ -357,3 +355,5 @@ Vue.component('comparison', {
     <div class='clearfix'></div>`
 
 });
+
+export default recordComparison;
