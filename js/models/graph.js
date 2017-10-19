@@ -363,7 +363,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         }
 
         if (remove) {
-            let removed = this._cy.nodes().filter((i, ele) => ele.data('label') === label).remove();
+            let removed = this._cy.nodes().filter(ele => ele.data('label') === label).remove();
             removed = removed.union(removed.connectedEdges());
             this._removed.set(label, removed);
         }
@@ -542,7 +542,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             // if there were some selected elements from previous operations deselect them
             this._cy.$(':selected').unselect();
 
-            const eles = event.cyTarget.closedNeighborhood();
+            const eles = event.target.closedNeighborhood();
             eles.select();
             this._removed = this._cy.$(':unselected').remove();
             eles.unselect();
@@ -553,7 +553,7 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
         });
 
         cy.on('click', 'node', event => {
-            const node = event.cyTarget;
+            const node = event.target;
             this.openDetailsPanel(node.data('application_id'));
         });
 

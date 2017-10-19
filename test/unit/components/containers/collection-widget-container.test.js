@@ -6,7 +6,7 @@ import React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { CollectionWidgetContainer, GraphMainBox, TableBox } from '../../../../js/components/containers/collection-widget-container';
+import CollectionWidgetContainer, { GraphMainBox, TableBox } from '../../../../js/components/containers/collection-widget-container';
 import * as api from '../../../../js/api/graph-api';
 
 describe('<CollectionWidgetContainer />', function() {
