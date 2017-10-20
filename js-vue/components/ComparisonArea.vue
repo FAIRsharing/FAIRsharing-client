@@ -122,41 +122,41 @@ export default {
     },
     methods: {
         getOther: function () {
-            const self = this;
-            axios.get('/api/collection/' + self.otherId, {
+            const that = this;
+            axios.get('/api/collection/' + this.otherId, {
                 headers: {
-                    'Api-Key': self.apiKey,
+                    'Api-Key': this.apiKey,
                     'Content-type': 'application/json'
                 }
             })
             .then(function (response) {
-                self.otherRecord = response.data;
-                self.storeIds(response.data);
-                self.elementVis('show-graph-button','show');
-                self.elementVis('top-spinner','hide');
+                that.otherRecord = response.data;
+                that.storeIds(response.data);
+                that.elementVis('show-graph-button','show');
+                that.elementVis('top-spinner','hide');
             })
             .catch(function (error) {
                 console.log('Error fetching otherCollection: ' + error);
             })
         },
         storeIds: function (json) {
-            const self = this;
+
             const rtypes = ['standards', 'policies', 'databases'];
             rtypes.forEach(function (rt) {
                 json[rt].forEach(function (x) {
-                    self.recordIds[x.name] = x.bsg_id;
+                    this.recordIds[x.name] = x.bsg_id;
                 });
             });
         },
         clear: function () {
-            const self = this;
-            self.otherRecord = null;
-            self.otherId = null;
+
+            this.otherRecord = null;
+            this.otherId = null;
         },
         fieldDifferences: function (field) {
-            const self = this;
-            const thisone = self.thisRecord[field];
-            const otherone = self.otherRecord[field];
+
+            const thisone = this.thisRecord[field];
+            const otherone = this.otherRecord[field];
             const thisonly = thisone.filter(x => otherone.indexOf(x) === -1),
                 otheronly = otherone.filter(x => thisone.indexOf(x) === -1),
                 both = thisone.filter(x => otherone.includes(x));
@@ -168,9 +168,9 @@ export default {
 
         },
         objectDifferences: function (field) {
-            const self = this;
-            const thisone = self.thisRecord[field].map(x => x.name);
-            const otherone = self.otherRecord[field].map(x => x.name);
+
+            const thisone = this.thisRecord[field].map(x => x.name);
+            const otherone = this.otherRecord[field].map(x => x.name);
             const thisonly = thisone.filter(x => otherone.indexOf(x) === -1),
                 otheronly = otherone.filter(x => thisone.indexOf(x) === -1),
                 both = thisone.filter(x => otherone.includes(x));
@@ -181,10 +181,10 @@ export default {
             };
         },
         plotGraphs: function () {
-            const self = this;
+
             const plots = [];
             ['taxonomy', 'domains', 'standards', 'databases', 'policies'].forEach(function (item) {
-                const data = self.getGraphData(item);
+                const data = this.getGraphData(item);
                 let s = data[0].size;
                 let o = data[1].size;
                 let b = data[2].size;
@@ -194,9 +194,9 @@ export default {
                 if ((s === b) && (o === b)) {// ...but not fully overlapping
                     return;
                 }
-                self.elementVis(item + '_venn', 'show');
+                this.elementVis(item + '_venn', 'show');
                 const div = d3.select('#' + item + '_plot');
-                div.datum(data).call(self.chart);
+                div.datum(data).call(this.chart);
                 plots.push(div);
             })
 
@@ -238,49 +238,46 @@ export default {
                             .style('stroke-opacity', 0);
                     });
             });
-            self.elementVis('show-graph-button','hide');
-            self.elementVis('hide-graph-button','show');
+            this.elementVis('show-graph-button','hide');
+            this.elementVis('hide-graph-button','show');
         },
         getGraphData: function (field) {
-            const self = this;
-            const one = self[field]['current'].length + self[field]['both'].length; // total in first record
-            const two = self[field]['other'].length + self[field]['both'].length; // total in second
-            const three = self[field]['both'].length; // intersection
+            const one = this[field]['current'].length + this[field]['both'].length; // total in first record
+            const two = this[field]['other'].length + this[field]['both'].length; // total in second
+            const three = this[field]['both'].length; // intersection
             return [
-                {sets: [self.thisRecord.name], size: one},
-                {sets: [self.otherRecord.name], size: two},
-                {sets: [self.thisRecord.name, self.otherRecord.name], size: three}
+                {sets: [this.thisRecord.name], size: one},
+                {sets: [this.otherRecord.name], size: two},
+                {sets: [this.thisRecord.name, this.otherRecord.name], size: three}
             ];
         },
         hideGraphs: function () {
-            const self = this;
             // These buttons may not be visible initially.
-            self.elementVis('show-graph-button','show');
-            self.elementVis('hide-graph-button','hide');
+            this.elementVis('show-graph-button','show');
+            this.elementVis('hide-graph-button','hide');
             // hide each individual graph
             ['taxonomy', 'domains', 'standards', 'databases', 'policies'].forEach(function (item) {
-                self.elementVis(item + '_venn','hide');
+                this.elementVis(item + '_venn','hide');
             })
         },
         openComparison: function () {
-            const self = this;
             const bsg_id = document.getElementById('collection-comparison').value.split(':')[0].trim();
             if (bsg_id) {
-                self.elementVis('comparison-well','show');
+                this.elementVis('comparison-well','show');
                 const regex = /bsg-c\d{6}/g;
                 if (bsg_id.match(regex)) {
-                    self.otherId = bsg_id;
+                    this.otherId = bsg_id;
                 } else {
-                    self.otherRecord = null;
+                    this.otherRecord = null;
                 }
             } else {
                 alert('Please select a collection/recommendation with which to make a comparison');
             }
-            self.hideGraphs();
-            self.elementVis('top-spinner','show');
+            this.hideGraphs();
+            this.elementVis('top-spinner','show');
         },
         closeComparison: function () {
-            self.elementVis('comparison-well','hide');
+            this.elementVis('comparison-well','hide');
         },
         elementVis: function(name, type) {
             let element = document.getElementById(name);
@@ -309,53 +306,50 @@ export default {
     },
     watch: {
         otherId: function() {
-            const self = this;
-            console.log(`Other ID has changed: ${self.otherId}`);
-            self.elementVis('hide-graph-button','hide');
-            self.getOther();
+            console.log(`Other ID has changed: ${this.otherId}`);
+            this.elementVis('hide-graph-button','hide');
+            this.getOther();
         }
     },
     computed: {
         validResults: function() {
-            const self = this;
-            if (self.thisRecord && self.otherRecord) {
+            if (this.thisRecord && this.otherRecord) {
                 return true;
             }
             return false;
         },
-        selfComparison: function() {
-            const self = this;
-            if (self.thisRecord.bsg_id == self.otherRecord.bsg_id) {
+        thisComparison: function() {
+            if (this.thisRecord.bsg_id == this.otherRecord.bsg_id) {
                 return true;
             }
             return false;
         },
         taxonomy: function() {
-            const self = this;
-            return self.fieldDifferences('taxonomies');
+
+            return this.fieldDifferences('taxonomies');
         },
         domains: function() {
-            const self = this;
-            return self.fieldDifferences('domains');
+
+            return this.fieldDifferences('domains');
         },
         standards: function() {
-            const self = this;
-            return self.objectDifferences('standards');
+
+            return this.objectDifferences('standards');
         },
         databases: function() {
-            const self = this;
-            return self.objectDifferences('databases');
+
+            return this.objectDifferences('databases');
         },
         policies: function() {
-            const self = this;
-            return self.objectDifferences('policies');
+
+            return this.objectDifferences('policies');
         }
     },
     mounted: function() {
-        const self = this;
+        const that = this;
         console.log('mounted');
-        self.apiKey = document.getElementById('api-key').content;
-        self.thisCollectionId = document.getElementById('view-id').content;
+        this.apiKey = document.getElementById('api-key').content;
+        this.thisCollectionId = document.getElementById('view-id').content;
 
         /*
          * Get contents for the collection dropdown.
@@ -366,7 +360,7 @@ export default {
                 document.getElementById('collection-comparison').innerHTML = '';
                 $.each(response['data'].sort(), function (key, val) {
                     const id = val.split(':')[0].trim();
-                    if (id === self.thisCollectionId) {
+                    if (id === this.thisCollectionId) {
                         return;
                     }
                     const option = document.createElement('option');
@@ -383,18 +377,18 @@ export default {
          * Get data for the current record via the API.
          */
 
-        if (!self.thisRecord) {
-            axios.get('/api/collection/' + self.thisCollectionId, {
+        if (!this.thisRecord) {
+            axios.get('/api/collection/' + this.thisCollectionId, {
                 headers: {
-                    'Api-Key': self.apiKey,
+                    'Api-Key': this.apiKey,
                     'Content-type': 'application/json'
                 }
             })
-            .then(function(response) {
-                self.thisRecord = response['data'];
-                self.storeIds(response['data']);
+            .then(response => {
+                that.thisRecord = response['data'];
+                that.storeIds(response['data']);
             })
-            .catch(function(error) {
+            .catch(error => {
                 console.log('Error fetching thisCollection: ' + error);
             });
         }
