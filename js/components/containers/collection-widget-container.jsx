@@ -461,7 +461,7 @@ class DocumentationContainer extends React.Component {
  * @prop{Object} graph - containing an array of nodes and an array of edges
  * @prop{Object} layout - describes the layout used to display the graph, and which parts of the graph are actually shown (to be refactored?)
  */
-class CollectionWidgetContainer extends React.Component {
+export class CollectionWidgetContainer extends React.Component {
 
     constructor(props) {
         super(props);
@@ -483,14 +483,14 @@ class CollectionWidgetContainer extends React.Component {
         graph: PropTypes.shape({
             nodes: PropTypes.array.isRequired,
             edges: PropTypes.array.isRequired
-        }).isRequired,
+        }),
         layout: PropTypes.shape({
             name: PropTypes.string,
             visibility: PropTypes.object,
             depth: PropTypes.number,
             tags: PropTypes.object,
             isTagsPanelVisible: PropTypes.bool
-        }).isRequired,
+        }),
         isFetching: PropTypes.bool,
         reload: PropTypes.bool,
         modal: PropTypes.shape({
@@ -509,7 +509,7 @@ class CollectionWidgetContainer extends React.Component {
 
     render() {
 
-        const { host, graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} }, isFetching, error, tagsChange, resetGraph, tableStyle } = this.props;
+        const { host, graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} } = {}, isFetching, error, tagsChange, resetGraph, tableStyle } = this.props;
         const collectionName = nodes && nodes[0] && nodes[0].properties.name,
             collectionId = nodes && nodes[0] && nodes[0].properties.bsg_id;
         const headerType = !collectionName ? '' : nodes[0].properties.recommendation ? 'Recommendations' : 'Collections';

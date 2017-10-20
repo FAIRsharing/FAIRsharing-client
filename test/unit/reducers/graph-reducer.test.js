@@ -171,9 +171,15 @@ describe('graphReducer', () => {
                 node: null
             }
         };
+        const serverError = {
+            message: 'Internal Server Error',
+            stack: `Error: Internal Server Error
+                            at handleHTTPErrors (http://localhost:8000/static/bundles/graph.js:35620:15)
+                            at <anonymous>`
+        };
         const nextState = graphReducer(previousState, {
             type: types.GET_REMOTE_ERROR,
-            error: 'INTERNAL SERVER ERROR'
+            error: serverError
         });
         const expectedState = {
             graph: {
@@ -193,7 +199,7 @@ describe('graphReducer', () => {
                 isOpen: false,
                 node: null
             },
-            error: 'INTERNAL SERVER ERROR'
+            error: serverError
         };
         expect(nextState).to.eql(expectedState);
     });

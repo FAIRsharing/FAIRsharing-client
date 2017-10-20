@@ -6,7 +6,7 @@ import React from 'react';
 
 import { shallow } from 'enzyme';
 
-import CollectionWidgetContainer, { GraphMainBox, TableBox } from '../../../../js/components/containers/collection-widget-container';
+import { CollectionWidgetContainer, GraphMainBox, TableBox } from '../../../../js/components/containers/collection-widget-container';
 import * as api from '../../../../js/api/graph-api';
 
 describe('<CollectionWidgetContainer />', function() {
@@ -18,7 +18,9 @@ describe('<CollectionWidgetContainer />', function() {
         spyCDP = sinon.spy(), spyHLC = sinon.spy(), spyVCC = sinon.spy(),
             spyDCC = sinon.spy(), spyTVCC = sinon.spy(), spyTSC = sinon.spy(),
             spyTC = sinon.spy(), spyRG = sinon.spy(), stub = sinon.stub(api, 'getGraphWidget'),
-            container = <CollectionWidgetContainer closeDetailsPanel={spyCDP}
+            container = <CollectionWidgetContainer
+                collectionId='bsg-c000001'  apiKey='fakeKey' host='https://fakekost.fake'
+                closeDetailsPanel={spyCDP}
                 handleLayoutChange={spyHLC} visibilityCheckboxChange={spyVCC}
                 depthCheckboxChange={spyDCC} tagsVisibilityCheckboxChange={spyTVCC}
                 tagsSelectChange={spyTSC} tagsChange={spyTC} resetGraph={spyRG}

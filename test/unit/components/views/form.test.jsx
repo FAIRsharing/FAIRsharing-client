@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils';
-import { ReactMultiSelectAsyncComponent } from '../../../../js/components/views/form.jsx';
+import { ReactSelectAsyncComponent } from '../../../../js/components/views/form.jsx';
 
 describe('ReactMultiSelectAsyncComponent', () => {
 
@@ -18,7 +18,7 @@ describe('ReactMultiSelectAsyncComponent', () => {
     describe('#constructor', () => {
 
         it('should instantiate the ReactMultiSelectAsyncComponent', () => {
-            const component = new ReactMultiSelectAsyncComponent();
+            const component = new ReactSelectAsyncComponent();
         });
 
     })
