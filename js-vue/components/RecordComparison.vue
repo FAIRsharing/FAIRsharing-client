@@ -1,9 +1,4 @@
-/**
- * Created by milo on 15/09/2017.
- * @author milo
- * @author massi
- */
- <template>
+<template>
      <div v-bind:id='id' class='alert alert-primary' style='margin: 5px;'>
          <p><b>{{ title }}:</b></p>
          <p>{{ thisRecord.name }} only ({{ current.length }}):</p>

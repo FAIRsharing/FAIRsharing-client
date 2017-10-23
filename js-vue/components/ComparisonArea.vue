@@ -107,10 +107,17 @@
 </template>
 <script>
 import RecordComparison from './RecordComparison';
+
 export default {
+
     components: {
         'comparison': RecordComparison
     },
+
+    props: {
+
+    }
+
     data: {
         thisRecord: null,
         otherRecord: null,
@@ -120,27 +127,24 @@ export default {
         recordIds: {},
         chart: venn.VennDiagram()
     },
+
     methods: {
-        getOther: function () {
-            const that = this;
-            axios.get('/api/collection/' + this.otherId, {
+
+        /* TODO: error handling */
+        getOther: async function () {
+            const response = await axios.get('/api/collection/' + this.otherId, {
                 headers: {
                     'Api-Key': this.apiKey,
                     'Content-type': 'application/json'
                 }
-            })
-            .then(function (response) {
-                that.otherRecord = response.data;
-                that.storeIds(response.data);
-                that.elementVis('show-graph-button','show');
-                that.elementVis('top-spinner','hide');
-            })
-            .catch(function (error) {
-                console.log('Error fetching otherCollection: ' + error);
-            })
+            });
+            this.otherRecord = response.data;
+            this.storeIds(this.otherRecord);
+            that.elementVis('show-graph-button','show');
+            that.elementVis('top-spinner','hide');
         },
-        storeIds: function (json) {
 
+        storeIds: function (json) {
             const rtypes = ['standards', 'policies', 'databases'];
             rtypes.forEach(function (rt) {
                 json[rt].forEach(function (x) {
@@ -195,7 +199,7 @@ export default {
                     return;
                 }
                 this.elementVis(item + '_venn', 'show');
-                const div = d3.select('#' + item + '_plot');
+                const div = d3.select('#' + item + '_plot')
                 div.datum(data).call(this.chart);
                 plots.push(div);
             })
@@ -345,53 +349,7 @@ export default {
             return this.objectDifferences('policies');
         }
     },
-    mounted: function() {
-        const that = this;
-        console.log('mounted');
-        this.apiKey = document.getElementById('api-key').content;
-        this.thisCollectionId = document.getElementById('view-id').content;
-
-        /*
-         * Get contents for the collection dropdown.
-         */
-
-        axios.get('/content/collections/')
-            .then(function(response) {
-                document.getElementById('collection-comparison').innerHTML = '';
-                $.each(response['data'].sort(), function (key, val) {
-                    const id = val.split(':')[0].trim();
-                    if (id === this.thisCollectionId) {
-                        return;
-                    }
-                    const option = document.createElement('option');
-                    option.text = val;
-                    option.value = val;
-                    document.getElementById('collection-comparison').append(option);
-                });
-            })
-            .catch(function(error) {
-                console.log('Error fetching collections: ' + error);
-            });
-
-        /*
-         * Get data for the current record via the API.
-         */
-
-        if (!this.thisRecord) {
-            axios.get('/api/collection/' + this.thisCollectionId, {
-                headers: {
-                    'Api-Key': this.apiKey,
-                    'Content-type': 'application/json'
-                }
-            })
-            .then(response => {
-                that.thisRecord = response['data'];
-                that.storeIds(response['data']);
-            })
-            .catch(error => {
-                console.log('Error fetching thisCollection: ' + error);
-            });
-        }
+    mounted: function() {}
     }
 }
 </script>
