@@ -67,8 +67,8 @@ export function serialize(obj, prefix) {
         if (obj.hasOwnProperty(prop)) {
             const key = prefix ? `${prefix}[${prop}]` : prop, val = obj[prop];
             str.push((val !== null && typeof val === 'object') ?
-             serialize(val, key) :
-             `${encodeURIComponent(key)}=${encodeURIComponent(val)}`);
+                serialize(val, key) :
+                `${encodeURIComponent(key)}=${encodeURIComponent(val)}`);
         }
     }
     return str.join('&');

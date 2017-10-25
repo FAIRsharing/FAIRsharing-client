@@ -124,15 +124,15 @@ export default {
         'comparison': RecordComparison
     },
 
-    props: ['collections'],
+    props: ['collections', 'apiKey', 'thisRecord'],
 
     data() {
         return {
-            thisRecord: null,
+            // thisRecord: null,
             otherRecord: null,
-            otherId: null,
-            apiKey: null,
-            thisCollectionId: null,
+            // otherId: null,
+            // apiKey: null,
+            // thisCollectionId: null,
             recordIds: {},
             chart: venn.VennDiagram()
         };
@@ -141,8 +141,8 @@ export default {
     methods: {
 
         /* TODO: error handling */
-        async getOther() {
-            const response = await axios.get('/api/collection/' + this.otherId, {
+        async getOther(id) {
+            const response = await axios.get(`/api/collection/${id}`, {
                 headers: {
                     'Api-Key': this.apiKey,
                     'Content-type': 'application/json'
@@ -154,28 +154,30 @@ export default {
             this.elementVis('top-spinner','hide');
         },
 
-        updateOtherRecord(collection) {
-            this.otherRecord = collection;
+        updateOtherRecord(otherCollection) {
+            this.getOther(otherCollection.bsgId).then(() => {
+                console.log(this.otherRecord);
+            }).catch(console.log);
         },
 
-        storeIds: function(json) {
-            const rtypes = ['standards', 'policies', 'databases'];
-            rtypes.forEach(function (rt) {
-                json[rt].forEach(function (x) {
-                    this.recordIds[x.name] = x.bsg_id;
-                });
-            });
+        storeIds(json) {
+            const rTypes = ['standards', 'policies', 'databases'];
+            for (const rType of rTypes) {
+                for (const el of json[rType]) {
+                    this.recordIds[el.name] = el.bsg_id;
+                }
+            }
         },
 
-        clear: function() {
+        clear() {
             this.otherRecord = null;
-            this.otherId = null;
+            // this.otherId = null;
         },
 
-        fieldDifferences: function (field) {
+        fieldDifferences(field) {
 
-            const thisone = this.thisRecord[field];
-            const otherone = this.otherRecord[field];
+            const thisone = this.thisRecord[field],
+                otherone = this.otherRecord[field];
             const thisonly = thisone.filter(x => otherone.indexOf(x) === -1),
                 otheronly = otherone.filter(x => thisone.indexOf(x) === -1),
                 both = thisone.filter(x => otherone.includes(x));
@@ -187,10 +189,9 @@ export default {
 
         },
 
-        objectDifferences: function(field) {
-
-            const thisone = this.thisRecord[field].map(x => x.name);
-            const otherone = this.otherRecord[field].map(x => x.name);
+        objectDifferences(field) {
+            const thisone = this.thisRecord[field].map(x => x.name),
+                otherone = this.otherRecord[field].map(x => x.name);
             const thisonly = thisone.filter(x => otherone.indexOf(x) === -1),
                 otheronly = otherone.filter(x => thisone.indexOf(x) === -1),
                 both = thisone.filter(x => otherone.includes(x));
@@ -201,10 +202,10 @@ export default {
             };
         },
 
-        plotGraphs: function() {
+        plotGraphs() {
 
             const plots = [];
-            ['taxonomy', 'domains', 'standards', 'databases', 'policies'].forEach(function (item) {
+            ['taxonomy', 'domains', 'standards', 'databases', 'policies'].forEach(item => {
                 const data = this.getGraphData(item);
                 let s = data[0].size;
                 let o = data[1].size;
@@ -222,10 +223,10 @@ export default {
             });
 
             const tooltip = d3.select('body').append('div').attr('class', 'tooltip venntooltip');
-            plots.forEach(function (div) {
+            plots.forEach(div => {
                 // add listeners to all the groups to display tooltip on mouseover
                 div.selectAll('g')
-                    .on('mouseover', function (d) {
+                    .on('mouseover', d => {
                         // sort all the areas relative to the current item
                         venn.sortAreas(div, d);
 
@@ -246,12 +247,12 @@ export default {
                             .style('stroke-opacity', 1);
                     })
 
-                    .on('mousemove', function () {
+                    .on('mousemove', () => {
                         tooltip.style('left', (d3.event.pageX) + 'px')
                             .style('top', (d3.event.pageY - 28) + 'px');
                     })
 
-                    .on('mouseout', function (d) {
+                    .on('mouseout', d => {
                         tooltip.transition().duration(400).style('opacity', 0);
                         const selection = d3.select(this).transition('tooltip').duration(400);
                         selection.select('path')
@@ -263,7 +264,7 @@ export default {
             this.elementVis('hide-graph-button','show');
         },
 
-        getGraphData: function(field) {
+        getGraphData(field) {
             const one = this[field]['current'].length + this[field]['both'].length; // total in first record
             const two = this[field]['other'].length + this[field]['both'].length; // total in second
             const three = this[field]['both'].length; // intersection
@@ -274,7 +275,7 @@ export default {
             ];
         },
 
-        hideGraphs: function() {
+        hideGraphs() {
             // These buttons may not be visible initially.
             this.elementVis('show-graph-button','show');
             this.elementVis('hide-graph-button','hide');
@@ -284,7 +285,7 @@ export default {
             });
         },
 
-        openComparison: function() {
+        openComparison() {
             const bsg_id = document.getElementById('collection-comparison').value.split(':')[0].trim();
             if (bsg_id) {
                 this.elementVis('comparison-well','show');
@@ -301,11 +302,11 @@ export default {
             this.elementVis('top-spinner','show');
         },
 
-        closeComparison: function() {
+        closeComparison() {
             this.elementVis('comparison-well','hide');
         },
 
-        elementVis: function(name, type) {
+        elementVis(name, type) {
             let element = document.getElementById(name);
             try {
                 if (undefined === typeof element) {
@@ -379,3 +380,12 @@ export default {
     mounted() {}
 };
 </script>
+
+<style scoped lang="scss">
+$bs-head-color: #249acc;
+$header-font-size: 36px;
+
+#widget-selector {
+    margin: 10px 8px;
+}
+</style>
