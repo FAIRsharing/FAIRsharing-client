@@ -126,14 +126,16 @@ export default {
 
     props: ['collections'],
 
-    data: {
-        thisRecord: null,
-        otherRecord: null,
-        otherId: null,
-        apiKey: null,
-        thisCollectionId: null,
-        recordIds: {},
-        chart: venn.VennDiagram()
+    data() {
+        return {
+            thisRecord: null,
+            otherRecord: null,
+            otherId: null,
+            apiKey: null,
+            thisCollectionId: null,
+            recordIds: {},
+            chart: venn.VennDiagram()
+        };
     },
 
     methods: {
@@ -374,6 +376,6 @@ export default {
         }
 
     },
-    mounted: function() {}
+    mounted() {}
 };
 </script>
