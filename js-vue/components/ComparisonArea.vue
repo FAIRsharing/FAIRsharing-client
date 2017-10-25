@@ -1,9 +1,11 @@
 <template>
-
-
     <div class="vue-root">
-        <v-select id='collection-comparison-selector' placeholder='Please select a Collection or Recommendation' :options="collections"
-            :on-change="updateOtherRecord"></v-select>
+        <div id='collection-comparison-selector-cnt'>
+            <v-select id='collection-comparison-selector' placeholder='Please select a Collection or Recommendation' :options="collections"
+                :on-change="onSelectOtherCollection"></v-select>
+            <button id='collection-comparison-btn' class="btn btn-orange btn-cspecial" style="color: white;" v-on:click="openComparison"> Compare with collection/recommendation (Beta)</button>
+            <img src="/static/img/three-dots.svg" id="top-spinner" class="hidden animated">
+        </div>
         <div class="well col-md-8 hidden animated" id="comparison-well" style="margin:0 auto;">
 
             <div v-if="valid_results">
@@ -18,15 +20,15 @@
                     annotated with that tag.
                 </p>
 
-                <!-- taxonomies
+                <!-- taxonomies -->
                 <div class="row container col-md-12">
                     <div class="comparison-div">
                         <comparison tagtype="bio-tag taxonomy" title="Taxonomies"
                                     id="taxonomy_comparison"  link="taxonomies_exact"
-                                    :href="recordComparison.otherRecord.bsg_id"
-                                    :current="recordComparison.taxonomy.current"
-                                    :other="recordComparison.taxonomy.other"
-                                    :both="recordComparison.taxonomy.both">
+                                    :href="otherRecord.bsg_id"
+                                    :current="taxonomy.current"
+                                    :other="taxonomy.other"
+                                    :both="taxonomy.both">
                         </comparison>
                     </div>
                     <div id='taxonomy_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
@@ -34,14 +36,14 @@
                     </div>
                     <div class='clearfix'></div>
 
-                    <!- domains ->
+                    <!-- domains -->
                     <div class="comparison-div">
                         <comparison tagtype="bio-tag domain" title="Domains"
                                     id="domain_comparison" link="domains_exact"
-                                    :href="recordComparison.otherRecord.bsg_id"
-                                    :current="recordComparison.domains.current"
-                                    :other="recordComparison.domains.other"
-                                    :both="recordComparison.domains.both">
+                                    :href="otherRecord.bsg_id"
+                                    :current="domains.current"
+                                    :other="domains.other"
+                                    :both="domains.both">
                         </comparison>
                         <div id='domains_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
                             <div id="domains_plot"></div>
@@ -49,14 +51,14 @@
                     </div>
                     <div class='clearfix'></div>
 
-                    <!- related standards ->
+                    <!-- related standards -->
                     <div class="comparison-div">
                         <comparison tagtype="bio-tag standard" title="Standards"
                                     id="standard_comparison" link="standards_exact"
-                                    :href="recordComparison.otherRecord.bsg_id"
-                                    :current="recordComparison.standards.current"
-                                    :other="recordComparison.standards.other"
-                                    :both="recordComparison.standards.both">
+                                    :href="otherRecord.bsg_id"
+                                    :current="standards.current"
+                                    :other="standards.other"
+                                    :both="standards.both">
                         </comparison>
                         <div id='standards_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
                             <div id="standards_plot"></div>
@@ -64,14 +66,14 @@
                     </div>
                     <div class='clearfix'></div>
 
-                    <!- related databases ->
+                    <!-- related databases -->
                     <div class="comparison-div">
                         <comparison tagtype="bio-tag database" title="Databases"
                                     id="database_comparison" link="databases_exact"
-                                    :href="recordComparison.otherRecord.bsg_id"
-                                    :current="recordComparison.databases.current"
-                                    :other="recordComparison.databases.other"
-                                    :both="recordComparison.databases.both">
+                                    :href="otherRecord.bsg_id"
+                                    :current="databases.current"
+                                    :other="databases.other"
+                                    :both="databases.both">
                         </comparison>
                         <div id='databases_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
                             <div id="databases_plot"></div>
@@ -79,14 +81,14 @@
                     </div>
                     <div class='clearfix'></div>
 
-                    <!- policies ->
+                    <!-- policies -->
                     <div class="comparison-div">
                         <comparison tagtype="bio-tag policy" title="Policies"
                                     id="policy_comparison" link="policies_exact"
-                                    :href="recordComparison.otherRecord.bsg_id"
-                                    :current="recordComparison.policies.current"
-                                    :other="recordComparison.policies.other"
-                                    :both="recordComparison.policies.both">
+                                    :href="otherRecord.bsg_id"
+                                    :current="policies.current"
+                                    :other="policies.other"
+                                    :both="policies.both">
                         </comparison>
                         <div id='policies_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
                             <div id="policies_plot"></div>
@@ -95,7 +97,7 @@
                     <div class='clearfix'></div>
 
                 </div>
-            -->
+
             </div>
             <div v-else>
                 <div style="margin: 5px;">
@@ -103,11 +105,11 @@
                      width="50px">
                 </div>
             </div>
-            <btn class="btn btn-danger" v-on:click="closeComparison">Close</btn>
-            <btn class="btn btn-success hidden" v-on:click="plotGraphs"
-                 id="show-graph-button" style="margin-left: 5px;">Show Plots</btn>
-            <btn class="btn btn-success hidden" v-on:click="hideGraphs"
-                 id="hide-graph-button" style="margin-left: 5px;">Hide Plots</btn>
+            <button class="btn btn-danger" v-on:click="closeComparison">Close</button>
+            <button class="btn btn-success hidden" v-on:click="plotGraphs"
+                 id="show-graph-button" style="margin-left: 5px;">Show Plots</button>
+            <button class="btn btn-success hidden" v-on:click="hideGraphs"
+                 id="hide-graph-button" style="margin-left: 5px;">Hide Plots</button>
         </div>
 
     </div>
@@ -117,6 +119,8 @@ import RecordComparison from './RecordComparison.vue';
 import * as venn from 'venn.js';
 import axios from 'axios';
 import * as d3 from 'd3';
+
+const PROPERTIES_TO_COMPARE = ['taxonomy', 'domains', 'standards', 'databases', 'policies'];
 
 export default {
 
@@ -130,7 +134,7 @@ export default {
         return {
             // thisRecord: null,
             otherRecord: null,
-            // otherId: null,
+            selectedBsgId: null,
             // apiKey: null,
             // thisCollectionId: null,
             recordIds: {},
@@ -141,8 +145,8 @@ export default {
     methods: {
 
         /* TODO: error handling */
-        async getOther(id) {
-            const response = await axios.get(`/api/collection/${id}`, {
+        async getOther() {
+            const response = await axios.get(`/api/collection/${this.selectedBsgId}`, {
                 headers: {
                     'Api-Key': this.apiKey,
                     'Content-type': 'application/json'
@@ -154,10 +158,8 @@ export default {
             this.elementVis('top-spinner','hide');
         },
 
-        updateOtherRecord(otherCollection) {
-            this.getOther(otherCollection.bsgId).then(() => {
-                console.log(this.otherRecord);
-            }).catch(console.log);
+        onSelectOtherCollection(otherCollection) {
+            this.selectedBsgId = otherCollection.bsgId;
         },
 
         storeIds(json) {
@@ -171,7 +173,7 @@ export default {
 
         clear() {
             this.otherRecord = null;
-            // this.otherId = null;
+            this.selectedBsgId = null;
         },
 
         fieldDifferences(field) {
@@ -205,7 +207,7 @@ export default {
         plotGraphs() {
 
             const plots = [];
-            ['taxonomy', 'domains', 'standards', 'databases', 'policies'].forEach(item => {
+            for (const item of PROPERTIES_TO_COMPARE) {
                 const data = this.getGraphData(item);
                 let s = data[0].size;
                 let o = data[1].size;
@@ -220,10 +222,10 @@ export default {
                 const div = d3.select('#' + item + '_plot');
                 div.datum(data).call(this.chart);
                 plots.push(div);
-            });
+            }
 
             const tooltip = d3.select('body').append('div').attr('class', 'tooltip venntooltip');
-            plots.forEach(div => {
+            for (const div of plots) {
                 // add listeners to all the groups to display tooltip on mouseover
                 div.selectAll('g')
                     .on('mouseover', d => {
@@ -259,7 +261,7 @@ export default {
                             .style('fill-opacity', d.sets.length == 1 ? .25 : .0)
                             .style('stroke-opacity', 0);
                     });
-            });
+            }
             this.elementVis('show-graph-button','hide');
             this.elementVis('hide-graph-button','show');
         },
@@ -280,26 +282,28 @@ export default {
             this.elementVis('show-graph-button','show');
             this.elementVis('hide-graph-button','hide');
             // hide each individual graph
-            ['taxonomy', 'domains', 'standards', 'databases', 'policies'].forEach(function (item) {
-                this.elementVis(item + '_venn','hide');
-            });
+            for (const item of PROPERTIES_TO_COMPARE) {
+                this.elementVis(`${item}_venn`,'hide');
+            }
         },
 
         openComparison() {
-            const bsg_id = document.getElementById('collection-comparison').value.split(':')[0].trim();
-            if (bsg_id) {
+            if (this.selectedBsgId) {
                 this.elementVis('comparison-well','show');
+                /*
                 const regex = /bsg-c\d{6}/g;
-                if (bsg_id.match(regex)) {
-                    this.otherId = bsg_id;
-                } else {
+                if (!this.selectedBsgId.match(regex)) {
                     this.otherRecord = null;
                 }
+                */
             } else {
                 alert('Please select a collection/recommendation with which to make a comparison');
+                return;
             }
             this.hideGraphs();
             this.elementVis('top-spinner','show');
+            this.elementVis('hide-graph-button','hide');
+            this.getOther();
         },
 
         closeComparison() {
@@ -321,25 +325,27 @@ export default {
                     } else if (type === 'hide') {
                         element.classList.add('hidden');
                     } else {
-                        console.log('Don\'t know how to \'' + type + '\' an element.');
+                        console.log(`Don't know how to '${type}' an element.`);
                     }
                 }
             } catch (err) {
-                console.log('Error: ' + err);
+                console.log(`Error: ${err}`);
                 console.log(`Total fail when trying to '${type}' name.`);
             }
         }
 
     },
+    /*
     watch: {
 
-        otherId: function() {
-            console.log(`Other ID has changed: ${this.otherId}`);
+        selectedBsgId: function() {
+            console.log(`Other ID has changed: ${this.selectedBsgId}`);
             this.elementVis('hide-graph-button','hide');
             this.getOther();
         }
 
-    },
+    }, */
+
     computed: {
 
         validResults: function() {
@@ -382,10 +388,26 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$bs-head-color: #249acc;
-$header-font-size: 36px;
+// $bs-head-color: #249acc;
+// $header-font-size: 36px;
 
-#widget-selector {
-    margin: 10px 8px;
+#collection-comparison-selector-cnt {
+    margin-top: 10px;
+}
+
+#collection-comparison-selector {
+    width: 480px;
+    display: inline-block;
+}
+
+#collection-comparison-btn {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 0;
+}
+
+#top-spinner {
+    width: 50px;
+    margin-left: 5px;
 }
 </style>

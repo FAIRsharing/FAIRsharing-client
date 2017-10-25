@@ -3,7 +3,6 @@
          <div v-bind:id='id' class='alert alert-primary' style='margin: 5px;'>
              <p><b>{{ title }}:</b></p>
              <p>{{ thisRecord.name }} only ({{ current.length }}):</p>
-             <!--
              <p>
                  <ul class='bio-tags btsmall'>
                      <li v-bind:class=\"tagtype\" v-for='item in current'>
@@ -40,7 +39,6 @@
                  </ul>
                  <div class='clearfix'></div>
              </p>
-            -->
          </div>
          <div class='clearfix'></div>
     </div>
