@@ -12,8 +12,8 @@
                 <div v-if="selfComparison" class="alert alert-error col-md-12" style='margin: 5px;'>
                     <p>You are currently comparing a collection/recommendation with itself.</p>
                 </div>
-                <p>Comparison of <b>[[ thisRecord['name'] ]]</b> ({{ view_id }}) with
-                <b>[[ otherRecord['name'] ]]</b> ([[ otherid]]):</p>
+                <p>Comparison of <b>{{ thisRecord.name }}</b> ({{ thisRecord.bsg_id }}) with
+                <b>{{ otherRecord.name }}</b> ({{ otherRecord.bsg_id }}):</p>
                 <p style="font-size: smaller;">
                     Clicking on a database, policy or standard name will take you to the record for that
                     resource. Clicking on a domain or species tag will take you to a list of resources
@@ -30,7 +30,8 @@
                                     :otherName="otherRecord.name"
                                     :current="taxonomy.current"
                                     :other="taxonomy.other"
-                                    :both="taxonomy.both">
+                                    :both="taxonomy.both"
+                                    :recordIds="recordIds">
                         </comparison>
                     </div>
                     <div id='taxonomy_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
@@ -47,7 +48,8 @@
                                     :otherName="otherRecord.name"
                                     :current="domains.current"
                                     :other="domains.other"
-                                    :both="domains.both">
+                                    :both="domains.both"
+                                    :recordIds="recordIds">
                         </comparison>
                         <div id='domains_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
                             <div id="domains_plot"></div>
@@ -64,7 +66,8 @@
                                     :otherName="otherRecord.name"
                                     :current="standards.current"
                                     :other="standards.other"
-                                    :both="standards.both">
+                                    :both="standards.both"
+                                    :recordIds="recordIds">
                         </comparison>
                         <div id='standards_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
                             <div id="standards_plot"></div>
@@ -81,7 +84,8 @@
                                     :otherName="otherRecord.name"
                                     :current="databases.current"
                                     :other="databases.other"
-                                    :both="databases.both">
+                                    :both="databases.both"
+                                    :recordIds="recordIds">
                         </comparison>
                         <div id='databases_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
                             <div id="databases_plot"></div>
@@ -98,7 +102,8 @@
                                     :otherName="otherRecord.name"
                                     :current="policies.current"
                                     :other="policies.other"
-                                    :both="policies.both">
+                                    :both="policies.both"
+                                    :recordIds="recordIds">
                         </comparison>
                         <div id='policies_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
                             <div id="policies_plot"></div>
@@ -111,7 +116,7 @@
             </div>
             <div v-else>
                 <div style="margin: 5px;">
-                <img src="/img/three-dots.svg"
+                <img src="/static/img/three-dots.svg"
                      width="50px">
                 </div>
             </div>
@@ -125,7 +130,6 @@
     </div>
 </template>
 <script>
-import Vue from 'vue';
 import RecordComparison from './RecordComparison.vue';
 import * as venn from 'venn.js';
 import axios from 'axios';
@@ -137,7 +141,7 @@ const PROPERTIES_TO_COMPARE = ['taxonomy', 'domains', 'standards', 'databases', 
 
 export default {
 
-    delimiters: ['[[', ']]'],
+    // delimiters: ['[[', ']]'],
 
     components: {
         'comparison': RecordComparison
@@ -168,6 +172,7 @@ export default {
                 }
             });
             this.otherRecord = response.data;
+            this.storeIds(this.thisRecord);
             this.storeIds(this.otherRecord);
             this.elementVis('show-graph-button','show');
             this.elementVis('top-spinner','hide');
@@ -192,7 +197,6 @@ export default {
         },
 
         fieldDifferences(field) {
-
             const thisone = this.thisRecord[field],
                 otherone = this.otherRecord[field];
             const thisonly = thisone.filter(x => otherone.indexOf(x) === -1),
@@ -222,19 +226,20 @@ export default {
         plotGraphs() {
 
             const plots = [];
-            for (const item of PROPERTIES_TO_COMPARE) {
-                const data = this.getGraphData(item);
+            for (const prop of PROPERTIES_TO_COMPARE) {
+                console.log(`ComparisonArea.plotGraphs - current prop is: ${prop}`);
+                const data = this.getGraphData(prop);
                 let s = data[0].size;
                 let o = data[1].size;
                 let b = data[2].size;
                 if (s === 0 || o === 0) { // at least one has some tags...
-                    return;
+                    continue;
                 }
                 if ((s === b) && (o === b)) {// ...but not fully overlapping
-                    return;
+                    continue;
                 }
-                this.elementVis(item + '_venn', 'show');
-                const div = d3.select('#' + item + '_plot');
+                this.elementVis(prop + '_venn', 'show');
+                const div = d3.select('#' + prop + '_plot');
                 div.datum(data).call(this.chart);
                 plots.push(div);
             }
@@ -242,6 +247,7 @@ export default {
             const tooltip = d3.select('body').append('div').attr('class', 'tooltip venntooltip');
             for (const div of plots) {
                 // add listeners to all the groups to display tooltip on mouseover
+                console.log(`ComparisonArea.plotGraphs - currentling doing div: ${div}`);
                 div.selectAll('g')
                     .on('mouseover', d => {
                         // sort all the areas relative to the current item
@@ -276,6 +282,7 @@ export default {
                             .style('fill-opacity', d.sets.length == 1 ? .25 : .0)
                             .style('stroke-opacity', 0);
                     });
+                console.log(`ComparisonArea.plotGraphs - currentling finished div: ${div}`);
             }
             this.elementVis('show-graph-button','hide');
             this.elementVis('hide-graph-button','show');
@@ -364,22 +371,17 @@ export default {
     computed: {
 
         validResults: function() {
-            console.log('Gimme a break');
             if (this.thisRecord && this.otherRecord) {
                 return true;
             }
             return false;
         },
 
-        thisComparison: function() {
-            if (this.thisRecord.bsg_id === this.otherRecord.bsg_id) {
-                return true;
-            }
-            return false;
+        selfComparison: function() {
+            return this.thisRecord.bsg_id === this.otherRecord.bsg_id;
         },
 
         taxonomy: function() {
-            console.log('Gimme a break');
             return this.fieldDifferences('taxonomies');
         },
 
@@ -388,7 +390,6 @@ export default {
         },
 
         standards: function() {
-            console.log('Gimme a break');
             return this.objectDifferences('standards');
         },
 
@@ -401,7 +402,9 @@ export default {
         }
 
     },
-    mounted() {}
+
+    mounted() {
+    }
 };
 </script>
 
@@ -411,6 +414,7 @@ export default {
 
 #collection-comparison-selector-cnt {
     margin-top: 10px;
+    max-height: 42px;
 }
 
 #collection-comparison-selector {
@@ -427,5 +431,8 @@ export default {
 #top-spinner {
     width: 50px;
     margin-left: 5px;
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
 }
 </style>
