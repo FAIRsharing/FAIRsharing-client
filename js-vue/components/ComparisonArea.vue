@@ -8,8 +8,8 @@
         </div>
         <div class="well col-md-8 hidden animated" id="comparison-well" style="margin:0 auto;">
 
-            <div v-if="valid_results">
-                <div v-if="self_comparison" class="alert alert-error col-md-12" style='margin: 5px;'>
+            <div v-if="validResults">
+                <div v-if="selfComparison" class="alert alert-error col-md-12" style='margin: 5px;'>
                     <p>You are currently comparing a collection/recommendation with itself.</p>
                 </div>
                 <p>Comparison of <b>[[ thisRecord['name'] ]]</b> ({{ view_id }}) with
@@ -26,6 +26,8 @@
                         <comparison tagtype="bio-tag taxonomy" title="Taxonomies"
                                     id="taxonomy_comparison"  link="taxonomies_exact"
                                     :href="otherRecord.bsg_id"
+                                    :currentName="thisRecord.name"
+                                    :otherName="otherRecord.name"
                                     :current="taxonomy.current"
                                     :other="taxonomy.other"
                                     :both="taxonomy.both">
@@ -41,6 +43,8 @@
                         <comparison tagtype="bio-tag domain" title="Domains"
                                     id="domain_comparison" link="domains_exact"
                                     :href="otherRecord.bsg_id"
+                                    :currentName="thisRecord.name"
+                                    :otherName="otherRecord.name"
                                     :current="domains.current"
                                     :other="domains.other"
                                     :both="domains.both">
@@ -56,6 +60,8 @@
                         <comparison tagtype="bio-tag standard" title="Standards"
                                     id="standard_comparison" link="standards_exact"
                                     :href="otherRecord.bsg_id"
+                                    :currentName="thisRecord.name"
+                                    :otherName="otherRecord.name"
                                     :current="standards.current"
                                     :other="standards.other"
                                     :both="standards.both">
@@ -71,6 +77,8 @@
                         <comparison tagtype="bio-tag database" title="Databases"
                                     id="database_comparison" link="databases_exact"
                                     :href="otherRecord.bsg_id"
+                                    :currentName="thisRecord.name"
+                                    :otherName="otherRecord.name"
                                     :current="databases.current"
                                     :other="databases.other"
                                     :both="databases.both">
@@ -86,6 +94,8 @@
                         <comparison tagtype="bio-tag policy" title="Policies"
                                     id="policy_comparison" link="policies_exact"
                                     :href="otherRecord.bsg_id"
+                                    :currentName="thisRecord.name"
+                                    :otherName="otherRecord.name"
                                     :current="policies.current"
                                     :other="policies.other"
                                     :both="policies.both">
@@ -115,6 +125,7 @@
     </div>
 </template>
 <script>
+import Vue from 'vue';
 import RecordComparison from './RecordComparison.vue';
 import * as venn from 'venn.js';
 import axios from 'axios';
@@ -122,7 +133,11 @@ import * as d3 from 'd3';
 
 const PROPERTIES_TO_COMPARE = ['taxonomy', 'domains', 'standards', 'databases', 'policies'];
 
+// Vue.component('comparison', RecordComparison);
+
 export default {
+
+    delimiters: ['[[', ']]'],
 
     components: {
         'comparison': RecordComparison
@@ -313,20 +328,20 @@ export default {
         elementVis(name, type) {
             let element = document.getElementById(name);
             try {
-                if (undefined === typeof element) {
+                if (typeof element === undefined) {
                     //console.log('Failure when trying to '' + type + '' '' + name + '' (is undefined).');
                     return false;
-                } else if (null === element) {
+                }
+                if (element == null) {
                     //console.log('Failure when trying to '' + type + '' '' + name + '' (is null).');
                     return false;
+                }
+                if (type === 'show') {
+                    element.classList.remove('hidden');
+                } else if (type === 'hide') {
+                    element.classList.add('hidden');
                 } else {
-                    if (type === 'show') {
-                        element.classList.remove('hidden');
-                    } else if (type === 'hide') {
-                        element.classList.add('hidden');
-                    } else {
-                        console.log(`Don't know how to '${type}' an element.`);
-                    }
+                    console.log(`Don't know how to '${type}' an element.`);
                 }
             } catch (err) {
                 console.log(`Error: ${err}`);
@@ -349,6 +364,7 @@ export default {
     computed: {
 
         validResults: function() {
+            console.log('Gimme a break');
             if (this.thisRecord && this.otherRecord) {
                 return true;
             }
@@ -356,13 +372,14 @@ export default {
         },
 
         thisComparison: function() {
-            if (this.thisRecord.bsg_id == this.otherRecord.bsg_id) {
+            if (this.thisRecord.bsg_id === this.otherRecord.bsg_id) {
                 return true;
             }
             return false;
         },
 
         taxonomy: function() {
+            console.log('Gimme a break');
             return this.fieldDifferences('taxonomies');
         },
 
@@ -371,6 +388,7 @@ export default {
         },
 
         standards: function() {
+            console.log('Gimme a break');
             return this.objectDifferences('standards');
         },
 

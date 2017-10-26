@@ -2,7 +2,7 @@
     <div>
          <div v-bind:id='id' class='alert alert-primary' style='margin: 5px;'>
              <p><b>{{ title }}:</b></p>
-             <p>{{ thisRecord.name }} only ({{ current.length }}):</p>
+             <p>{{ currentName }} only ({{ current.length }}):</p>
              <p>
                  <ul class='bio-tags btsmall'>
                      <li v-bind:class=\"tagtype\" v-for='item in current'>
@@ -14,7 +14,7 @@
                  </ul>
                  <div class='clearfix'></div>
              </p>
-             <p><a v-bind:href=\"href\" target='_blank'>{{ otherRecord['name'] }}</a>
+             <p><a v-bind:href=\"href\" target='_blank'>{{ otherName }}</a>
              only ({{ other.length }}):</p>
              <p>
                  <ul class='bio-tags btsmall'>
@@ -47,15 +47,17 @@
 <script>
 export default {
     delimiters: ['[[', ']]'],
-    props: ['current', 'other', 'both', 'title', 'tagtype', 'count', 'id', 'href', 'link'],
-    el: '#comparison-area',
+    props: [
+        'current', 'other', 'both', 'title', 'tagtype',
+        'count', 'id', 'href', 'link', 'currentName', 'otherName'
+    ],
+    // el: '#comparison-area',
     method: {
         searchLink: function (url, item) {
-            const self = this;
             if (url.includes('taxonomies') || url.includes('domains')) {
                 return '/search?q=&selected_facets=' + url + ':' + item;
             } else {
-                return '/' + self.recordIds[item];
+                return '/' + this.recordIds[item];
             }
         }
     }
