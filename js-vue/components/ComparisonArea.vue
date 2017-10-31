@@ -225,7 +225,7 @@ export default {
 
         plotGraphs() {
 
-            const plots = [];
+            const plots = [], that = this;
             for (const prop of PROPERTIES_TO_COMPARE) {
                 console.log(`ComparisonArea.plotGraphs - current prop is: ${prop}`);
                 const data = this.getGraphData(prop);
@@ -249,7 +249,7 @@ export default {
                 // add listeners to all the groups to display tooltip on mouseover
                 console.log(`ComparisonArea.plotGraphs - currentling doing div: ${div}`);
                 div.selectAll('g')
-                    .on('mouseover', d => {
+                    .on('mouseover', (d, i, nodes) => {
                         // sort all the areas relative to the current item
                         venn.sortAreas(div, d);
 
@@ -262,7 +262,7 @@ export default {
                         tooltip.text(d.size + note);
 
                         // highlight the current path
-                        const selection = d3.select(this).transition('tooltip').duration(400);
+                        const selection = d3.select(nodes[i]).transition('tooltip').duration(400);
                         selection.select('path')
                             .style('stroke', '#FFFFFF')
                             .style('stroke-width', 5)
@@ -277,7 +277,7 @@ export default {
 
                     .on('mouseout', d => {
                         tooltip.transition().duration(400).style('opacity', 0);
-                        const selection = d3.select(this).transition('tooltip').duration(400);
+                        const selection = d3.select(that).transition('tooltip').duration(400);
                         selection.select('path')
                             .style('fill-opacity', d.sets.length == 1 ? .25 : .0)
                             .style('stroke-opacity', 0);
