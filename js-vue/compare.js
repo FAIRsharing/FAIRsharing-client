@@ -46,12 +46,17 @@ new Vue({
                 }
             });
             const collections = response.data && response.data.results && response.data.results.sort();
+            // Remove currentCollectionId from the dropdown to prevent self-matching
+            const localmatch = this.currentCollectionId;
             this.collections = collections.map(coll => {
-                return {
-                    label: coll.name,
-                    bsgId: coll.bsg_id,
-                    pk: coll.pk
-                };
+                if (coll.bsg_id !== localmatch ) {
+                    return {
+                        label: coll.name,
+                        bsgId: coll.bsg_id,
+                        pk: coll.pk
+                    }
+                }
+                return {};
             }).sort((a, b) => sortByProperty(a, b, 'label'));
             /* Get data for the current record via the API. */
             if (isEmpty(this.currentCollection)) {

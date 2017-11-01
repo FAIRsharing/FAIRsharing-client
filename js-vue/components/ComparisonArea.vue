@@ -1,10 +1,10 @@
 <template>
     <div class="vue-root">
         <div id='collection-comparison-selector-cnt'>
-            <v-select id='collection-comparison-selector' placeholder='Please select a Collection or Recommendation' :options="collections"
-                :on-change="onSelectOtherCollection"></v-select>
             <button id='collection-comparison-btn' class="btn btn-orange btn-cspecial" style="color: white;" v-on:click="openComparison"> Compare with collection/recommendation (Beta)</button>
-            <img src="/static/img/three-dots.svg" id="top-spinner" class="hidden animated">
+            <v-select id='collection-comparison-selector' placeholder='Please select a Collection or Recommendation' :options="collections"
+                    :on-change="onSelectOtherCollection"></v-select>
+            <img src="/static/img/three-dots.svg" id="top-spinner" class="hidden">
         </div>
         <div class="well col-md-8 hidden animated" id="comparison-well" style="margin:0 auto;">
 
@@ -178,6 +178,7 @@ export default {
             this.storeIds(this.otherRecord);
             this.elementVis('show-graph-button','show');
             this.elementVis('top-spinner','hide');
+            this.elementVis('collection-comparison-selector','show');
         },
 
         onSelectOtherCollection(otherCollection) {
@@ -326,6 +327,7 @@ export default {
             }
             this.hideGraphs();
             this.elementVis('top-spinner','show');
+            this.elementVis('collection-comparison-selector','hide');
             this.elementVis('hide-graph-button','hide');
             this.getOther();
         },
@@ -373,6 +375,8 @@ export default {
     computed: {
 
         validResults: function() {
+            this.elementVis('collection-comparison-selector','show');
+            this.elementVis('top-spinner','hide');
             if (this.thisRecord && this.otherRecord) {
                 return true;
             }
@@ -415,10 +419,12 @@ export default {
 #collection-comparison-selector-cnt {
     margin-top: 10px;
     max-height: 42px;
+    width: 100%;
+    padding-bottom: 20px;
 }
 
 #collection-comparison-selector {
-    width: 480px;
+    min-width: 480px;
     display: inline-block;
 }
 
@@ -431,8 +437,39 @@ export default {
 #top-spinner {
     width: 50px;
     margin-left: 5px;
-    height: 100%;
     display: inline-block;
     vertical-align: middle;
+    padding-top: 5px;
 }
+
+.hidden {
+  display: none;
+}
+
+.animated {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 1.0s;
+}
+
+@keyframes fadeInOpacity {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+.venntooltip {
+  color: #FFFFFF;
+  background: #4c3c5d;
+  padding: 5px;
+  border-radius: 2px;
+
+}
+
 </style>

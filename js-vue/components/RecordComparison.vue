@@ -27,7 +27,7 @@
                  </ul>
                  <div class='clearfix'></div>
              </p>
-             <p>Shared ({{ both.length }})</span>:</p>
+             <p>Shared ({{ both.length }}):</p>
              <p>
                  <ul class='bio-tags btsmall'>
                      <li v-bind:class="tagtype" v-for='item in both'>
