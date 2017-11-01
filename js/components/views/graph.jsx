@@ -99,8 +99,8 @@ export class ZoomSlider extends React.Component {
             <label htmlFor={'slider-zoom'} className="col-md-1 col-xs-2">Zoom</label>
             <div className="col-xs-6">
                 <Slider id={'slider-zoom'} key="zoom" ref="zoom"
-                        value={value} min={min} max={max} step={0.1}
-                        handle={<ZoomHandle />} onChange={this.onChange} />
+                    value={value} min={min} max={max} step={0.1}
+                    handle={<ZoomHandle />} onChange={this.onChange} />
             </div>
         </div>);
     }
@@ -173,9 +173,9 @@ class Graph extends React.Component {
                     </label>
                     <div className="col-xs-4">
                         <Slider id={`slider-${param.paramName}`} key={param.paramName}
-                                defaultValue={(param.min + param.max)/2} handle={<CustomHandle />}
-                                ref={param.paramName} min={param.min} max={param.max}
-                                onChange={this._layoutParamOnChange(param.paramName)} />
+                            defaultValue={(param.min + param.max)/2} handle={<CustomHandle />}
+                            ref={param.paramName} min={param.min} max={param.max}
+                            onChange={this._layoutParamOnChange(param.paramName)} />
                     </div>
                 </div>
             );
