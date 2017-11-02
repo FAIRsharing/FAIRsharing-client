@@ -361,16 +361,6 @@ export default {
         }
 
     },
-    /*
-    watch: {
-
-        selectedBsgId: function() {
-            console.log(`Other ID has changed: ${this.selectedBsgId}`);
-            this.elementVis('hide-graph-button','hide');
-            this.getOther();
-        }
-
-    }, */
 
     computed: {
 
