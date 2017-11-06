@@ -96,7 +96,7 @@ class GraphContainer extends React.Component {
         return (
             <div className="graph-container container-fluid">
                 <div className="graph-head">
-                    <h3>{'Graph Viewer (BETA): '}
+                    <h3>{'Graph Viewer: '}
                         <a href={headerLink}>{`${headerType} `}</a>
                         {`> ${collectionName || ''}`}
                     </h3>
@@ -117,9 +117,9 @@ class GraphContainer extends React.Component {
                                 depth={layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
                                 isTagsPanelVisible={layout.isTagsPanelVisible}
                                 tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
-                                />
-                                <StatsBox handler={this.handler} reload={reload}/>
-                                <Legend title='Legend' items={uniq(map(this.handler.edges, 'relationship'))} />
+                            />
+                            <StatsBox handler={this.handler} reload={reload}/>
+                            <Legend title='Legend' items={uniq(map(this.handler.edges, 'relationship'))} />
                         </Row>
                     </Col>
                     <Col sm={9} xs={12} >
