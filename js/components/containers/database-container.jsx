@@ -21,7 +21,7 @@ const fields = {
     description: { name: 'description', label: 'Description', placeholder: '', helpText: 'Free text summary of the resource and its purpose.', size: 12 },
     homepage: { name: 'homepage', label: 'Homepage', placeholder: '', helpText: 'The homepage of the resource itself. If there is no official homepage, a related URL may be used. For policies, the resource homepage can be the policy document itself. URLs for related content such as organizations can be described in the Associated Organizations section.'},
     yearOfCreation: { name: 'yearOfCreation', label: 'Year of Creation', helpText: 'The year in which the resource was originally created.'},
-    miriamUrl: {name: 'miriam_url', label: 'MIRIAM URL', placeholder: '', helpText: 'Please add the MIRIAM URL (https://www.ebi.ac.uk/miriam/main/collections or http://identifiers.org) here. This is required for looking up the record there.'},
+    miriamId: {name: 'miriam_id', label: 'MIRIAM ID', placeholder: '', helpText: 'Please add the MIRIAM ID (https://www.ebi.ac.uk/miriam/main/collections or http://identifiers.org) here. This is required for looking up the record there.'},
     contact: {name: 'contact', label: 'Contact Name', placeholder: '', helpText: 'A person responsible for the maintenance of the resource. Alternatively a group contact (e.g. a particular helpdesk or department) may be given.'},
     contactEmail: {name: 'contactEmail', label: 'Contact Email', placeholder: '', helpText: 'The contact email address for the contact. This may be an individual or a group address (e.g. Helpdesk).'},
     contactORCID: {name: 'contactORCID', label: 'Contact\'s ORCID', placeholder: '', helpText: 'If the designated contact is an individual, their ORCID ID can be entered here.'},

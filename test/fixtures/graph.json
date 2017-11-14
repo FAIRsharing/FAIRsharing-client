@@ -73,7 +73,7 @@
                     "Life Science"
                 ],
                 "shortname": "DB",
-                "miriam_url": "http://identifiers.org/db"
+                "miriam_id": null
             },
             "path_length": 1
         },
@@ -122,7 +122,7 @@
                     "Nucleic acid hybridization"
                 ],
                 "shortname": "DB",
-                "miriam_url": "http://identifiers.org/db"
+                "miriam_id": null
             },
             "path_length": 1
         },
