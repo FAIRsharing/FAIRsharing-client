@@ -6,127 +6,172 @@
                     :on-change="onSelectOtherCollection"></v-select>
             <img src="/static/img/three-dots.svg" id="top-spinner" class="hidden">
         </div>
-        <div class="well col-md-8 hidden animated" id="comparison-well" style="margin:0 auto;">
 
-            <div v-if="validResults">
-                <div v-if="selfComparison" class="alert alert-error col-md-12" style='margin: 5px;'>
-                    <p>You are currently comparing a collection/recommendation with itself.</p>
+
+
+
+        <div class="row">
+            <div class="well col-md-8 hidden animated" id="comparison-well" style="margin:0 auto;">
+
+                <div v-if="validResults">
+                    <div v-if="selfComparison" class="alert alert-error col-md-12" style='margin: 5px;'>
+                        <p>You are currently comparing a collection/recommendation with itself.</p>
+                    </div>
+                    <div v-else>
+                        <p>Comparison of <b>{{ thisRecord.name }}</b> ({{ thisRecord.bsg_id }}) with
+                        <b>{{ otherRecord.name }}</b> ({{ otherRecord.bsg_id }}):</p>
+                        <p style="font-size: smaller;">
+                            Clicking on a database, policy or standard name will take you to the record for that
+                            resource. Clicking on a domain or species tag will take you to a list of resources
+                            annotated with that tag.
+                        </p>
+
+                        <!-- taxonomies -->
+                        <div class="row container col-md-12">
+                            <div class="comparison-div">
+                                <comparison tagtype="bio-tag taxonomy" title="Taxonomies"
+                                            id="taxonomy_comparison"  link="taxonomies_exact"
+                                            :href="otherRecord.bsg_id"
+                                            :currentName="thisRecord.name"
+                                            :otherName="otherRecord.name"
+                                            :current="taxonomy.current"
+                                            :other="taxonomy.other"
+                                            :both="taxonomy.both"
+                                            :recordIds="recordIds">
+                                </comparison>
+                            </div>
+                            <div id='taxonomy_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
+                                <div id="taxonomy_plot"></div>
+                            </div>
+                            <div class='clearfix'></div>
+
+                            <!-- domains -->
+                            <div class="comparison-div">
+                                <comparison tagtype="bio-tag domain" title="Domains"
+                                            id="domain_comparison" link="domains_exact"
+                                            :href="otherRecord.bsg_id"
+                                            :currentName="thisRecord.name"
+                                            :otherName="otherRecord.name"
+                                            :current="domains.current"
+                                            :other="domains.other"
+                                            :both="domains.both"
+                                            :recordIds="recordIds">
+                                </comparison>
+                                <div id='domains_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
+                                    <div id="domains_plot"></div>
+                                </div>
+                            </div>
+                            <div class='clearfix'></div>
+
+                            <!-- related standards -->
+                            <div class="comparison-div">
+                                <comparison tagtype="bio-tag standard" title="Standards"
+                                            id="standard_comparison" link="standards_exact"
+                                            :href="otherRecord.bsg_id"
+                                            :currentName="thisRecord.name"
+                                            :otherName="otherRecord.name"
+                                            :current="standards.current"
+                                            :other="standards.other"
+                                            :both="standards.both"
+                                            :recordIds="recordIds">
+                                </comparison>
+                                <div id='standards_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
+                                    <div id="standards_plot"></div>
+                                </div>
+                            </div>
+                            <div class='clearfix'></div>
+
+                            <!-- related databases -->
+                            <div class="comparison-div">
+                                <comparison tagtype="bio-tag database" title="Databases"
+                                            id="database_comparison" link="databases_exact"
+                                            :href="otherRecord.bsg_id"
+                                            :currentName="thisRecord.name"
+                                            :otherName="otherRecord.name"
+                                            :current="databases.current"
+                                            :other="databases.other"
+                                            :both="databases.both"
+                                            :recordIds="recordIds">
+                                </comparison>
+                                <div id='databases_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
+                                    <div id="databases_plot"></div>
+                                </div>
+                            </div>
+                            <div class='clearfix'></div>
+
+                            <!-- policies -->
+                            <div class="comparison-div">
+                                <comparison tagtype="bio-tag policy" title="Policies"
+                                            id="policy_comparison" link="policies_exact"
+                                            :href="otherRecord.bsg_id"
+                                            :currentName="thisRecord.name"
+                                            :otherName="otherRecord.name"
+                                            :current="policies.current"
+                                            :other="policies.other"
+                                            :both="policies.both"
+                                            :recordIds="recordIds">
+                                </comparison>
+                                <div id='policies_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
+                                    <div id="policies_plot"></div>
+                                </div>
+                            </div>
+                            <div class='clearfix'></div>
+
+                        </div>
+                    </div>
+
                 </div>
                 <div v-else>
-                    <p>Comparison of <b>{{ thisRecord.name }}</b> ({{ thisRecord.bsg_id }}) with
-                    <b>{{ otherRecord.name }}</b> ({{ otherRecord.bsg_id }}):</p>
-                    <p style="font-size: smaller;">
-                        Clicking on a database, policy or standard name will take you to the record for that
-                        resource. Clicking on a domain or species tag will take you to a list of resources
-                        annotated with that tag.
-                    </p>
-
-                    <!-- taxonomies -->
-                    <div class="row container col-md-12">
-                        <div class="comparison-div">
-                            <comparison tagtype="bio-tag taxonomy" title="Taxonomies"
-                                        id="taxonomy_comparison"  link="taxonomies_exact"
-                                        :href="otherRecord.bsg_id"
-                                        :currentName="thisRecord.name"
-                                        :otherName="otherRecord.name"
-                                        :current="taxonomy.current"
-                                        :other="taxonomy.other"
-                                        :both="taxonomy.both"
-                                        :recordIds="recordIds">
-                            </comparison>
-                        </div>
-                        <div id='taxonomy_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
-                            <div id="taxonomy_plot"></div>
-                        </div>
-                        <div class='clearfix'></div>
-
-                        <!-- domains -->
-                        <div class="comparison-div">
-                            <comparison tagtype="bio-tag domain" title="Domains"
-                                        id="domain_comparison" link="domains_exact"
-                                        :href="otherRecord.bsg_id"
-                                        :currentName="thisRecord.name"
-                                        :otherName="otherRecord.name"
-                                        :current="domains.current"
-                                        :other="domains.other"
-                                        :both="domains.both"
-                                        :recordIds="recordIds">
-                            </comparison>
-                            <div id='domains_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
-                                <div id="domains_plot"></div>
-                            </div>
-                        </div>
-                        <div class='clearfix'></div>
-
-                        <!-- related standards -->
-                        <div class="comparison-div">
-                            <comparison tagtype="bio-tag standard" title="Standards"
-                                        id="standard_comparison" link="standards_exact"
-                                        :href="otherRecord.bsg_id"
-                                        :currentName="thisRecord.name"
-                                        :otherName="otherRecord.name"
-                                        :current="standards.current"
-                                        :other="standards.other"
-                                        :both="standards.both"
-                                        :recordIds="recordIds">
-                            </comparison>
-                            <div id='standards_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
-                                <div id="standards_plot"></div>
-                            </div>
-                        </div>
-                        <div class='clearfix'></div>
-
-                        <!-- related databases -->
-                        <div class="comparison-div">
-                            <comparison tagtype="bio-tag database" title="Databases"
-                                        id="database_comparison" link="databases_exact"
-                                        :href="otherRecord.bsg_id"
-                                        :currentName="thisRecord.name"
-                                        :otherName="otherRecord.name"
-                                        :current="databases.current"
-                                        :other="databases.other"
-                                        :both="databases.both"
-                                        :recordIds="recordIds">
-                            </comparison>
-                            <div id='databases_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
-                                <div id="databases_plot"></div>
-                            </div>
-                        </div>
-                        <div class='clearfix'></div>
-
-                        <!-- policies -->
-                        <div class="comparison-div">
-                            <comparison tagtype="bio-tag policy" title="Policies"
-                                        id="policy_comparison" link="policies_exact"
-                                        :href="otherRecord.bsg_id"
-                                        :currentName="thisRecord.name"
-                                        :otherName="otherRecord.name"
-                                        :current="policies.current"
-                                        :other="policies.other"
-                                        :both="policies.both"
-                                        :recordIds="recordIds">
-                            </comparison>
-                            <div id='policies_venn' class='alert alert-primary hidden animated' style='margin: 5px;'>
-                                <div id="policies_plot"></div>
-                            </div>
-                        </div>
-                        <div class='clearfix'></div>
-
+                    <div style="margin: 5px;">
+                    <img src="/static/img/three-dots.svg"
+                         width="50px">
                     </div>
                 </div>
-
+                <button class="btn btn-danger" v-on:click="closeComparison">Close</button>
+                <button class="btn btn-success hidden" v-on:click="plotGraphs"
+                     id="show-graph-button" style="margin-left: 5px;">Show Plots</button>
+                <button class="btn btn-success hidden" v-on:click="hideGraphs"
+                     id="hide-graph-button" style="margin-left: 5px;">Hide Plots</button>
             </div>
-            <div v-else>
-                <div style="margin: 5px;">
-                <img src="/static/img/three-dots.svg"
-                     width="50px">
+        </div>
+
+        <br/>
+
+        <div class="row">
+            <div id='collection-stats'>
+                <div class="well">
+                    <p>Here's where the collection stats will go.</p>
+                    <div v-if="ownRecord">
+                        <p>Stats for <b>{{ thisRecord.name }}</b> ({{ thisRecord.bsg_id }}).</p>
+                        <p><button class="btn btn-success" v-on:click="showGeneralStats">Show Stats</button></p>
+                        <div class="container">
+                            <div class="row">
+                                <div  class="col-sm-6">
+                                    <label class="hidden statslabel">General Statistics</label>
+                                    <div id="general_stats_plot"></div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="hidden statslabel">Standard Types</label>
+                                    <div id="standard_types_plot"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div  class="col-sm-6">
+                                    <label class="hidden statslabel">Taxonomies (all records)</label>
+                                    <div id="stats_taxonomy_plot"></div>
+                                </div>
+                                <div  class="col-sm-6">
+                                    <label class="hidden statslabel">Domains (all records)</label>
+                                    <div id="stats_domains_plot"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <p>Loading stats...</p>
+                    </div>
                 </div>
             </div>
-            <button class="btn btn-danger" v-on:click="closeComparison">Close</button>
-            <button class="btn btn-success hidden" v-on:click="plotGraphs"
-                 id="show-graph-button" style="margin-left: 5px;">Show Plots</button>
-            <button class="btn btn-success hidden" v-on:click="hideGraphs"
-                 id="hide-graph-button" style="margin-left: 5px;">Hide Plots</button>
         </div>
 
     </div>
@@ -136,12 +181,15 @@ import RecordComparison from './RecordComparison.vue';
 import * as venn from 'venn.js';
 import axios from 'axios';
 import * as d3 from 'd3';
+import c3 from 'c3';
+import { isEmpty } from 'lodash';
 
 const PROPERTIES_TO_COMPARE = ['taxonomy', 'domains', 'standards', 'databases', 'policies'];
 
 // Vue.component('comparison', RecordComparison);
 
 export default {
+
 
     // delimiters: ['[[', ']]'],
 
@@ -336,6 +384,13 @@ export default {
             this.elementVis('comparison-well','hide');
         },
 
+        showGeneralStats() {
+            console.log("About to show general stats.");
+            this.generalStats();
+            console.log("General stats shown!");
+
+        },
+
         elementVis(name, type) {
             let element = document.getElementById(name);
             try {
@@ -358,6 +413,167 @@ export default {
                 console.log(`Error: ${err}`);
                 console.log(`Total fail when trying to '${type}' name.`);
             }
+        },
+
+        generalStats() {
+
+            console.log("Trying to plot stats: ");
+
+            // Total count of all three record types
+            const std_count = this.thisRecord.standards.length;
+            const db_count = this.thisRecord.databases.length;
+            const pol_count = this.thisRecord.policies.length;
+
+            var chart_1 = c3.generate({
+                bindto: "#general_stats_plot",
+                data: {
+                    columns: [
+                        ['Standards', std_count],
+                        ['Policies', pol_count],
+                        ['Databases', db_count],
+                    ],
+                    type: 'pie',
+                },
+                size: {
+                    height: 500
+                }
+            });
+
+            // Count of standards by type:
+            /*
+             * model/format
+             * reporting guideline
+             * terminology artifact
+             * other
+             */
+            const std_model = this.thisRecord.standards.filter(x => x.type == 'model/format'),
+                  std_report = this.thisRecord.standards.filter(x => x.type == 'reporting guideline'),
+                  std_term = this.thisRecord.standards.filter(x => x.type == 'terminology artifact'),
+                  std_other = this.thisRecord.standards.filter(x => x.type == 'other');
+
+            var chart_2 = c3.generate({
+                bindto: "#standard_types_plot",
+                data: {
+                    columns: [
+                        ['Model/Format', std_model.length],
+                        ['Reporting Guideline', std_report.length],
+                        ['Terminology Artifact', std_term.length],
+                        ['Other', std_other.length],
+                    ],
+                    type: 'pie',
+                },
+                size: {
+                    height: 500
+                }
+            });
+
+            // All record types by taxonomy...
+            //<div id="stats_taxonomy_plot"></div>
+            // ...and all record types by domain.
+            // <div id="stats_domains_plot"></div>
+            // TODO: Re-write all the forEach calls in a more elegant manner...
+            let taxonomies = {};
+            let domains = {};
+            this.thisRecord.standards.forEach(function(s) {
+                s.taxonomies.forEach(function(t) {
+                    if (taxonomies[t]) {
+                        taxonomies[t] += 1
+                    } else {
+                        taxonomies[t] = 1
+                    }
+                });
+                s.domains.forEach(function(d) {
+                    if (domains[d]) {
+                        domains[d] += 1
+                    } else {
+                        domains[d] = 1
+                    }
+                })
+            });
+            this.thisRecord.policies.forEach(function(p) {
+                p.taxonomies.forEach(function(t) {
+                    if (taxonomies[t]) {
+                        taxonomies[t] += 1
+                    } else {
+                        taxonomies[t] = 1
+                    }
+                });
+                p.domains.forEach(function(d) {
+                    if (domains[d]) {
+                        domains[d] += 1
+                    } else {
+                        domains[d] = 1
+                    }
+                })
+
+            });
+            this.thisRecord.databases.forEach(function(d) {
+                d.taxonomies.forEach(function(t) {
+                    if (taxonomies[t]) {
+                        taxonomies[t] += 1
+                    } else {
+                        taxonomies[t] = 1
+                    }
+                });
+                d.domains.forEach(function(d) {
+                    if (domains[d]) {
+                        domains[d] += 1
+                    } else {
+                        domains[d] = 1
+                    }
+                })
+
+            });
+            /*
+            console.log("Domains: " + JSON.stringify(domains));
+            console.log("Taxonomies: " + JSON.stringify(taxonomies));
+            */
+
+            // TODO: This block could perhaps be tidied up as well
+            var tax_data = [];
+            var dom_data = [];
+            var other_tax = 0;
+            var other_dom = 0;
+            for (const key in taxonomies) {
+                if (taxonomies[key] == 1) {
+                   other_tax += 1;
+                } else {
+                    tax_data.push([key, taxonomies[key]]);
+                }
+            }
+            tax_data.push(['Other', other_tax])
+            for (const key in domains) {
+                if (domains[key] == 1) {
+                   other_dom += 1;
+                } else {
+                    dom_data.push([key, domains[key]]);
+                }
+            }
+            dom_data.push(['Other', other_dom])
+
+            var chart_3 = c3.generate({
+                bindto: "#stats_taxonomy_plot",
+                data: {
+                    columns: tax_data,
+                    type: 'pie',
+                },
+                size: {
+                    height: 500
+                }
+            });
+
+            var chart_4 = c3.generate({
+                bindto: "#stats_domains_plot",
+                data: {
+                    columns: dom_data,
+                    type: 'pie',
+                },
+                size: {
+                    height: 500
+                }
+            });
+
+
         }
 
     },
@@ -372,7 +588,12 @@ export default {
             }
             return false;
         },
-
+        ownRecord: function() {
+            if (!isEmpty(this.thisRecord)) {
+                return true;
+            }
+            return false;
+        },
         selfComparison: function() {
             return this.thisRecord.bsg_id === this.otherRecord.bsg_id;
         },
@@ -397,7 +618,7 @@ export default {
             return this.objectDifferences('policies');
         }
 
-    }
+    },
 
 };
 </script>
