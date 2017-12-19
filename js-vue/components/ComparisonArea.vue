@@ -11,7 +11,7 @@
 
 
         <div class="row">
-            <div class="well col-md-8 hidden animated" id="comparison-well" style="margin:0 auto;">
+            <div class="well col-md-12 hidden animated" id="comparison-well" style="margin:0 auto;">
 
                 <div v-if="validResults">
                     <div v-if="selfComparison" class="alert alert-error col-md-12" style='margin: 5px;'>
@@ -139,7 +139,7 @@
 
         <div class="row">
             <div id='collection-stats'>
-                <div class="well col-md-8 animated">
+                <div class="well col-md-12 animated">
                     <h4>General collection/recommendation statistics:</h4>
                     <div v-if="ownRecord">
                         <p>Stats for <b>{{ thisRecord.name }}</b> ({{ thisRecord.bsg_id }}):</p>
@@ -215,7 +215,8 @@ export default {
             // thisCollectionId: null,
             recordIds: {},
             chart: venn.VennDiagram(),
-            loaded: false
+            loaded: false,
+            height: 400
         };
     },
 
@@ -451,7 +452,7 @@ export default {
                     type: 'pie',
                 },
                 size: {
-                    height: 500
+                    height: this.height
                 }
             });
 
@@ -479,7 +480,7 @@ export default {
                     type: 'pie',
                 },
                 size: {
-                    height: 500
+                    height: this.height
                 }
             });
 
@@ -572,7 +573,7 @@ export default {
 
                 },
                 size: {
-                    height: 500
+                    height: this.height
                 }
             });
 
@@ -590,7 +591,7 @@ export default {
 
                 },
                 size: {
-                    height: 500
+                    height: this.height
                 }
             });
 
