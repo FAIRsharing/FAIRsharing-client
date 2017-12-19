@@ -164,11 +164,11 @@
                             </div>
                             <div class="row">
                                 <div  class="col-sm-6">
-                                    <label>Taxonomies (all records)</label>
+                                    <label>Taxonomies (top ten)</label>
                                     <div id="stats_taxonomy_plot"></div>
                                 </div>
                                 <div  class="col-sm-6">
-                                    <label>Domains (all records)</label>
+                                    <label>Domains (top ten)</label>
                                     <div id="stats_domains_plot"></div>
                                 </div>
                             </div>
@@ -189,7 +189,7 @@ import * as venn from 'venn.js';
 import axios from 'axios';
 import * as d3 from 'd3';
 import c3 from 'c3';
-import { isEmpty } from 'lodash';
+import { isEmpty, toPairs, sortBy, fromPairs } from 'lodash';
 
 const PROPERTIES_TO_COMPARE = ['taxonomy', 'domains', 'standards', 'databases', 'policies'];
 
@@ -214,7 +214,8 @@ export default {
             // apiKey: null,
             // thisCollectionId: null,
             recordIds: {},
-            chart: venn.VennDiagram()
+            chart: venn.VennDiagram(),
+            loaded: false
         };
     },
 
@@ -396,7 +397,11 @@ export default {
             this.elementVis('show_stats','hide');
             this.elementVis('hide_stats','show');
             // TODO: Perhaps only run this on first show...
-            this.generalStats();
+            if (!this.loaded) {
+                console.log('Generating stats...');
+                this.generalStats();
+                this.loaded = true;
+            }
         },
 
         hideGeneralStats() {
@@ -430,9 +435,6 @@ export default {
         },
 
         generalStats() {
-
-            console.log("Trying to plot stats: ");
-
             // Total count of all three record types
             const std_count = this.thisRecord.standards.length;
             const db_count = this.thisRecord.databases.length;
@@ -538,38 +540,36 @@ export default {
                 })
 
             });
-            /*
-            console.log("Domains: " + JSON.stringify(domains));
-            console.log("Taxonomies: " + JSON.stringify(taxonomies));
-            */
 
-            // TODO: This block could perhaps be tidied up as well
-            var tax_data = [];
-            var dom_data = [];
-            var other_tax = 0;
-            var other_dom = 0;
-            for (const key in taxonomies) {
-                if (taxonomies[key] == 1) {
-                   other_tax += 1;
-                } else {
-                    tax_data.push([key, taxonomies[key]]);
-                }
+
+            // Sort the hashes, most numerous domains/taxonomies first.
+            // The ugly lodash is to be found below.
+            var tax_data = [['x', 'Taxonomies']];
+            var dom_data = [['x', 'Domains']];
+            for (const key in this.sortMostNumerous(taxonomies)) {
+               tax_data.push([key, taxonomies[key]])
             }
-            tax_data.push(['Other', other_tax])
-            for (const key in domains) {
-                if (domains[key] == 1) {
-                   other_dom += 1;
-                } else {
-                    dom_data.push([key, domains[key]]);
-                }
+            tax_data = tax_data.slice(0,10);
+
+            for (const key in this.sortMostNumerous(domains)) {
+               dom_data.push([key, domains[key]])
             }
-            dom_data.push(['Other', other_dom])
+            dom_data = dom_data.slice(0,10);
+
 
             var chart_3 = c3.generate({
                 bindto: "#stats_taxonomy_plot",
                 data: {
-                    columns: tax_data,
-                    type: 'pie',
+                        x: 'x',
+                        columns: tax_data,
+                        type: 'bar'
+
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+
                 },
                 size: {
                     height: 500
@@ -579,15 +579,25 @@ export default {
             var chart_4 = c3.generate({
                 bindto: "#stats_domains_plot",
                 data: {
+                    x: 'x',
                     columns: dom_data,
-                    type: 'pie',
+                    type: 'bar'
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
+
                 },
                 size: {
                     height: 500
                 }
             });
 
-
+        },
+        // Return 10 largest tags...
+        sortMostNumerous(type) {
+            return _(type).toPairs().sortBy(1).reverse().fromPairs().value();
         }
 
     },
