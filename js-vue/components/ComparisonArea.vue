@@ -139,36 +139,43 @@
 
         <div class="row">
             <div id='collection-stats'>
-                <div class="well">
-                    <p>Here's where the collection stats will go.</p>
+                <div class="well col-md-8 animated">
+                    <h4>General collection/recommendation statistics:</h4>
                     <div v-if="ownRecord">
-                        <p>Stats for <b>{{ thisRecord.name }}</b> ({{ thisRecord.bsg_id }}).</p>
-                        <p><button class="btn btn-success" v-on:click="showGeneralStats">Show Stats</button></p>
-                        <div class="container">
+                        <p>Stats for <b>{{ thisRecord.name }}</b> ({{ thisRecord.bsg_id }}):</p>
+                        <p>
+                            <button class="btn btn-success" v-on:click="showGeneralStats" id="show_stats">
+                                Show Stats
+                            </button>
+                            <button class="btn btn-danger hidden" v-on:click="hideGeneralStats" id="hide_stats">
+                                Hide Stats
+                            </button>
+                        </p>
+                        <div class="container hidden" id="stats_container">
                             <div class="row">
                                 <div  class="col-sm-6">
-                                    <label class="hidden statslabel">General Statistics</label>
+                                    <label>General Statistics</label>
                                     <div id="general_stats_plot"></div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <label class="hidden statslabel">Standard Types</label>
+                                    <label>Standard Types</label>
                                     <div id="standard_types_plot"></div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div  class="col-sm-6">
-                                    <label class="hidden statslabel">Taxonomies (all records)</label>
+                                    <label>Taxonomies (all records)</label>
                                     <div id="stats_taxonomy_plot"></div>
                                 </div>
                                 <div  class="col-sm-6">
-                                    <label class="hidden statslabel">Domains (all records)</label>
+                                    <label>Domains (all records)</label>
                                     <div id="stats_domains_plot"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div v-else>
-                        <p>Loading stats...</p>
+                        <p><img src="/static/img/three-dots.svg" id="stats-spinner"></p>
                     </div>
                 </div>
             </div>
@@ -385,10 +392,17 @@ export default {
         },
 
         showGeneralStats() {
-            console.log("About to show general stats.");
+            this.elementVis('stats_container','show');
+            this.elementVis('show_stats','hide');
+            this.elementVis('hide_stats','show');
+            // TODO: Perhaps only run this on first show...
             this.generalStats();
-            console.log("General stats shown!");
+        },
 
+        hideGeneralStats() {
+            this.elementVis('stats_container','hide');
+            this.elementVis('show_stats','show');
+            this.elementVis('hide_stats','hide');
         },
 
         elementVis(name, type) {
