@@ -402,6 +402,8 @@ export default {
                 console.log('Generating stats...');
                 this.generalStats();
                 this.loaded = true;
+            } else {
+                console.log('Stats already generated!');
             }
         },
 

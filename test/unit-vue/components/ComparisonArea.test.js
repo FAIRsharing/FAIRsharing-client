@@ -152,4 +152,40 @@ describe('<ComparisonArea />', function() {
 
     });
 
+    describe('generalStats()', function() {
+        let wrapper, spyShow, spyHide, spyDraw;
+
+        beforeEach(function() {
+            wrapper = mount(ComparisonArea);
+            spyShow = sinon.spy(wrapper.vm, 'showGeneralStats');
+            spyHide = sinon.spy(wrapper.vm, 'hideGeneralStats');
+            spyDraw = sinon.spy(wrapper.vm, 'generalStats');
+            const thisCollection = Object.assign(testCollection, { name: 'Foo Collection', pk: 3, bsg_id: 'bsg-c000003'});
+            wrapper.setProps({
+                thisRecord: thisCollection
+            });
+        });
+
+        /*
+        afterEach(function() {
+            spyHide.restore();
+            spyShow.restore();
+            spyDraw.restore();
+        });
+        */
+
+        it('should show and hide stats', function() {
+            expect(wrapper.vm.loaded).to.eql(false);
+            wrapper.find('#show_stats').trigger('click');
+            expect(spyShow.calledOnce).to.be.true;
+            expect(spyDraw.calledOnce).to.be.true;
+            expect(wrapper.vm.loaded).to.eql(true);
+            wrapper.find('#hide_stats').trigger('click');
+            expect(spyHide.calledOnce).to.be.true;
+
+        });
+
+
+    })
+
 });
