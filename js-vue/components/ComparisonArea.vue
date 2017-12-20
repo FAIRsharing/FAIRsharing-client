@@ -152,6 +152,7 @@
                             </button>
                         </p>
                         <div class="container hidden" id="stats_container">
+
                             <div class="row">
                                 <div  class="col-sm-6">
                                     <label>General Statistics</label>
@@ -161,7 +162,10 @@
                                     <label>Standard Types</label>
                                     <div id="standard_types_plot"></div>
                                 </div>
+                                <br/>
                             </div>
+
+
                             <div class="row">
                                 <div  class="col-sm-6">
                                     <label>Taxonomies (top ten)</label>
@@ -171,7 +175,17 @@
                                     <label>Domains (top ten)</label>
                                     <div id="stats_domains_plot"></div>
                                 </div>
+                                <br/>
                             </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label>Database Standards Support</label>
+                                    <div id="formats_supported_plot"></div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div v-else>
@@ -443,6 +457,7 @@ export default {
             const db_count = this.thisRecord.databases.length;
             const pol_count = this.thisRecord.policies.length;
 
+            // Proportion of standards, policies, databases pie chart
             var chart_1 = c3.generate({
                 bindto: "#general_stats_plot",
                 data: {
@@ -470,6 +485,7 @@ export default {
                   std_term = this.thisRecord.standards.filter(x => x.type == 'terminology artifact'),
                   std_other = this.thisRecord.standards.filter(x => x.type == 'other');
 
+            // Standard types pie chart
             var chart_2 = c3.generate({
                 bindto: "#standard_types_plot",
                 data: {
@@ -560,6 +576,7 @@ export default {
             dom_data = dom_data.slice(0,10);
 
 
+            // Taxonomies bar chart
             var chart_3 = c3.generate({
                 bindto: "#stats_taxonomy_plot",
                 data: {
@@ -579,6 +596,7 @@ export default {
                 }
             });
 
+            // Domains bar chart
             var chart_4 = c3.generate({
                 bindto: "#stats_domains_plot",
                 data: {
@@ -591,6 +609,47 @@ export default {
                         type: 'category'
                     }
 
+                },
+                size: {
+                    height: this.height
+                }
+            });
+
+            // Formats supported by databases
+            let count_go = 0;
+            let count_isa = 0;
+            let count_miame = 0;
+            let count_none = 0;
+            this.thisRecord.databases.forEach(function(db) {
+                db.standardsImplemented.forEach(function(standard) {
+                    switch(standard.data.bsg_id) {
+                       case 'bsg-s000177':
+                           count_miame += 1;
+                           break;
+                       case 'bsg-s000078':
+                           count_isa += 1;
+                           break;
+                       case 'bsg-s000089':
+                           count_go += 1;
+                           break;
+                       default:
+                           count_none += 1;
+                           break;
+                   }
+                })
+            });
+
+            // Another pie chart for the above.
+            var chart_5 = c3.generate({
+                bindto: "#formats_supported_plot",
+                data: {
+                    columns: [
+                        ['MIAME', count_miame],
+                        ['ISA-TAB',count_isa],
+                        ['Gene Ontology', count_go],
+                        ['None', count_none]
+                    ],
+                    type: 'pie',
                 },
                 size: {
                     height: this.height
