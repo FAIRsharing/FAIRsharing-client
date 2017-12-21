@@ -655,7 +655,6 @@ export default {
                     height: this.height
                 }
             });
-
         },
         // Return 10 largest tags...
         sortMostNumerous(type) {
