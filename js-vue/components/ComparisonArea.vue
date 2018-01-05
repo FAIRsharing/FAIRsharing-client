@@ -701,7 +701,7 @@ export default {
 
         policies: function() {
             return this.objectDifferences('policies');
-        }
+        },
 
     },
 
