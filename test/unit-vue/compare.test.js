@@ -62,7 +62,7 @@ describe('<CompareMain />', function() {
         mock.onGet('/api/collection/summary/').reply(200, collectionListApiResponse);
 
         mock.onGet(/\/api\/collection\/bsg-c\d{6}/).reply(config  => {
-            console.log(config);
+            console.log(config)
             return [200, {}];
         });
     });

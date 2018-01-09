@@ -271,6 +271,9 @@ export default {
         },
 
         fieldDifferences(field) {
+            if (this.otherRecord === null) {
+                return {}
+            }
             const thisone = this.thisRecord[field],
                 otherone = this.otherRecord[field];
             const thisonly = thisone.filter(x => otherone.indexOf(x) === -1),
@@ -285,6 +288,9 @@ export default {
         },
 
         objectDifferences(field) {
+            if (this.otherRecord === null) {
+                return {}
+            }
             const thisone = this.thisRecord[field].map(x => x.name),
                 otherone = this.otherRecord[field].map(x => x.name);
             const thisonly = thisone.filter(x => otherone.indexOf(x) === -1),
@@ -674,6 +680,9 @@ export default {
             return false;
         },
         selfComparison: function() {
+            if (this.otherRecord === null) {
+                return false;
+            }
             return this.thisRecord.bsg_id === this.otherRecord.bsg_id;
         },
 

@@ -1,6 +1,6 @@
 <template>
     <div>
-         <div v-bind:id='id' class='alert alert-primary' style='margin: 5px;'>
+         <div v-bind:id='id' class='alert alert-primary recordcomparison' style='margin: 5px;'>
              <p><b>{{ title }}:</b></p>
              <p>{{ currentName }} only ({{ current.length }}):</p>
              <p>

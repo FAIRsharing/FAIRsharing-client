@@ -128,7 +128,8 @@ describe('<ComparisonArea />', function() {
         });
 
         it('should not display any comparison items on first render', function() {
-            expect(wrapper.contains(RecordComparison)).to.be.false;
+            //expect(wrapper.contains(RecordComparison)).to.be.false;
+            expect(wrapper.contains('.recordcomparison')).to.be.false;
         });
 
         it('should display the comparison well after the comparison is triggered', function(done) {
