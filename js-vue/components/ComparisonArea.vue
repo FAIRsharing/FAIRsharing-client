@@ -181,7 +181,7 @@
 
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <label>Database Standards Support</label>
+                                    <label>Database Standards Support (top ten)</label>
                                     <div id="formats_supported_plot"></div>
                                 </div>
                             </div>
@@ -509,6 +509,7 @@ export default {
             // TODO: Re-write all the forEach calls in a more elegant manner...
             let taxonomies = {};
             let domains = {};
+            let standards = {};
             this.thisRecord.standards.forEach(function(s) {
                 s.taxonomies.forEach(function(t) {
                     if (taxonomies[t]) {
@@ -608,7 +609,6 @@ export default {
                     x: {
                         type: 'category'
                     }
-
                 },
                 size: {
                     height: this.height
@@ -616,40 +616,34 @@ export default {
             });
 
             // Formats supported by databases
-            let count_go = 0;
-            let count_isa = 0;
-            let count_miame = 0;
-            let count_none = 0;
+            var standards_implemented = [['x', 'Standards Implemented']];
             this.thisRecord.databases.forEach(function(db) {
                 db.standardsImplemented.forEach(function(standard) {
-                    switch(standard.data.bsg_id) {
-                       case 'bsg-s000177':
-                           count_miame += 1;
-                           break;
-                       case 'bsg-s000078':
-                           count_isa += 1;
-                           break;
-                       case 'bsg-s000089':
-                           count_go += 1;
-                           break;
-                       default:
-                           count_none += 1;
-                           break;
-                   }
+                    let name = standard.data.name;
+                    if (standards[name]) {
+                        standards[name] += 1
+                    } else {
+                        standards[name] = 1
+                    }
                 })
             });
+            for (const key in this.sortMostNumerous(standards)) {
+                standards_implemented.push([key, standards[key]])
+            }
+            standards_implemented = standards_implemented.slice(0,10);
 
             // Another pie chart for the above.
             var chart_5 = c3.generate({
                 bindto: "#formats_supported_plot",
                 data: {
-                    columns: [
-                        ['MIAME', count_miame],
-                        ['ISA-TAB',count_isa],
-                        ['Gene Ontology', count_go],
-                        ['None', count_none]
-                    ],
-                    type: 'pie',
+                    x: 'x',
+                    columns: standards_implemented,
+                    type: 'bar'
+                },
+                axis: {
+                    x: {
+                        type: 'category'
+                    }
                 },
                 size: {
                     height: this.height
