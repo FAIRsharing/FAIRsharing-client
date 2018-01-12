@@ -274,20 +274,8 @@ export default {
             if (this.otherRecord === null) {
                 return {}
             }
-            // We must look at the master policy for recommendations rather than the directly-linked records.
-            if (this.thisRecord.recommendation === true) {
-                console.log(this.thisRecord.bsg_id + " is a recommendation");
-            } else {
-                console.log(this.thisRecord.bsg_id + " is a collection");
-                const thisone = this.thisRecord[field];
-            }
-            if (this.otherRecord.recommendation === true) {
-                console.log(this.thisRecord.bsg_id + " is a recommendation");
-
-            } else {
-                console.log(this.thisRecord.bsg_id + " is a collection");
-                const otherone = this.otherRecord[field];
-            }
+            const thisone = this.thisRecord[field],
+                otherone = this.otherRecord[field];
 
             const thisonly = thisone.filter(x => otherone.indexOf(x) === -1),
                 otheronly = otherone.filter(x => thisone.indexOf(x) === -1),
@@ -304,16 +292,57 @@ export default {
             if (this.otherRecord === null) {
                 return {}
             }
-            const thisone = this.thisRecord[field].map(x => x.name),
+            var thisone, otherone;
+            if (this.thisRecord.recommendation === true) {
+                console.log(this.thisRecord.name + " is a recommendation");
+                thisone = this.convertRecommendation(this.thisRecord, field);
+            } else {
+                console.log(this.thisRecord.name + " is a collection");
+                thisone = this.thisRecord[field].map(x => x.name);
+            }
+            if (this.otherRecord.recommendation === true) {
+                console.log(this.otherRecord.name + " is a recommendation");
+                otherone = this.convertRecommendation(this.thisRecord, field);
+
+            } else {
+                console.log(this.otherRecord.name + " is a collection");
                 otherone = this.otherRecord[field].map(x => x.name);
+            }
+
             const thisonly = thisone.filter(x => otherone.indexOf(x) === -1),
                 otheronly = otherone.filter(x => thisone.indexOf(x) === -1),
                 both = thisone.filter(x => otherone.includes(x));
+
             return {
                 'current': thisonly,
                 'other': otheronly,
                 'both': both,
             };
+        },
+
+        convertRecommendation(record, field) {
+            const self = this;
+            var names = [];
+            record.master_policies.forEach(function(policy) {
+                policy[self.fieldConversion(field)].forEach(function(record){
+                    if (names.indexOf(record.data.name) === -1) {
+                        names.push(record.data.name);
+                    }
+                })
+            });
+            return names;
+
+        },
+
+        // convert a collection's data field name to that of a  policy
+        fieldConversion(field) {
+            const lookup = {
+                'standards': 'std_implementation',
+                'databases': 'db_implementation',
+                'policies': 'related_policies',
+            };
+            return lookup[field];
+
         },
 
         plotGraphs() {
@@ -471,13 +500,19 @@ export default {
         },
 
         generalStats() {
+            const recommendation = this.thisRecord.recommendation;
+            var std_count, db_count, pol_count;
             // Total count of all three record types
-            const std_count = this.thisRecord.standards.length;
-            const db_count = this.thisRecord.databases.length;
-            const pol_count = this.thisRecord.policies.length;
+            if (recommendation === true) {
+                std_count = this.convertRecommendation(this.thisRecord, 'standards').length;
+                db_count = this.convertRecommendation(this.thisRecord, 'databases').length;
+                pol_count = this.convertRecommendation(this.thisRecord, 'policies').length;
 
-
-            console.log("This: " + JSON.stringify(this.thisRecord));
+            } else {
+                std_count = this.thisRecord.standards.length;
+                db_count = this.thisRecord.databases.length;
+                pol_count = this.thisRecord.policies.length;
+            }
 
             // Proportion of standards, policies, databases pie chart
             var chart_1 = c3.generate({
@@ -503,10 +538,62 @@ export default {
              * terminology artifact
              * other
              */
-            const std_model = this.thisRecord.standards.filter(x => x.type == 'model/format'),
-                  std_report = this.thisRecord.standards.filter(x => x.type == 'reporting guideline'),
-                  std_term = this.thisRecord.standards.filter(x => x.type == 'terminology artifact'),
-                  std_other = this.thisRecord.standards.filter(x => x.type == 'other');
+            var std_model, std_report, std_term, std_other;
+            var this_standards, this_databases, this_policies;
+            var this_database_names = [];
+            var this_standard_names = [];
+            var this_policy_names = [];
+
+            // Later, tags from standards, databases and policies are needed for plotting the first two bar charts.
+            // This is a preparation for that step.
+            if (recommendation === true) {
+                this_standards = [];
+                this_databases = [];
+                this_policies = [];
+            } else {
+                this_standards = this.thisRecord.standards;
+                this_databases = this.thisRecord.databases;
+                this_policies = this.thisRecord.policies;
+            }
+
+
+
+            /*
+             * At this point some conversions are done which are used for later graphs, as it is convenient to get
+             * them all out of the way whilst looping through to sort out standards.
+             */
+            if (recommendation === true) {
+                var self = this;
+                this.thisRecord.master_policies.forEach(function(policy) {
+                    policy[self.fieldConversion('standards')].forEach(function(record){
+                        if (this_standard_names.indexOf(record.data.name) === -1) {
+                            this_standard_names.push(record.data.name);
+                            this_standards.push(record.data);
+                        }
+                    });
+                    policy[self.fieldConversion('databases')].forEach(function(record){
+                        if (this_database_names.indexOf(record.data.name) === -1) {
+                            this_database_names.push(record.data.name);
+                            this_databases.push(record.data);
+                        }
+                    });
+                    policy[self.fieldConversion('policies')].forEach(function(record){
+                        if (this_policy_names.indexOf(record.data.name) === -1) {
+                            this_policy_names.push(record.data.name);
+                            this_policies.push(record.data);
+                        }
+                    });
+                });
+                std_model = this_standards.filter(x => x.type == 'model/format');
+                std_report = this_standards.filter(x => x.type == 'reporting guideline');
+                std_term = this_standards.filter(x => x.type == 'terminology artifact');
+                std_other = this_standards.filter(x => x.type == 'other');
+            } else {
+                std_model = this.thisRecord.standards.filter(x => x.type == 'model/format');
+                std_report = this.thisRecord.standards.filter(x => x.type == 'reporting guideline');
+                std_term = this.thisRecord.standards.filter(x => x.type == 'terminology artifact');
+                std_other = this.thisRecord.standards.filter(x => x.type == 'other');
+            }
 
             // Standard types pie chart
             var chart_2 = c3.generate({
@@ -533,7 +620,7 @@ export default {
             let taxonomies = {};
             let domains = {};
             let standards = {};
-            this.thisRecord.standards.forEach(function(s) {
+            this_standards.forEach(function(s) {
                 s.taxonomies.forEach(function(t) {
                     if (taxonomies[t]) {
                         taxonomies[t] += 1
@@ -549,7 +636,7 @@ export default {
                     }
                 })
             });
-            this.thisRecord.policies.forEach(function(p) {
+            this_policies.forEach(function(p) {
                 p.taxonomies.forEach(function(t) {
                     if (taxonomies[t]) {
                         taxonomies[t] += 1
@@ -566,7 +653,7 @@ export default {
                 })
 
             });
-            this.thisRecord.databases.forEach(function(d) {
+            this_databases.forEach(function(d) {
                 d.taxonomies.forEach(function(t) {
                     if (taxonomies[t]) {
                         taxonomies[t] += 1
@@ -640,7 +727,7 @@ export default {
 
             // Formats supported by databases
             var standards_implemented = [['x', 'Standards Implemented']];
-            this.thisRecord.databases.forEach(function(db) {
+            this_databases.forEach(function(db) {
                 db.standardsImplemented.forEach(function(standard) {
                     let name = standard.data.name;
                     if (standards[name]) {
