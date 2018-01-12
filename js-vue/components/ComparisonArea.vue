@@ -274,8 +274,21 @@ export default {
             if (this.otherRecord === null) {
                 return {}
             }
-            const thisone = this.thisRecord[field],
-                otherone = this.otherRecord[field];
+            // We must look at the master policy for recommendations rather than the directly-linked records.
+            if (this.thisRecord.recommendation === true) {
+                console.log(this.thisRecord.bsg_id + " is a recommendation");
+            } else {
+                console.log(this.thisRecord.bsg_id + " is a collection");
+                const thisone = this.thisRecord[field];
+            }
+            if (this.otherRecord.recommendation === true) {
+                console.log(this.thisRecord.bsg_id + " is a recommendation");
+
+            } else {
+                console.log(this.thisRecord.bsg_id + " is a collection");
+                const otherone = this.otherRecord[field];
+            }
+
             const thisonly = thisone.filter(x => otherone.indexOf(x) === -1),
                 otheronly = otherone.filter(x => thisone.indexOf(x) === -1),
                 both = thisone.filter(x => otherone.includes(x));
