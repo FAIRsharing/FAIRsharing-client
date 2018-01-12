@@ -463,6 +463,9 @@ export default {
             const db_count = this.thisRecord.databases.length;
             const pol_count = this.thisRecord.policies.length;
 
+
+            console.log("This: " + JSON.stringify(this.thisRecord));
+
             // Proportion of standards, policies, databases pie chart
             var chart_1 = c3.generate({
                 bindto: "#general_stats_plot",
@@ -478,6 +481,7 @@ export default {
                     height: this.height
                 }
             });
+
 
             // Count of standards by type:
             /*
