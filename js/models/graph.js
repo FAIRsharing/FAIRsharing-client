@@ -409,64 +409,64 @@ export class CytoscapeStrategy extends AbstractGraphStrategy {
             selectionType: 'single',
 
             style: cytoscape.stylesheet()
-            .selector('node')
-            .style({
-                'shape': 'data(shape)',
-                'height': scaleNodes,
-                'width': scaleNodes,
-                // colour of the node body
-                'background-color': function (ele) {
-                    return ele.data('_color') || 'grey';
-                },
-                'content': function (ele) {
-                    if (ele.data('label') === 'BiosharingCollection') {
-                        return ele.data('name');
-                    }
-                    return ele.data('shortname') || ele.data('name');
-                },
-                // node label (i.e. text element) colour
-                'color': function (ele) {
-                    return ele.data('path_length') < EDGE_SHADOW_DEPTH ? 'Black' : 'DimGrey';
-                    // return ele.data('path_length') < NODE_SHADOW_DEPTH ? 'Black' : ele.data('_color');
-                },
-                'font-size': scaleText,
-                'text-valign': 'center',
-                /*
-                'text-outline-width': function(ele) {
-                    // return ele.data('path_length') < 2 ? 2 : 1;
-                    return 0;
-                },
-                'text-outline-color': function (ele) {
-                    return ele.data('path_length') < 2 ? 'DimGrey' : 'DarkGrey';
-                    // return 'Black';
-                },
-                'border-width': function(ele) {
-                    // return ele.data('path_length') < 2 ? 2 : 1;
-                    return 0;
-                },
-                // colour of the node border
-                'border-color': function (ele) {
-                    return ele.data('path_length') < 2 ? 'DimGrey' : 'LightGrey';
-                    // return 'Grey';
-                },
-                */
-                'text-halign': 'right'
-            })
+                .selector('node')
+                .style({
+                    'shape': 'data(shape)',
+                    'height': scaleNodes,
+                    'width': scaleNodes,
+                    // colour of the node body
+                    'background-color': function (ele) {
+                        return ele.data('_color') || 'grey';
+                    },
+                    'content': function (ele) {
+                        if (ele.data('label') === 'BiosharingCollection') {
+                            return ele.data('name');
+                        }
+                        return ele.data('shortname') || ele.data('name');
+                    },
+                    // node label (i.e. text element) colour
+                    'color': function (ele) {
+                        return ele.data('path_length') < EDGE_SHADOW_DEPTH ? 'Black' : 'DimGrey';
+                        // return ele.data('path_length') < NODE_SHADOW_DEPTH ? 'Black' : ele.data('_color');
+                    },
+                    'font-size': scaleText,
+                    'text-valign': 'center',
+                    /*
+                    'text-outline-width': function(ele) {
+                        // return ele.data('path_length') < 2 ? 2 : 1;
+                        return 0;
+                    },
+                    'text-outline-color': function (ele) {
+                        return ele.data('path_length') < 2 ? 'DimGrey' : 'DarkGrey';
+                        // return 'Black';
+                    },
+                    'border-width': function(ele) {
+                        // return ele.data('path_length') < 2 ? 2 : 1;
+                        return 0;
+                    },
+                    // colour of the node border
+                    'border-color': function (ele) {
+                        return ele.data('path_length') < 2 ? 'DimGrey' : 'LightGrey';
+                        // return 'Grey';
+                    },
+                    */
+                    'text-halign': 'right'
+                })
 
-            .selector('edge')
-            .style({
-                'curve-style': 'haystack',
-                'haystack-radius': 0,
-                'width': function(ele) {
-                    return ele.data('in_collection') ? 2 : 1;
-                },
-                'line-color': function (ele) {
-                    return ele.data('_color') || 'grey';
-                },
-                opacity: 0.5,
-                'target-arrow-color': '#ccc',
-                'target-arrow-shape': 'none'
-            }),
+                .selector('edge')
+                .style({
+                    'curve-style': 'haystack',
+                    'haystack-radius': 0,
+                    'width': function(ele) {
+                        return ele.data('in_collection') ? 2 : 1;
+                    },
+                    'line-color': function (ele) {
+                        return ele.data('_color') || 'grey';
+                    },
+                    opacity: 0.5,
+                    'target-arrow-color': '#ccc',
+                    'target-arrow-shape': 'none'
+                }),
 
             // pan options
             pan: { x: 0, y: 0 },

@@ -112,9 +112,9 @@ export class GraphMainBox extends React.Component {
                                 depth={layout.depth} depthCheckboxChange={this.props.depthCheckboxChange}
                                 isTagsPanelVisible={layout.isTagsPanelVisible}
                                 tagsVisibilityCheckboxChange={this.props.tagsVisibilityCheckboxChange}
-                                />
-                                <StatsBox handler={this.handler} reload={reload}/>
-                                <Legend title='Legend' items={uniq(map(this.handler.edges, 'relationship'))} />
+                            />
+                            <StatsBox handler={this.handler} reload={reload}/>
+                            <Legend title='Legend' items={uniq(map(this.handler.edges, 'relationship'))} />
                         </Row>
                     </Col>
                     <Col sm={9} xs={12} >
@@ -388,7 +388,7 @@ export class TableBox extends React.Component {
             </div>
             <div>
                 <p className='bs-table-box-count'>{data.length === lenWithTagsUnfiltered ? `${data.length} results found.` : `${data.length} out of ${lenWithTagsUnfiltered} results found`}</p>
-                <ButtonToolbar>
+                <ButtonToolbar style={{marginBottom: '5px'}}>
                     <Button bsStyle='warning' onClick={resetGraph}>Reset Table</Button>
                 </ButtonToolbar>
                 {selectedTags}<br />
