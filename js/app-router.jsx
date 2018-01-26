@@ -2,11 +2,11 @@
  * Created by massi on 25/04/2016.
  */
 import React from 'react';
-import { Router, Route, hashHistory } from 'react-router';
+import { HashRouter as Router, Route } from 'react-router-dom';
 import DatabaseEditContainer from './components/containers/database-container';
 
 export default (
-    <Router history={hashHistory}>
+    <Router>
         <Route path="database">
             <Route path="edit">
                 <Route path=":biodbcoreId" component={DatabaseEditContainer} />

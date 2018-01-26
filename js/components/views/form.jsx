@@ -28,7 +28,7 @@ function fieldShallowEquals(field, nextField) {
     return true;
 }
 
- /**
+/**
  * @method
  * @name shouldFormFieldUpdate
  * @param{Object} nextProps
@@ -264,17 +264,18 @@ export class ReactSelectAsyncComponent extends React.Component {
 
     loadOptions(str) {
         const { getOptions } = this.props;
-        return Promise.resolve(str).then(pattern => {
-            if (pattern && pattern.length >= 3) {
-                return getOptions(str);
-            }
-            return [];
-        })
-        .then(fetchedOpts => {
-            return {
-                options: fetchedOpts
-            };
-        });
+        return Promise.resolve(str)
+            .then(pattern => {
+                if (pattern && pattern.length >= 3) {
+                    return getOptions(str);
+                }
+                return [];
+            })
+            .then(fetchedOpts => {
+                return {
+                    options: fetchedOpts
+                };
+            });
     }
 
     onChange(selected) {
@@ -302,7 +303,7 @@ export class ReactSelectAsyncComponent extends React.Component {
             : <ReactSelect.Async multi {...selectProps} />;
     }
 
- }
+}
 
 /**
  * @class

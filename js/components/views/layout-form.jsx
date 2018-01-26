@@ -4,7 +4,7 @@
 import 'react-select/scss/default.scss';
 import '../../../styles/main.scss';
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 // import Select from 'react-select';
 import { Col } from 'react-bootstrap';
 import { GRAPH_LAYOUTS, TAG_TYPES, ENTITY_LABELS_PLURAL} from '../../utils/api-constants';
@@ -13,9 +13,9 @@ import { values } from 'lodash';
 //const CHECKBOXES = _.values(BIOSHARING_ENTITIES);
 const TAGS_SELECTS = values(TAG_TYPES);
 
-const Checkbox = React.createClass({
+class Checkbox extends React.Component {
 
-    render: function () {
+    render() {
 
         return (
             <label className="checkbox-inline" style={this.props.labelStyle}>
@@ -28,7 +28,7 @@ const Checkbox = React.createClass({
 
     }
 
-});
+}
 
 /*
 const TagsSelect = React.createClass({
@@ -54,13 +54,24 @@ const TagsSelect = React.createClass({
 
 }); */
 
-const LayoutForm = React.createClass({
-    /*
-    inlineStyle: {
-        backgroundColor: '#f3ffff'
-    }, */
+export class LayoutForm extends React.Component {
 
-    _toggleTagsSelectVisibility: function (ev) {
+    constructor() {
+        super();
+        this._toggleTagsSelectVisibility = this._toggleTagsSelectVisibility.bind(this);
+    }
+
+    static propTypes = {
+        layoutName: PropTypes.string.isRequired,
+        visibility: PropTypes.object.isRequired,
+        depth: PropTypes.number.isRequired,
+        handleLayoutChange: PropTypes.func.isRequired,
+        visibilityCheckboxChange: PropTypes.func.isRequired,
+        depthCheckboxChange: PropTypes.func.isRequired,
+        isTagsPanelVisible: PropTypes.func.isRequired
+    }
+
+    _toggleTagsSelectVisibility(ev) {
         const toggledCnt = this.refs[ev.target.value];
         if (ev.target.checked) {
             toggledCnt.style.display = '';
@@ -68,9 +79,9 @@ const LayoutForm = React.createClass({
         else {
             toggledCnt.style.display = 'none';
         }
-    },
+    }
 
-    render: function() {
+    render() {
 
         const optList = [], tagSelectsList = [], innerCheckboxes = [], outerCheckboxes = [];
         const options = Object.keys(GRAPH_LAYOUTS).map(key => GRAPH_LAYOUTS[key]);
@@ -144,6 +155,6 @@ const LayoutForm = React.createClass({
 
     }
 
-});
+}
 
 export default LayoutForm;

@@ -76,6 +76,7 @@ describe('<ComparisonArea />', function() {
         });
 
         it('should store the remotely retrieved collection as otherRecord', function(done) {
+            this.timeout(5000);
             wrapper.vm.getOther().then(() => {
                 expect(wrapper.vm.otherRecord).to.eql(testCollection);
                 done();

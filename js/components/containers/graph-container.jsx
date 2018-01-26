@@ -33,7 +33,7 @@ const modalStyles = {overlay: {zIndex: 10}};
  * @prop{Object} graph - containing an array of nodes and an array of edges
  * @prop{Object} layout - describes the layout used to display the graph, and which parts of the graph are actually shown (to be refactored?)
  */
-class GraphContainer extends React.Component {
+export class GraphContainer extends React.Component {
 
     constructor(props) {
         super(props);
@@ -66,7 +66,7 @@ class GraphContainer extends React.Component {
     }
 
     componentDidMount() {
-        const graphId = this.props.params.graphId;
+        const { match: { params: { graphId } = {} } = {} } = this.props;
         graphApi.getGraph(graphId);
     }
 

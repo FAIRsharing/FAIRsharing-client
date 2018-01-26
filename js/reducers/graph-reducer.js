@@ -11,7 +11,7 @@ values(TAG_TYPES).forEach(tagType => tagSelectorObj[tagType.value] = tagType.ini
 /**
  * @description the initial state of the graph visualizer  application
  */
-const initialState = {
+export const initialState = {
     graph: {
         nodes: [],
         edges: []
