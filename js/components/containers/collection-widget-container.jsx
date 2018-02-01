@@ -388,7 +388,7 @@ export class TableBox extends React.Component {
             </div>
             <div>
                 <p className='bs-table-box-count'>{data.length === lenWithTagsUnfiltered ? `${data.length} results found.` : `${data.length} out of ${lenWithTagsUnfiltered} results found`}</p>
-                <ButtonToolbar style={{marginBottom: '5px'}}>
+                <ButtonToolbar className='bs-button-toolbar'>
                     <Button bsStyle='warning' onClick={resetGraph}>Reset Table</Button>
                 </ButtonToolbar>
                 {selectedTags}<br />

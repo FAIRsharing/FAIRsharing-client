@@ -18,7 +18,8 @@ const EDGE_SHADOW_DEPTH = 2;
  * @description scales the node size based on the pathLength (at the moment is disabled)
  */
 function scaleNodeOnPathLength(pathLength) {
-    const scaleFactor = pathLength === 0 ? 1 : pathLength;
+    // const scaleFactor = pathLength === 0 ? 1 : pathLength;
+    const scaleFactor = pathLength;
     return 32/Math.pow(scaleFactor+1, 1);
 }
 
@@ -26,8 +27,8 @@ function scaleNodeOnPathLength(pathLength) {
  * @description scales the label size based on the pathLength (at the moment is disabled)
  */
 function scaleTextOnPathLength(pathLength) {
-    // const scaleFactor = ele.data('path_length') === 0 ? 1 : ele.data('path_length');
-    const scaleFactor = 1;
+    const scaleFactor = pathLength === 0 ? 0.4 : 1; //1 : ele.data('path_length');
+    // const scaleFactor = 1;
     return 20/Math.pow(scaleFactor+1, 1);
 }
 
