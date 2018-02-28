@@ -743,22 +743,28 @@ export default {
             standards_implemented = standards_implemented.slice(0,10);
 
             // Another pie chart for the above.
-            var chart_5 = c3.generate({
-                bindto: "#formats_supported_plot",
-                data: {
-                    x: 'x',
-                    columns: standards_implemented,
-                    type: 'bar'
-                },
-                axis: {
-                    x: {
-                        type: 'category'
+            // Don't display if there's only 1 element, i.e. the title, on occasions where no standards are present.
+            console.log("STD: " + JSON.stringify(standards_implemented));
+            if (standards_implemented.length > 1) {
+                var chart_5 = c3.generate({
+                    bindto: "#formats_supported_plot",
+                    data: {
+                        x: 'x',
+                        columns: standards_implemented,
+                        type: 'bar'
+                    },
+                    axis: {
+                        x: {
+                            type: 'category'
+                        }
+                    },
+                    size: {
+                        height: this.height
                     }
-                },
-                size: {
-                    height: this.height
-                }
-            });
+                });
+            } else {
+                document.getElementById("formats_supported_plot").innerHTML = "<i>This collection does not contain any databases; the plot of database standards supported is therefore unavailable.</i>";
+            }
         },
         // Return 10 largest tags...
         sortMostNumerous(type) {
