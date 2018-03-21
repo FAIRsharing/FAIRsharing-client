@@ -214,6 +214,13 @@ export class TableBox extends React.Component {
         }
     }
 
+    /**
+     * @method
+     * @private
+     * @name _getSelectedTags
+     * @description Retruns a div containing an <ul> element with a list of all the selected tags (as <li> elements)
+     * @returns{Object} <div /> component
+     */
     _getSelectedTags() {
         const { tags: { domains = {}, taxonomies = {} } = {} } = this.props, selectedTagsList = [];
         const selectedDomains = domains.selected;
@@ -231,6 +238,10 @@ export class TableBox extends React.Component {
         </div> : null;
     }
 
+    /**
+     * @method
+     * @description standard React.Component method. It is executed anytime the state of the application (as stored in Redux) is modified by an action.
+     */
     render() {
         const { host, rows, tags = {}, visibility = {}, depth = 1, tagsChange, resetGraph, tableStyle = null } = this.props,
             { statusMap, repositoryMap } = this.constructor;
@@ -421,6 +432,13 @@ export class TableBox extends React.Component {
 
 }
 
+/**
+ * @class
+ * @name DocumentationContainer
+ * @extends React.Component
+ * @description container for displaying the widget Documentation
+ * @prop{String} host - the root URL of the application (i.e. https://fairsharing.org on production)
+ */
 class DocumentationContainer extends React.Component {
 
     render() {
@@ -457,7 +475,7 @@ class DocumentationContainer extends React.Component {
  * @class
  * @name CollectionWidgetContainer
  * @extends React.Component
- * @description container class for the Graph visualizer
+ * @description container class for the Graph visualizer in the widget
  * @prop{Object} graph - containing an array of nodes and an array of edges
  * @prop{Object} layout - describes the layout used to display the graph, and which parts of the graph are actually shown (to be refactored?)
  */
@@ -507,6 +525,10 @@ export class CollectionWidgetContainer extends React.Component {
         resetGraph: PropTypes.func.isRequired
     }
 
+    /**
+     * @method
+     * @description standard React.Component method. It is executed anytime the state of the application (as stored in Redux) is modified by an action.
+     */
     render() {
 
         const { host, graph: { nodes = [] } = {}, layout: { depth = 2, tags = {}, visibility = {} } = {}, isFetching, error, tagsChange, resetGraph, tableStyle } = this.props;
