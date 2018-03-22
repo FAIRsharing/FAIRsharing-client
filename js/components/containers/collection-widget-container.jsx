@@ -1,5 +1,16 @@
 /**
-* Created by massi on 25/04/2016.
+* @module
+* @name collection-widget-container
+* @author massi
+* @description This is the main container for the widget. It consists of a toplevel component (CollectionWidgetContainer)
+               with three subcomponent:
+               - TableBox: provides the tabular view to the collection/recommendation
+               - GraphMainBox: provides the tabular view to the collection/recommendation
+               - DocumentationContainer: provides the documentation on how to use the Widget
+* @exports CollectionWidgetContainer
+* @exports GraphMainBox
+* @exports TableBox
+* @exports DocumentationContainer
 */
 import 'bootstrap-loader';
 import '../../../styles/graph.scss';
@@ -138,6 +149,10 @@ export class GraphMainBox extends React.Component {
  * @name TableBox
  * @extends React.Component
  * @description main component for the table view of the graph data
+ * @prop{String} host - the root URL of the application (i.e. https://fairsharing.org on production). This field is required.
+ * @prop{Object} tableStyle - a Jasvascript styling configuration to pass styles to the table
+ * @prop{Array} rows - an array of objects (i.e. records) that will be displayed in the table. This field is required.
+ * @prop{Array} depth - the path legth from the central (collection or master-policy) node. Defaults to 1
  */
 export class TableBox extends React.Component {
 
@@ -476,6 +491,10 @@ class DocumentationContainer extends React.Component {
  * @name CollectionWidgetContainer
  * @extends React.Component
  * @description container class for the Graph visualizer in the widget
+ * @prop{String} collectionId - the collection or recommendation identifier. This field is required.
+ * @prop{String} host - the root URL of the application (i.e. https://fairsharing.org on production). This field is required.
+ * @prop{String} apiKey - the key to access the FAIRsharing API. This field is required.
+ * @prop{Object} tableStyle - a Jasvascript styling configuration to pass styles to the table
  * @prop{Object} graph - containing an array of nodes and an array of edges
  * @prop{Object} layout - describes the layout used to display the graph, and which parts of the graph are actually shown (to be refactored?)
  */
@@ -624,7 +643,7 @@ const mapStateToProps = function(store) {
 /**
 * @method
 * @name mapDispatchToProps
-* @param dispatch
+* @param{function} dispatch
 * @description maps a number of functions used to dispatch actions for the Reduce to the props of the GraphContainer class
 * @returns Object {{handleLayoutChange: (function()), visibilityCheckboxChange: (function())}}
 */
