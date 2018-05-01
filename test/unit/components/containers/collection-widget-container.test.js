@@ -6,7 +6,7 @@ import React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { CollectionWidgetContainer, GraphMainBox, TableBox } from '../../../../js/components/containers/collection-widget-container';
+import { CollectionWidgetContainer, GraphPanel, TablePanel } from '../../../../js/components/containers/collection-widget-container';
 import * as api from '../../../../js/api/graph-api';
 
 describe('<CollectionWidgetContainer />', function() {
@@ -30,8 +30,8 @@ describe('<CollectionWidgetContainer />', function() {
     });
 
     it('should correctly instantiate the widget container', function() {
-        expect(wrapper.find(GraphMainBox)).to.have.lengthOf(1);
-        expect(wrapper.find(TableBox)).to.have.lengthOf(1);
+        expect(wrapper.find(GraphPanel)).to.have.lengthOf(1);
+        expect(wrapper.find(TablePanel)).to.have.lengthOf(1);
     });
 
 });

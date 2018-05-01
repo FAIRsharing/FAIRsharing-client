@@ -4,13 +4,13 @@
 * @author massi
 * @description This is the main container for the widget. It consists of a toplevel component (CollectionWidgetContainer)
                with three subcomponent:
-               - TableBox: provides the tabular view to the collection/recommendation
-               - GraphMainBox: provides the tabular view to the collection/recommendation
-               - DocumentationContainer: provides the documentation on how to use the Widget
+               - TablePanel: provides the tabular view to the collection/recommendation
+               - GraphPanel: provides the tabular view to the collection/recommendation
+               - DocumentationPanel: provides the documentation on how to use the Widget
 * @exports CollectionWidgetContainer
-* @exports GraphMainBox
-* @exports TableBox
-* @exports DocumentationContainer
+* @exports GraphPanel
+* @exports TablePanel
+* @exports DocumentationPanel
 */
 import 'bootstrap-loader';
 import '../../../styles/graph.scss';
@@ -49,13 +49,13 @@ import * as actions from '../../actions/graph-actions';
 
 /**
  * @class
- * @name GraphMainBox
+ * @name GraphPanel
  * @extends React.Component
  * @description container class for the Graph visualizer
  * @prop{Object} graph - containing an array of nodes and an array of edges
  * @prop{Object} layout - describes the layout used to display the graph, and which parts of the graph are actually shown (to be refactored?)
  */
-export class GraphMainBox extends React.Component {
+export class GraphPanel extends React.Component {
 
     static propTypes = {
         // collectionId: PropTypes.string.isRequired,
@@ -146,7 +146,7 @@ export class GraphMainBox extends React.Component {
 
 /**
  * @class
- * @name TableBox
+ * @name TablePanel
  * @extends React.Component
  * @description main component for the table view of the graph data
  * @prop{String} host - the root URL of the application (i.e. https://fairsharing.org on production). This field is required.
@@ -154,7 +154,7 @@ export class GraphMainBox extends React.Component {
  * @prop{Array} rows - an array of objects (i.e. records) that will be displayed in the table. This field is required.
  * @prop{Array} depth - the path legth from the central (collection or master-policy) node. Defaults to 1
  */
-export class TableBox extends React.Component {
+export class TablePanel extends React.Component {
 
     constructor(props) {
         super(props);
@@ -449,12 +449,12 @@ export class TableBox extends React.Component {
 
 /**
  * @class
- * @name DocumentationContainer
+ * @name DocumentationPanel
  * @extends React.Component
  * @description container for displaying the widget Documentation
  * @prop{String} host - the root URL of the application (i.e. https://fairsharing.org on production)
  */
-class DocumentationContainer extends React.Component {
+class DocumentationPanel extends React.Component {
 
     render() {
         const { host = '' } = this.props;
@@ -601,13 +601,13 @@ export class CollectionWidgetContainer extends React.Component {
                 </TabList>
 
                 <TabPanel>
-                    <TableBox host={host} tableStyle={tableStyle} rows={nodes} tags={tags} visibility={visibility} /* depth={depth} */ tagsChange={tagsChange} resetGraph={resetGraph} />
+                    <TablePanel host={host} tableStyle={tableStyle} rows={nodes} tags={tags} visibility={visibility} /* depth={depth} */ tagsChange={tagsChange} resetGraph={resetGraph} />
                 </TabPanel>
                 <TabPanel>
-                    <GraphMainBox {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />
+                    <GraphPanel {...omit(this.props, ['collectionId', 'host', 'apiKey', 'isFetching', 'error']) } />
                 </TabPanel>
                 <TabPanel>
-                    <DocumentationContainer host={host} />
+                    <DocumentationPanel host={host} />
                 </TabPanel>
             </Tabs>
         </div>;
