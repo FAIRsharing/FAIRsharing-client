@@ -2,7 +2,7 @@
 Modular-based components for the FAIRsharing web user interface and the FAIRsharing widget
 
 ## FAIRsharing collection widget
-This widget exposes a collection or recommendation from [FAIRsharing] (https://fairsharing.org). These can be viewed either as a table or a networked graph. Changes applied to one view are reflected on the other.
+This widget exposes a collection or recommendation from [FAIRsharing](https://fairsharing.org). These can be viewed either as a table or a networked graph. Changes applied to one view are reflected on the other.
 
 ### Table View
 Each record is represented by a row in the table. As a default, the records are sorted on their Abbreviation. The order of the resources can be changed by clicking on the column headings.
