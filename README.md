@@ -13,7 +13,7 @@ NOTE: The table view only shows the resources in the collection/recommendation i
 ### Graph View
 This view displays the network of relationships among the resources in the collection or recommendation.
 The resources can be moved around the graph to provide the best view of the data.
-Clicking on a resource brings up some synopsis information, and a link to the full record on FAIRsharing. <br />
+Clicking on a resource brings up some synopsis information, and a link to the full record on FAIRsharing.
 Clicking on 'Show the tags panel' brings up all the domains and species associated with the resources displayed in the graph.
 These can be selected or removed to filter the resources visible in the graph. The resource tick boxes can be used to filter out resource types.
-As a default, only the resources mentioned in a collection or recommendation are displayed. Clicking on the 'outer' option results in all the resources that are related to those in the recommendation, be they standards that are implemented by the databases in the recommendation, or other related databases, being displayed in grey as an outer ring. The graph can be displayed using a force-field (COSE) or circular (COLA) layout. The COSE layout is the default. For more information on the recommendation, or the resources therein, please see the FAIRsharing website.
+As a default, only the resources mentioned in a collection or recommendation are displayed. Clicking on the 'outer' option results in all the resources that are related to those in the recommendation, be they standards that are implemented by the databases in the recommendation, or other related databases, being displayed in grey as an outer ring. The graph can be displayed using a force-field (COSE) or circular (COLA) layout. The COSE layout is the default. For more information on the recommendation, or the resources therein, please see the [FAIRsharing](https://fairsharing.org) website.
