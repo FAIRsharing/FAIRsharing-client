@@ -7,7 +7,7 @@ import { sortByPropertyAlt as sortByProperty } from '../js/utils/helper-funcs';
 
 Vue.component('vSelect', vSelect);
 
-new Vue({
+const CollectionCompareMain = {
 
     el: '#collectionsCompareMain',
 
@@ -79,4 +79,8 @@ new Vue({
         this.getCollections();
     }
 
-});
+};
+
+new Vue(CollectionCompareMain);
+
+export default CollectionCompareMain;

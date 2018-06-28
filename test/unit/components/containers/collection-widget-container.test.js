@@ -26,6 +26,7 @@ describe('<CollectionWidgetContainer />', function() {
                 tagsSelectChange={spyTSC} tagsChange={spyTC} resetGraph={spyRG}
             />,
             wrapper = shallow(container);
+
     });
 
     it('should correctly instantiate the widget container', function() {
